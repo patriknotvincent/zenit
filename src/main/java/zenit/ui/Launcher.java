@@ -1,4 +1,4 @@
-package main.java.zenit.ui;
+package zenit.ui;
 
 /**
  * 
@@ -8,7 +8,6 @@ package main.java.zenit.ui;
  */
 public class Launcher {
 	
-	public static void main(String[] args) {
-	    TestUI.main(args);
+	public static void main(String[] args) {TestUI.main(args);
 	}
 }

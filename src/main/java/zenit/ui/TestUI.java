@@ -1,4 +1,4 @@
-package main.java.zenit.ui;
+package zenit.ui;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -10,11 +10,11 @@ import javafx.stage.Stage;
  *
  */
 public class TestUI extends Application {
-	private MainController controller;
+	private main.java.zenit.ui.MainController controller;
 	
 	@Override
 	public void start(Stage stage) {
-		controller = new MainController(stage);
+		controller = new main.java.zenit.ui.MainController(stage);
 	}
 	
 	/**
