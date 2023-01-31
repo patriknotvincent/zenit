@@ -89,3 +89,4 @@ target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.l
 target/classes/zenit/ui/mainStyle.css
 /target/
 .idea/
+zenit.iml
