@@ -887,8 +887,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	/**
 	 * Creates a new tab with a {@link main.java.zenit.zencodearea.ZenCodeArea
 	 * ZenCodeArea} filling it, adds it to the TabPane, and focuses on it.
-	 * 
-	 * @param onClick The Runnable to run when the tab should be closed.
+	 *
 	 * @return The new Tab.
 	 */
 	public FileTab addTab() {
