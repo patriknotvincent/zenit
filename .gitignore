@@ -22,6 +22,11 @@ res/JDK/JDK.dat
 Icon
 
 
+#Idk tillägg av sdk i zenit
+res/JDK/DefaultJDK.dat
+res/JDK/JDK.dat
+
+
 # Thumbnails
 ._*
 
