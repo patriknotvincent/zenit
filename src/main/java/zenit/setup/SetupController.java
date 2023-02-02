@@ -3,6 +3,7 @@ package main.java.zenit.setup;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -102,12 +103,14 @@ public class SetupController extends AnchorPane {
 		
 		//Set dark mode
 		var stylesheets = stage.getScene().getStylesheets();
-		var darkMode = getClass().getResource("/zenit/ui/projectinfo/mainStyle.css")
+		//added code to prevent null pointer exception
+		var darkMode = Objects.requireNonNull(getClass().getResource("/zenit/ui/projectinfo/mainStyle.css"))
 				.toExternalForm();
 		stylesheets.add(darkMode);
 		
 		//Load logo
-		logo.setImage(new Image(getClass().getResource("/zenit/setup/zenit.png")
+		//added code to prevent null pointer exception
+		logo.setImage(new Image(Objects.requireNonNull(getClass().getResource("/zenit/setup/zenit.png"))
 				.toExternalForm()));
 		logo.setFitWidth(55);
 		
