@@ -12,6 +12,70 @@ res/workspace/workspace.dat
 res/JDK/DefaultJDK.dat
 res/JDK/JDK.dat
 
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+
+#Idk tillägg av sdk i zenit
+res/JDK/DefaultJDK.dat
+res/JDK/JDK.dat
+
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+### macOS Patch ###
+# iCloud generated files
+*.icloud
+
+### Windows ###
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
 /bin/
 .classpath
 target/classes/zenit/ui/actionButtons.css
@@ -24,3 +88,5 @@ target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
 target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
 target/classes/zenit/ui/mainStyle.css
 /target/
+.idea/
+zenit.iml
