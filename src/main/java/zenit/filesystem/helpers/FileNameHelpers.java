@@ -10,12 +10,12 @@ import java.io.File;
 public class FileNameHelpers {
 	
 	/**
-	 * Returns the projectname from a filepath, if the project contains a src-folder.
-	 * Otherwise returns the last folder.
+	 * Returns the project-name from a filepath, if the project contains a src-folder.
+	 * Otherwise, returns the last folder.
 	 * @param file Filepath to search through
 	 * @return Returns the name of the project if found.
 	 */
-	public static String getProjectnameFromFile(File file) {
+	public static String getProjectNameFromFile(File file) {
 		String projectname = null;
 	
 		if (file != null) {
@@ -34,12 +34,12 @@ public class FileNameHelpers {
 	}
 	
 	/**
-	 * Returns the packagename from a filepath, if the project contains a src-folder and 
+	 * Returns the package name from a filepath, if the project contains a src-folder and
 	 * the package is put in that src-folder.
 	 * @param file Filepath to search through
 	 * @return Returns the name of the package if found, otherwise null
 	 */
-	public static String getPackagenameFromFile(File file) {
+	public static String getPackageNameFromFile(File file) {
 		String packagename = null;
 		
 		if (file != null) {
@@ -82,6 +82,10 @@ public class FileNameHelpers {
 	 * @param filepath The filepath to alter
 	 * @return The altered file
 	 */
+
+    /**
+     * Utveckla kommentaren lite kanske?
+     */
 	public static File getFilepathWithoutTopFile(File filepath) {
 		File newFilepath;
 		
@@ -102,21 +106,21 @@ public class FileNameHelpers {
 	 * @param file The file to alter
 	 * @return The new file
 	 */
-	public static File getFilepathWithoutPackageName(File file) {
-		File newFilepath;
-		
-		String[] folders = getFoldersAsStringArray(file);
-		int srcIndex = getSrcFolderIndex(folders);
-		String newFilepathString = "";
-		
-		for (int index = 0; index <= srcIndex; index++) {
-			newFilepathString += folders[index] + "/";
-		}
-		
-		newFilepath = new File(newFilepathString);
-		
-		return newFilepath;
-	}
+    public static File getFilepathWithoutPackageName(File file) {
+        File newFilepath;
+
+        String[] folders = getFoldersAsStringArray(file);
+        int srcIndex = getSrcFolderIndex(folders);
+        String newFilepathString = "";
+
+        for (int index = 0; index <= srcIndex; index++) {
+            newFilepathString += folders[index] + "/";
+        }
+
+        newFilepath = new File(newFilepathString);
+
+        return newFilepath;
+    }
 	
 	/**
 	 * Returns the filepath of the project
