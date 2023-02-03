@@ -2,7 +2,9 @@ package main.java.zenit.console;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
+/**
+ * @editor Erik Svensson
+ */
 public class ConsoleAreaOutputStream extends OutputStream {
 
 	private ConsoleArea ca;

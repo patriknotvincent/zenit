@@ -8,13 +8,12 @@ import javafx.application.Platform;
  * in one
  * 
  * @author sigge labor , Oskar Molander
- *
+ * @editor Erik Svensson
  */
 public class ConsoleArea extends InlineCssTextArea {
 	
 	private String ID;
 	private Process process;
-	private String backgroundColor;
 	private String fileName;
 	
 	/*
@@ -27,9 +26,7 @@ public class ConsoleArea extends InlineCssTextArea {
 	/**
 	 * constructs a new ConsoleArea with identity "UNKNOWN".
 	 */
-	public ConsoleArea(){
-		this("UNKNOWN", null, "");
-	}
+	//remove constructor ConsoleArea. Reason: no usages
 
 	/**
 	 * constructs a new ConsoleArea with chosen identity and process. 
@@ -42,8 +39,6 @@ public class ConsoleArea extends InlineCssTextArea {
 		getStylesheets().add(getClass().getResource("/zenit/console/consoleStyle.css").toString());
 		this.setStyle(backgroundColor);
 		this.setEditable(false);
-		
-		
 	}
 	
 	public String getFileName() {
@@ -53,13 +48,11 @@ public class ConsoleArea extends InlineCssTextArea {
 	public void setFileName(String name) {
 		this.fileName = name;
 	}
-	
-	public String getBackgroundColor() {
-		return this.backgroundColor;
-	}
-	
+
+	//remove function public String getBackgroundColor(). Reason: no usages
+
 	public void setBackgroundColor(String color ) {
-		this.backgroundColor = color;
+		// remove
 		this.setStyle(color);
 	}
 	
@@ -74,13 +67,12 @@ public class ConsoleArea extends InlineCssTextArea {
 	/**
 	 * @return ID
 	 */
-	public String getID() {
-		return ID;
-	}
+	//remove function public String getID(). Reason: no usages
+
 	
 	/**
 	 * prints out an error text with chosen style (red default) in the console. 
-	 * @param error string to print
+	 * @param stringToPrint string to print
 	 */
 	public void errPrint(String stringToPrint) {
 		Platform.runLater(new Runnable() {
@@ -90,7 +82,7 @@ public class ConsoleArea extends InlineCssTextArea {
 					appendText(stringToPrint);
 					setStyle(getText().length() - stringToPrint.length(), getText().length(), "-fx-fill: red;");
 				} catch (IndexOutOfBoundsException e) {
-					// Windows bug, dont do anything with the exception.
+					// Windows bug, don't do anything with the exception.
 				}
 		    }
 		});
@@ -98,7 +90,7 @@ public class ConsoleArea extends InlineCssTextArea {
 	
 	/**
 	 * prints out a regular text/string in the console.
-	 * @param string to print
+	 * @param stringToPrint to print
 	 */
 	public void outPrint(String stringToPrint) {
 		
@@ -110,7 +102,7 @@ public class ConsoleArea extends InlineCssTextArea {
 						setStyle(getText().length() - stringToPrint.length(), getText().length(),
 								"-fx-fill: white");
 					} catch (IndexOutOfBoundsException e) {
-						// Windows bug, dont do anything with the exception.
+						// Windows bug, don't do anything with the exception.
 					}	   
 		    }
 		});

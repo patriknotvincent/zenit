@@ -39,7 +39,7 @@ import main.java.zenit.ui.MainController;
  * The controller class for ConsoleArea
  * 
  * @author siggelabor
- *
+ * @editor Erik Svensson
  */
 /**
  * @author Admin
@@ -156,7 +156,7 @@ public class ConsoleController implements Initializable {
 	}
 	
 	
-	/*
+	/**
 	 * Creates and displays an anchorPane when there is no console to display in the console-window
 	 */
 	private void createEmptyConsolePane() {
@@ -237,7 +237,7 @@ public class ConsoleController implements Initializable {
 	}
 
 	
-	/*
+	/**
 	 * Creates a new Terminal, adds it to the terminal
 	 *  AnchorPane and puts it as an option in the
 	 * choiceBox.
@@ -397,7 +397,6 @@ public class ConsoleController implements Initializable {
 			}
 							
 		});
-		
-		
+
 	}
 }

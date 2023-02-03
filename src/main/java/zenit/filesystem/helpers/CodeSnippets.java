@@ -5,7 +5,7 @@ import main.java.zenit.exceptions.TypeCodeException;
 /**
  * Snippets of code to insert into classes. Accessed via newSnippet method and constants.
  * @author Alexander Libot
- *
+ * @editor Erik Svensson
  */
 public class CodeSnippets {
 	
