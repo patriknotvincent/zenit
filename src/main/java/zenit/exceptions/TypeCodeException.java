@@ -6,14 +6,9 @@ package main.java.zenit.exceptions;
  *
  */
 
-/**
- * Är denna klassen verkligen nödvändig??
- * Det är väl egentligen bara att ha en vanlig Exception????!!
- * @author Kristoffer
- */
 @SuppressWarnings("serial")
 public class TypeCodeException extends Exception {
-	
+
 	public TypeCodeException() {
 		super();
 	}

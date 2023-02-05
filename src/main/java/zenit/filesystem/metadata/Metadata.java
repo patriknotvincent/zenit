@@ -45,13 +45,6 @@ public class Metadata {
 		return metadataFile;
 	}
 
-	/**
-	 * Sets a new metadata-file
-	 * @param metadataFile
-	 */
-	public void setMetadataFile(File metadataFile) {
-		this.metadataFile = metadataFile;
-	}
 
 	/**
 	 * Returns the metadata version
@@ -125,7 +118,13 @@ public class Metadata {
 	public void setRunnableClasses(RunnableClass[] runnableClasses) {
 		this.runnableClasses = runnableClasses;
 	}
-	
+
+    /**
+     * Used to check if Runnable class is empty
+     * @param runnableClass runnable class to be added
+     * @return boolean value if done.
+     * @author Kristoffer Leal
+     */
 	public boolean addRunnableClass(RunnableClass runnableClass) {
 		if (runnableClasses == null) {
 			runnableClasses = new RunnableClass[0];
@@ -145,7 +144,13 @@ public class Metadata {
 
 		return true;
 	}
-	
+
+    /**
+     * Checks if runnable-class is empty before returning true to be deleted if empty.
+     * @param runnableClassPath
+     * @return boolean value if It's empty or not.
+     * @author Kristoffer Leal
+     */
 	public boolean removeRunnableClass(String runnableClassPath) {
 		if (runnableClasses != null) {
 			RunnableClass[] temp = new RunnableClass[runnableClasses.length-1];
@@ -165,7 +170,11 @@ public class Metadata {
 
 		return true;
 	}
-	
+
+    /**
+     * Checks if runnable class contains .java file else returns null.
+     * @author Kristoffer Leal.
+     */
 	public RunnableClass containRunnableClass(String classPath) {
 		if (runnableClasses != null) {
 			for (int i = 0; i < runnableClasses.length; i++) {
