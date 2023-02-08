@@ -117,10 +117,10 @@ public class CustomCSSThemeHandler {
 		
 		if(isColorValid(newColor = colorToHex(color))) {
 			openStreams();
-			
-			for(int i = 0; i < stages.size(); i++) {
+			//replaced for loop with enhanced for
+			for (ThemeCustomizable stage : stages) {
 				changeStyleSheet(
-					stages.get(i).getStage(), stages.get(i).getCustomThemeCSS(),
+						stage.getStage(), stage.getCustomThemeCSS(),
 						getStringFromEnum(colorTheme), newColor
 				);
 			}	
@@ -270,10 +270,8 @@ public class CustomCSSThemeHandler {
 	) {
 		String fullPath =  System.getProperty("user.dir") + customThemeCSSfile;
 		var stylesheets = stage.getScene().getStylesheets();
-
-		if(stylesheets.contains("file:" + fullPath)) {
-			stylesheets.remove("file:" + fullPath);
-		}
+		//removed unnecessary contains check as the remove call does it already, ie it remains unchanged if string is not found
+		stylesheets.remove("file:" + fullPath);
 		List<String> lines = null;
 		try {
 			lines = Files.readAllLines(Paths.get(fullPath));
@@ -282,20 +280,22 @@ public class CustomCSSThemeHandler {
 			e.printStackTrace();
 		}
 		List<String> newLines = new ArrayList<String>();
-	
-		for(int i = 0; i < lines.size(); i++) {
-			String repalcedLine = lines.get(i).replaceAll(regex, replacement);
-			newLines.add(repalcedLine);	
+		//replaced for with enhanced for
+		for (String line : lines) {
+			String repalcedLine = line.replaceAll(regex, replacement);
+			newLines.add(repalcedLine);
 		}		
 
 		try {
-			String stringNewStylesheet = "";
-			for(int i = 0; i < newLines.size(); i++) {
-				stringNewStylesheet += newLines.get(i) + "\n";
+			//replaced String with stringbuilder as it will be used to append in loop
+			StringBuilder stringNewStylesheet = new StringBuilder();
+			//replaced with enhanced for
+			for (String newLine : newLines) {
+				stringNewStylesheet.append(newLine).append("\n");
 			}
 
 		    BufferedWriter writer = new BufferedWriter(new FileWriter(fullPath));
-		    writer.write(stringNewStylesheet);
+		    writer.write(stringNewStylesheet.toString());
 		    writer.close();
 			
 		    if(isCustomThemeToggled) {
@@ -316,21 +316,22 @@ public class CustomCSSThemeHandler {
 	public void toggleCustomTheme(boolean isToggled) {	
 		if(isToggled) {		
 			updateDefaultStylesheets(isToggled);
-			for(int i = 0; i < stages.size(); i++) {
-				String fullPath = "file:" + System.getProperty("user.dir") + 
-					stages.get(i).getCustomThemeCSS();	
-				var stylesheets = stages.get(i).getStage().getScene().getStylesheets();
+			//replaced for loop with enhanced for
+			for (ThemeCustomizable stage : stages) {
+				String fullPath = "file:" + System.getProperty("user.dir") +
+						stage.getCustomThemeCSS();
+				var stylesheets = stage.getStage().getScene().getStylesheets();
 				stylesheets.add(fullPath);
 			}
 		}
 		else {
-			for(int i = 0; i < stages.size(); i++) {
-				String fullPath = "file:" + System.getProperty("user.dir") + 
-					stages.get(i).getCustomThemeCSS();	
-				var stylesheets = stages.get(i).getStage().getScene().getStylesheets();
-				if(stylesheets.contains(fullPath)) {
-					stylesheets.remove(fullPath);
-				}
+			//replaced for loop with enhanced for
+			for (ThemeCustomizable stage : stages) {
+				String fullPath = "file:" + System.getProperty("user.dir") +
+						stage.getCustomThemeCSS();
+				var stylesheets = stage.getStage().getScene().getStylesheets();
+				//removed contains call as remove function does it already
+				stylesheets.remove(fullPath);
 			}
 			updateDefaultStylesheets(isToggled);
 		}	
@@ -341,18 +342,17 @@ public class CustomCSSThemeHandler {
 	 * Updates all current default stylesheets.
 	 */
 	public void updateDefaultStylesheets(boolean isCustomTheme) {
-			
-			for (int i = 0; i < stages.size(); i++) {
-				var stylesheets = stages.get(i).getStage().getScene().getStylesheets();
-				var activeSheet = stages.get(i).getActiveStylesheet();
-				
-				if(isCustomTheme) {
-					stylesheets.remove(activeSheet);
-				}
-				else {
-					stylesheets.add(activeSheet);
-				}
+		//replaced for loop with enhanced for
+		for (ThemeCustomizable stage : stages) {
+			var stylesheets = stage.getStage().getScene().getStylesheets();
+			var activeSheet = stage.getActiveStylesheet();
+
+			if (isCustomTheme) {
+				stylesheets.remove(activeSheet);
+			} else {
+				stylesheets.add(activeSheet);
 			}
+		}
 		}		
 	
 	/**

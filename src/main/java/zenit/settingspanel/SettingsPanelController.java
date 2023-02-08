@@ -2,10 +2,7 @@ package main.java.zenit.settingspanel;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.controlsfx.control.ToggleSwitch;
 
@@ -52,11 +49,11 @@ public class SettingsPanelController extends AnchorPane implements ThemeCustomiz
 	
 	private boolean isCustomTheme = false;
 	private boolean isDarkMode = true;
-
-	private String settingsPanelDarkMode = getClass().getResource(
-		"/zenit/settingspanel/settingspanelDarkMode.css").toExternalForm();
-	private String settingsPanelLightMode = getClass().getResource(
-		"/zenit/settingspanel/settingspanelLightMode.css").toExternalForm();
+	//Added code to prevent a null pointer exception, also made strings final as they are supposed to never change
+	private final String settingsPanelDarkMode = Objects.requireNonNull(getClass().getResource(
+			"/zenit/settingspanel/settingspanelDarkMode.css")).toExternalForm();
+	private final String settingsPanelLightMode = Objects.requireNonNull(getClass().getResource(
+			"/zenit/settingspanel/settingspanelLightMode.css")).toExternalForm();
 	
 	private enum OS {	
 		MACOS, WINDOWS, LINUX
@@ -323,9 +320,9 @@ public class SettingsPanelController extends AnchorPane implements ThemeCustomiz
 	@SuppressWarnings("unchecked")
 	private void updateCustomCSSListView() {
 		listViewAddedCSS.getItems().clear();
-		
-		for(int i = 0; i < addedCSSLines.size(); i++) {
-			listViewAddedCSS.getItems().add(new CustomCSSListItem(addedCSSLines.get(i)));
+		//replaced for loop with enhanced for
+		for (String addedCSSLine : addedCSSLines) {
+			listViewAddedCSS.getItems().add(new CustomCSSListItem(addedCSSLine));
 		}
 	}
 	
@@ -398,13 +395,13 @@ public class SettingsPanelController extends AnchorPane implements ThemeCustomiz
 		if(!isCustomTheme) {
 			var stylesheets = this.mainController.getStage().getScene().getStylesheets();
 			var settingsPanelStylesheets = window.getScene().getStylesheets();
-			
-			var lightMode = getClass().getResource("/zenit/ui/mainStyle-lm.css").toExternalForm();
-			var darkMode = getClass().getResource("/zenit/ui/mainStyle.css").toExternalForm();
-			var darkModeKeywords = ZenCodeArea.class.getResource("/zenit/ui/keywords.css").toExternalForm();
-			var lightModeKeywords = ZenCodeArea.class.getResource("/zenit/ui/keywords-lm.css").toExternalForm();
-			var darkModeConsole = getClass().getResource("/zenit/console/consoleStyle.css").toExternalForm();
-			var lightModeConsole = getClass().getResource("/zenit/console/consoleStyleLight.css").toExternalForm();
+			//added code to prevent null pointer exception
+			var lightMode = Objects.requireNonNull(getClass().getResource("/zenit/ui/mainStyle-lm.css")).toExternalForm();
+			var darkMode = Objects.requireNonNull(getClass().getResource("/zenit/ui/mainStyle.css")).toExternalForm();
+			var darkModeKeywords = Objects.requireNonNull(ZenCodeArea.class.getResource("/zenit/ui/keywords.css")).toExternalForm();
+			var lightModeKeywords = Objects.requireNonNull(ZenCodeArea.class.getResource("/zenit/ui/keywords-lm.css")).toExternalForm();
+			var darkModeConsole = Objects.requireNonNull(getClass().getResource("/zenit/console/consoleStyle.css")).toExternalForm();
+			var lightModeConsole = Objects.requireNonNull(getClass().getResource("/zenit/console/consoleStyleLight.css")).toExternalForm();
 			
 		
 			if (isDarkMode) {
@@ -458,9 +455,9 @@ public class SettingsPanelController extends AnchorPane implements ThemeCustomiz
 		});
 		
 		List<String> fonts = Font.getFamilies();
-		
-		for(int i = 0; i < fonts.size(); i++) {
-			chcbxNewFont.getItems().add(fonts.get(i));
+		//replaced for loop with enhanced for
+		for (String font : fonts) {
+			chcbxNewFont.getItems().add(font);
 		}
 		chcbxNewFont.setValue(oldFont);
 		lblOldFont.setText(oldFont);
@@ -473,13 +470,14 @@ public class SettingsPanelController extends AnchorPane implements ThemeCustomiz
 		fldNewSize.setAlignment(Pos.CENTER_RIGHT);
 		
 		String os = System.getProperty("os.name").toLowerCase();
-		if(os.indexOf("win") >= 0) {
+		//changed if param from os.indexOf() >=0 to os.contains() as it makes more sense and should be faster
+		if(os.contains("win")) {
 			operatingSystem = OS.WINDOWS;
 		}	
-		else if(os.indexOf("mac") >= 0) {
+		else if(os.contains("mac")) {
 			operatingSystem = OS.MACOS;
 		}
-		else if(os.indexOf("nix") >=0 || os.indexOf("nux") >=0) {
+		else if(os.contains("nix") || os.contains("nux")) {
 			operatingSystem = OS.LINUX;
 		}
 		
