@@ -286,8 +286,8 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 * @author Sigge Labor.
 	 */
 	public void updateZenCodeAreasAppearance() {
-		for (int i = 0; i < activeZenCodeAreas.size(); i++) {
-			activeZenCodeAreas.get(i).updateAppearance(zenCodeAreasFontFamily, zenCodeAreasTextSize);
+		for (ZenCodeArea activeZenCodeArea : activeZenCodeAreas) {
+			activeZenCodeArea.updateAppearance(zenCodeAreasFontFamily, zenCodeAreasTextSize);
 		}
 	}
 

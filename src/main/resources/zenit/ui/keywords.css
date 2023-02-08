@@ -41,12 +41,12 @@
 
 .paragraph-box:has-caret {
   -fx-border-width: 1px;
-  -fx-border-color: #ffffff1f;
+  -fx-border-color: #eeeeee;
   -fx-border-style: solid inside;
 }
 
 .paragraph-box {
-  -fx-background-color: #444;
+  -fx-background-color: #ff0000;
   -fx-border-width: 1px;
   -fx-border-color: transparent;
   -fx-border-style: solid inside;
