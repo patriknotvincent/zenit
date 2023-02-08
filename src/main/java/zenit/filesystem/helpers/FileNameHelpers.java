@@ -48,7 +48,7 @@ public class FileNameHelpers {
 			
 			int srcIndex = getSrcFolderIndex(folders);
 
-			if (srcIndex != -1 && folders.length > srcIndex) { //Filepath is deeper that src-folder
+			if (srcIndex != -1 && folders.length > srcIndex+2) { //Filepath is deeper that src-folder, +2 to account for the file at the end of the path and the fact that the array starts at 0
 				packagename = folders[srcIndex + 1]; //Package folder is one step down from src-folder
 			}
 		}
@@ -185,7 +185,7 @@ public class FileNameHelpers {
 	public static String[] getFoldersAsStringArray(File file) {
 		String[] folders;
 		String filepath = file.getAbsolutePath(); //Get the path in string
-		folders = filepath.split("/"); //Split path into the different folders
+		folders = filepath.split("\\\\"); //Split path into the different folders
 		
 		return folders;
 	}
