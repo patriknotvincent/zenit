@@ -8,6 +8,10 @@
 	
 	-fx-background-color: transparent;
 }
+
+#btnEsc {
+    -fx-background-color: #ff0000
+}
 #textFieldInputWord {
 	-fx-background-color: #555555;
 }
