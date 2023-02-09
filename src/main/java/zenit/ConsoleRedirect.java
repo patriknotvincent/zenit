@@ -17,7 +17,7 @@ public class ConsoleRedirect {
 	/**
 	 * This method will set the out and error PrintStream to chosen ConsoleArea.
 	 * 
-	 * @param the ConsoleArea prints are to be directed to.
+	 * @param ta ConsoleArea prints are to be directed to.
 	 */
 	public ConsoleRedirect(ConsoleArea ta) {
 		try {
@@ -30,11 +30,6 @@ public class ConsoleRedirect {
 
 			System.setOut(outPrintStream);
 			System.setErr(errPrintStream);
-
-			/* 
-			 * TODO
-			 * System.setIn(in);
-			 */
 			
 		} catch (Exception e) {
 			e.printStackTrace();

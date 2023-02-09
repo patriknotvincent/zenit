@@ -54,17 +54,8 @@ public class JavaFileHandler extends FileHandler {
 			
 			//Write content to file
 			if (content == null) {
-				/**
-				 * @author Daniel Olsson
-				 * reads packageName from the file and its path, if it is not in a package but in the src give it a default package
-				 */
-				String pckgName = FileNameHelpers.getPackagenameFromFile(file);
-				pckgName = pckgName != null ? pckgName : "";
-
 				try {
-					// old, keeping for now in case something breaks
-					// content = CodeSnippets.newSnippet(typeCode, file.getName(), FileNameHelpers.getPackagenameFromFile(file));
-					content = CodeSnippets.newSnippet(typeCode, file.getName(), pckgName);
+					content = CodeSnippets.newSnippet(typeCode, file.getName(), FileNameHelpers.getPackageNameFromFile(file));
 				} catch (TypeCodeException ex) {
 					ex.printStackTrace();
 				}

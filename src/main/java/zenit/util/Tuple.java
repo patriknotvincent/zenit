@@ -19,8 +19,8 @@ public class Tuple<T1, T2> {
 	
 	/**
 	 * Constructs a new 2-tuple with the supplied values. Calls the set()-method.
-	 * @param t1 The first value.
-	 * @param t2 The second value.
+	 * @param fst The first value.
+	 * @param snd The second value.
 	 * @author Pontus Laos
 	 */
 	public Tuple(T1 fst, T2 snd) {
@@ -30,8 +30,8 @@ public class Tuple<T1, T2> {
 	
 	/**
 	 * Sets the tuples' values.
-	 * @param t1 The first value.
-	 * @param t2 The second value.
+	 * @param fst The first value.
+	 * @param snd The second value.
 	 * @author Pontus Laos
 	 */
 	public void set(T1 fst, T2 snd) {

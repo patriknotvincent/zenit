@@ -5,9 +5,10 @@ package main.java.zenit.exceptions;
  * @author Alexander Libot
  *
  */
+
 @SuppressWarnings("serial")
 public class TypeCodeException extends Exception {
-	
+
 	public TypeCodeException() {
 		super();
 	}
