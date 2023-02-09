@@ -136,8 +136,8 @@ public class SearchInFileController extends AnchorPane {
 		});
 		
 		btnEsc.setPickOnBounds(true);
-		btnEsc.setOnAction(event -> window.close());
-		btnEsc.setOnAction(event -> search.cleanZen());
+		btnEsc.setOnAction(event -> {window.close(); search.cleanZen();});
+		//I den gamla koden skrev de över "window.close" med "cleanZen" så att enbart den andra kördes
 		
 		scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>
 		  () {
