@@ -24,7 +24,17 @@ public class CodeSnippets {
 		}
 		return snippet;
 	}
-	
+
+	public static String newSnippet(int typeCode, String classname) throws TypeCodeException {
+		String snippet;
+		switch (typeCode) {
+			case (EMPTY): snippet = ""; break;
+			case (CLASS): snippet = newClass(classname); break;
+			case (INTERFACE): snippet = newInterface(classname); break;
+			default: throw new TypeCodeException();
+		}
+		return snippet;
+	}
 	/**
 	 * Template code for new class
 	 * @param classname The name of the class
@@ -43,6 +53,15 @@ public class CodeSnippets {
 				"\n" + 
 				"}";
 				
+		return codesnippet;
+	}
+	private static String newClass(String classname){
+		int index = classname.indexOf(".java");
+		classname = classname.substring(0, index);
+
+		String codesnippet =
+				"public class " + classname + " {\n" + "\n" + "}";
+
 		return codesnippet;
 	}
 	
@@ -64,6 +83,16 @@ public class CodeSnippets {
 				"\n" + 
 				"}";
 				
+		return codesnippet;
+	}
+	private static String newInterface (String classname) {
+
+		int index = classname.indexOf(".java");
+		classname = classname.substring(0, index);
+
+		String codesnippet =
+				"public interface " + classname + " {\n" + "\n" + "}";
+
 		return codesnippet;
 	}
 }

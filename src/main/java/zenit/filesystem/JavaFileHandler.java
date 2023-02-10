@@ -55,9 +55,12 @@ public class JavaFileHandler extends FileHandler {
 			//Write content to file
 			if (content == null) {
 				String pckgName = FileNameHelpers.getPackageNameFromFile(file);
-				pckgName = pckgName != null ? pckgName : "";
 				try {
-					content = CodeSnippets.newSnippet(typeCode, file.getName(), pckgName);
+					if(pckgName != null) {
+						content = CodeSnippets.newSnippet(typeCode, file.getName(), pckgName);
+					} else {
+						content = CodeSnippets.newSnippet(typeCode, file.getName());
+					}
 				} catch (TypeCodeException ex) {
 					ex.printStackTrace();
 				}
