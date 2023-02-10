@@ -39,10 +39,6 @@ public class FileNameHelpers {
 	 * @param filepath The filepath to alter
 	 * @return The altered file
 	 */
-
-    /**
-     * Utveckla kommentaren lite kanske?
-     */
 	public static File getFilepathWithoutTopFile(File filepath) {
 		File newFilepath;
 		

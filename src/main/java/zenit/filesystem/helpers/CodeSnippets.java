@@ -13,9 +13,7 @@ public class CodeSnippets {
 	public static final int CLASS = 100;
 	public static final int INTERFACE = 101;
 
-    /**
-     * TODO KOMMENTERA
-     */
+	
 	public static String newSnippet(int typeCode, String classname, String packagename) throws TypeCodeException {
 		String snippet;
 		switch (typeCode) {
