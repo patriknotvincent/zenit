@@ -8,6 +8,15 @@
 	
 	-fx-background-color: transparent;
 	-fx-text-fill: #EEEEEE;
+	-fx-border-style: solid;
+	-fx-border-color: #EEEEEE;
+}
+#textFieldReplacementWord, #textFieldInputWord {
+    -fx-text-fill: #EEEEEE;
+}
+
+#lblOccurrences {
+    -fx-text-fill: #EEEEEE;
 }
 
 #btnEsc {

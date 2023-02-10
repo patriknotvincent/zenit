@@ -15,7 +15,7 @@
             <Font size="14.0" />
          </font></Button>
       <Button fx:id="btnReplaceOne" layoutX="5.0" layoutY="111.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="135.0" text="Replace selected" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="282.0" AnchorPane.topAnchor="111.0" />
-      <Label fx:id="lblOccurrences" alignment="CENTER" contentDisplay="CENTER" layoutY="-2.0" prefHeight="33.0" prefWidth="112.0" text="Search window" textAlignment="CENTER" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="310.0" AnchorPane.topAnchor="-2.0" />
+      <Label fx:id="lblOccurrences" alignment="CENTER" contentDisplay="CENTER" layoutX="5.0" layoutY="-1.0" prefHeight="33.0" prefWidth="34.0" textAlignment="CENTER" AnchorPane.bottomAnchor="119.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="383.0" AnchorPane.topAnchor="-1.0" />
       <Button fx:id="btnReplaceAll" layoutX="144.0" layoutY="111.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="135.0" text="Replace all" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="144.0" AnchorPane.rightAnchor="143.0" AnchorPane.topAnchor="111.0" />
    </children>
 </fx:root>
