@@ -1,4 +1,4 @@
-package main.java.zenit.ui;
+package zenit.ui;
 
 import java.io.File;
 import java.util.Arrays;
@@ -27,7 +27,7 @@ public class FileTab extends Tab {
 	private File initialFile;
 	private File file;
 	private String initialTitle;
-	private MainController mc;
+	private main.java.zenit.ui.MainController mc;
 	
 	private ZenCodeArea zenCodeArea;
 	
@@ -36,7 +36,7 @@ public class FileTab extends Tab {
 	/**
 	 * Constructs a new FileTab without a file, setting the title to "Untitled".
 	 */
-	public FileTab(ZenCodeArea zenCodeArea, MainController mc) {
+	public FileTab(ZenCodeArea zenCodeArea, main.java.zenit.ui.MainController mc) {
 		this.zenCodeArea = zenCodeArea;
 		this.mc = mc;
 		initialTitle = "Untitled";
@@ -293,7 +293,7 @@ public class FileTab extends Tab {
 	/**
 	 * Shows a confirm dialog and performs a corresponding action to whether the user 
 	 * chose OK, Cancel, or No.
-	 * @param event The event.
+
 	 */
 	public int showConfirmDialog() {
 		Alert alert = new Alert(AlertType.CONFIRMATION);

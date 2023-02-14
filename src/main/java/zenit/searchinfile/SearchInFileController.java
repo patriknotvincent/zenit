@@ -1,4 +1,4 @@
-package main.java.zenit.searchinfile;
+package zenit.searchinfile;
 
 import java.io.IOException;
 
