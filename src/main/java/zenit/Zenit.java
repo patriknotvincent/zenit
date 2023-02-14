@@ -21,7 +21,6 @@ public class Zenit extends Application {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		
 		File workspace = new File("res/workspace/workspace.dat");
 		File JDK = new File("res/JDK/JDK.dat");
 		File defaultJDK = new File ("res/JDK/DefaultJDK.dat");
