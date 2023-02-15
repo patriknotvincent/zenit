@@ -1,4 +1,4 @@
-package main.java.zenit.terminal;
+package zenit.terminal;
 
 import com.kodedu.terminalfx.TerminalBuilder;
 import com.kodedu.terminalfx.TerminalTab;
@@ -11,7 +11,6 @@ import javafx.scene.paint.Color;
 
 public class TerminalController {
 
-	
 	@FXML
 	private TabPane tabPane;
 	

@@ -1,4 +1,4 @@
-package main.java.zenit.setup;
+package zenit.setup;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,14 +22,14 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import main.java.zenit.Zenit;
-import main.java.zenit.filesystem.WorkspaceHandler;
-import main.java.zenit.filesystem.jreversions.JREVersions;
-import main.java.zenit.ui.DialogBoxes;
+import zenit.Zenit;
+import zenit.filesystem.WorkspaceHandler;
+import zenit.filesystem.jreversions.JREVersions;
+import zenit.ui.DialogBoxes;
 
 /**
  * Controller for the setup window of the application.
- * Let's user choose a workspace, add and remove JDKs and set a default JDK.
+ * Lets user choose a workspace, add and remove JDKs and set a default JDK.
  * @author Alexander Libot
  *
  */
@@ -119,7 +119,7 @@ public class SetupController extends AnchorPane {
 			JREVersions.createNew();
 		}
 		
-		//Load in set workspace if it exist
+		//Load in set workspace if it exists
 		if (workspaceDat.exists()) {	
 			try {
 				workspaceFile = WorkspaceHandler.readWorkspace();
@@ -135,8 +135,9 @@ public class SetupController extends AnchorPane {
 	}
 	
 	/**
-	 * Setup the radio buttons and put them in their default state
+	 * Sets up the radio buttons and put them in their default state
 	 */
+
 	private void initRadioButtons() {
 		rb1.setToggleGroup(tgGroup);
 		rb2.setToggleGroup(tgGroup);
@@ -155,6 +156,7 @@ public class SetupController extends AnchorPane {
 	 * Updates the JDK list by reading from file. Add JDK to res/JDK.dat before triggering
 	 * Sorts the list.
 	 */
+
 	private void updateList() {
 		//Init list of JDKs
 		List<String> JDKs = JREVersions.readString();
@@ -355,7 +357,7 @@ public class SetupController extends AnchorPane {
 	
 	/**
 	 * Sets the path to document folder depending on current OS
-	 * @return path from OS.home to documents folder
+	 * @return path from OS.home to document folder
 	 */
 	private String getDocumentsPath() {
 		String OS = Zenit.OS;

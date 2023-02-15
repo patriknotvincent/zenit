@@ -1,10 +1,10 @@
-package main.java.zenit.javacodecompiler;
+package zenit.javacodecompiler;
 
 import java.io.File;
 import java.util.regex.Matcher;
 
-import main.java.zenit.filesystem.jreversions.JDKVerifier;
-import main.java.zenit.filesystem.jreversions.JREVersions;
+import zenit.filesystem.jreversions.JDKVerifier;
+import zenit.filesystem.jreversions.JREVersions;
 
 public class CommandBuilder {
 
@@ -32,6 +32,8 @@ public class CommandBuilder {
 			this.JDK = JDKVerifier.getExecutablePath(JDK, tool);
 		//If default JDK is set
 		} else {
+			//TODO Try catch?
+
 			String defaultJDK = JREVersions.getDefaultJDKFile().getPath();
 			if (defaultJDK != null) {
 				this.JDK = JDKVerifier.getExecutablePath(defaultJDK, tool);

@@ -1,11 +1,11 @@
-package main.java.zenit.console;
+package zenit.console;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
 public class ConsoleAreaErrorStream extends OutputStream {
-	private ConsoleArea ca;
 
+	private ConsoleArea ca;
 	private StringBuilder sb = new StringBuilder();
 
 	public ConsoleAreaErrorStream(ConsoleArea ca) {

@@ -1,4 +1,4 @@
-package main.java.zenit.filesystem;
+package zenit.filesystem;
 
 import java.io.File;
 
@@ -17,7 +17,7 @@ public class RunnableClass {
 	/**
 	 * Creates a new runnable class object
 	 * @param path Path to the class, should be within src-folder, e.g. {@code package/Class.java}
-	 * or set source path directory, see {@link main.java.zenit.filesystem.Metadata#setSourcepath}.
+	 * or set source path directory, see {@link zenit.filesystem.metadata.Metadata#setSourcepath}.
 	 * @param paArguments Program arguments for class
 	 * @param vmArguments VM Arguments for class
 	 */

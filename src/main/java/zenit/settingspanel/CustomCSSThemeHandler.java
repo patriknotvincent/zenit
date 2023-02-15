@@ -1,4 +1,4 @@
-package main.java.zenit.settingspanel;
+package zenit.settingspanel;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -237,6 +237,7 @@ public class CustomCSSThemeHandler {
 	 * @param key
 	 * @param value
 	 */
+
 	public void storeProperty(String key, String value) {
 		Properties prop = new Properties();
 		

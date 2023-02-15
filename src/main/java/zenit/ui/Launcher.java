@@ -1,6 +1,5 @@
 package zenit.ui;
 
-
 /**
  * 
  * @author siggelabor
@@ -12,10 +11,7 @@ public class Launcher {
 	public static void main(String[] args) {
 		System.out.println(System.getProperty("os.name"));
 		TestUI.main(args);
-		bajs();
 		
 	}
-	public static void bajs(){
 
-	}
 }

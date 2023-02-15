@@ -1,16 +1,14 @@
-package main.java.zenit.launchers;
+package zenit.launchers;
 
 import javafx.stage.Stage;
-import main.java.zenit.ui.MainController;
+import zenit.ui.MainController;
 
 public class MacOSLauncher {
-
 
 	public MacOSLauncher(Stage stage) {
         System.out.println("Macos");
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "WikiTeX");
 		new MainController(stage);
-		
 	}
 
 }

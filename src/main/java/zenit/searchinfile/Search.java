@@ -3,19 +3,12 @@ package zenit.searchinfile;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
-import org.fxmisc.richtext.model.StyleSpan;
-import org.reactfx.value.Var;
-
-import javafx.application.Platform;
-import javafx.scene.control.Label;
-import main.java.zenit.ui.MainController;
-import main.java.zenit.util.Tuple;
-import main.java.zenit.zencodearea.ZenCodeArea;
+import zenit.ui.MainController;
+import zenit.util.Tuple;
+import zenit.zencodearea.ZenCodeArea;
 
 /**
  * The Search class lets you search for a word then either
@@ -137,10 +130,8 @@ public class Search {
 	
 	/**
 	 * Replaces every occurrence of a certain word with another word.
-	 * 
-	 * @param wordBefore
-	 * @param wordAfter
-	 * @param absolutePos
+	 *
+	 * @param wordAfter Word to replace with
 	 */	
 	public void replaceAll(String wordAfter) {
 		for (int i = absolutePos.size() -1; i >= 0; i--) {
@@ -150,10 +141,8 @@ public class Search {
 	
 	/**
 	 * Replaces a single word with another word.
-	 * 
-	 * @param wordBefore
-	 * @param wordAfter
-	 * @param absolutePos
+	 *
+	 * @param wordAfter Word to replace with
 	 */
 	public void replaceOne(String wordAfter) {
 		zenCodeArea.replaceText(absolutePos.get(i).fst(), absolutePos.get(i).snd(), wordAfter);

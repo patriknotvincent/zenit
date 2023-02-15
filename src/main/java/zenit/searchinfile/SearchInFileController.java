@@ -17,8 +17,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import main.java.zenit.ui.MainController;
-import main.java.zenit.zencodearea.ZenCodeArea;
+import zenit.ui.MainController;
+import zenit.zencodearea.ZenCodeArea;
 
 public class SearchInFileController extends AnchorPane {
 

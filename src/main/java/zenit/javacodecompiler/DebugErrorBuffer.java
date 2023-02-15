@@ -1,4 +1,4 @@
-package main.java.zenit.javacodecompiler;
+package zenit.javacodecompiler;
 
 import java.util.LinkedList;
 
@@ -7,7 +7,7 @@ public class DebugErrorBuffer implements Buffer<DebugError> {
 	private LinkedList<DebugError> buffer;
 	
 	public DebugErrorBuffer() {
-		buffer = new LinkedList<DebugError>();
+		buffer = new LinkedList<>();
 	}
 
 	@Override
@@ -26,10 +26,6 @@ public class DebugErrorBuffer implements Buffer<DebugError> {
 	
 	@Override
 	public synchronized boolean isEmpty() {
-		if (buffer.size() == 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return buffer.size() == 0;
 	}
 }

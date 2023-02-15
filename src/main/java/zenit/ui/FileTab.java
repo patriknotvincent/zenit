@@ -14,9 +14,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 
-import main.java.zenit.filesystem.FileController;
-import main.java.zenit.util.StringUtilities;
-import main.java.zenit.zencodearea.ZenCodeArea;
+import zenit.filesystem.FileController;
+import zenit.util.StringUtilities;
+import zenit.zencodearea.ZenCodeArea;
 
 /**
  * A Tab extension that holds a File.
@@ -27,7 +27,7 @@ public class FileTab extends Tab {
 	private File initialFile;
 	private File file;
 	private String initialTitle;
-	private main.java.zenit.ui.MainController mc;
+	private MainController mc;
 	
 	private ZenCodeArea zenCodeArea;
 	
@@ -36,7 +36,7 @@ public class FileTab extends Tab {
 	/**
 	 * Constructs a new FileTab without a file, setting the title to "Untitled".
 	 */
-	public FileTab(ZenCodeArea zenCodeArea, main.java.zenit.ui.MainController mc) {
+	public FileTab(ZenCodeArea zenCodeArea, MainController mc) {
 		this.zenCodeArea = zenCodeArea;
 		this.mc = mc;
 		initialTitle = "Untitled";

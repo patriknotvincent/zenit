@@ -1,4 +1,4 @@
-package main.java.zenit.ui;
+package zenit.ui;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,8 +9,6 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,7 +20,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
-import javafx.scene.control.SplitPane.Divider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeView;
@@ -32,29 +29,34 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import main.java.zenit.Zenit;
-import main.java.zenit.console.ConsoleArea;
-import main.java.zenit.console.ConsoleController;
-import main.java.zenit.filesystem.FileController; // Aggregation
-import main.java.zenit.filesystem.ProjectFile;
-import main.java.zenit.filesystem.RunnableClass;
-import main.java.zenit.filesystem.WorkspaceHandler;
-import main.java.zenit.filesystem.metadata.Metadata;
-import main.java.zenit.javacodecompiler.DebugError;
-import main.java.zenit.javacodecompiler.DebugErrorBuffer;
-import main.java.zenit.javacodecompiler.JavaSourceCodeCompiler;
-import main.java.zenit.javacodecompiler.ProcessBuffer;
-import main.java.zenit.settingspanel.SettingsPanelController;
-import main.java.zenit.settingspanel.ThemeCustomizable; // Implements
-import main.java.zenit.searchinfile.Search;
-import main.java.zenit.ui.tree.FileTree;
-import main.java.zenit.ui.tree.FileTreeItem;
-import main.java.zenit.ui.tree.TreeClickListener;
-import main.java.zenit.ui.tree.TreeContextMenu;
-import main.java.zenit.util.Tuple;
-import main.java.zenit.ui.FileTab;
-import main.java.zenit.ui.projectinfo.ProjectMetadataController;
-import main.java.zenit.zencodearea.ZenCodeArea;
+import zenit.Zenit;
+import zenit.console.ConsoleArea;
+import zenit.console.ConsoleController;
+import zenit.filesystem.FileController; // Aggregation
+import zenit.filesystem.ProjectFile;
+import zenit.filesystem.RunnableClass;
+import zenit.filesystem.WorkspaceHandler;
+import zenit.filesystem.metadata.Metadata;
+import zenit.javacodecompiler.DebugError;
+import zenit.javacodecompiler.DebugErrorBuffer;
+import zenit.javacodecompiler.JavaSourceCodeCompiler;
+import zenit.javacodecompiler.ProcessBuffer;
+import zenit.settingspanel.SettingsPanelController;
+import zenit.settingspanel.ThemeCustomizable; // Implements
+import zenit.searchinfile.Search;
+import zenit.ui.tree.FileTree;
+import zenit.ui.tree.FileTreeItem;
+import zenit.ui.tree.TreeClickListener;
+import zenit.ui.tree.TreeContextMenu;
+import zenit.ui.tree.FileTree;
+import zenit.ui.tree.FileTreeItem;
+import zenit.ui.tree.TreeClickListener;
+import zenit.ui.tree.TreeContextMenu;
+import zenit.util.Tuple;
+import zenit.ui.FileTab;
+import zenit.ui.projectinfo.ProjectMetadataController;
+import zenit.zencodearea.ZenCodeArea;
+import zenit.ui.projectinfo.ProjectMetadataController;
 
 /**
  * The controller part of the main GUI.
@@ -162,8 +164,8 @@ public class MainController extends VBox implements ThemeCustomizable {
 		this.stage = s;
 		this.zenCodeAreasTextSize = 12;
 		this.zenCodeAreasFontFamily = "Menlo";
-		this.activeZenCodeAreas = new LinkedList<ZenCodeArea>();
-		this.customThemeCSS = new File("/customtheme/mainCustomTheme.css");
+		this.activeZenCodeAreas = new LinkedList<>();
+		this.customThemeCSS = new File("customtheme/mainCustomTheme.css");
 
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/zenit/ui/Main.fxml"));
@@ -338,7 +340,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 * @param parent The parent folder of the file to be created.
 	 * @param typeCode The type of code snippet that should be implemented in the
 	 *                 file. Use constants from
-	 *                 {@link main.java.zenit.filesystem.helpers.CodeSnippets
+	 *                 {@link zenit.filesystem.helpers.CodeSnippets
 	 *                 CodeSnippets} class.
 	 * @return The File if created, otherwise null.
 	 */
@@ -885,7 +887,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	}
 
 	/**
-	 * Creates a new tab with a {@link main.java.zenit.zencodearea.ZenCodeArea
+	 * Creates a new tab with a {@link zenit.zencodearea.ZenCodeArea
 	 * ZenCodeArea} filling it, adds it to the TabPane, and focuses on it.
 	 *
 	 * @return The new Tab.
@@ -1009,7 +1011,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	/**
 	 * Tries to import a folder. Displays a directory chooser and copies the
 	 * selected folder into the current workspace using
-	 * {@link main.java.zenit.filesystem.FileController#importProject(File)
+	 * {@link zenit.filesystem.FileController#importProject(File)
 	 * importProject(File)} Displays an error or information dialog to display the
 	 * result.
 	 */
