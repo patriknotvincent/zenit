@@ -24,7 +24,7 @@ import main.java.zenit.ui.MainController;
 public class TreeContextMenu extends ContextMenu implements EventHandler<ActionEvent>{
 	
 	private MainController controller;
-	private TreeView<String> treeView;
+	private TreeView<FileTreeItem> treeView;
 	
 	private Menu createItem = new Menu("New...");
 	private MenuItem createClass = new MenuItem("New class");
@@ -44,10 +44,11 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 	 * @param treeView The {@link javafx.scene.control.TreeView TreeView} instance which will
 	 * be manipulated
 	 */
-	public TreeContextMenu(MainController controller, TreeView<String> treeView) {
+	public TreeContextMenu(MainController controller, TreeView<FileTreeItem> treeView) {
 		super();
 		this.controller = controller;
 		this.treeView = treeView;
+
 		initContextMenu();
 	}
 	
@@ -66,8 +67,8 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 		} else {
 			createItem.getItems().remove(createPackage);
 		}
-		FileTreeItem<String> selectedItem = (FileTreeItem<String>) treeView.getSelectionModel().getSelectedItem();
-		if (selectedItem.getType() == FileTreeItem.PROJECT) {
+		TreeItem<FileTreeItem> selectedItem = treeView.getSelectionModel().getSelectedItem();
+		if (selectedItem.getValue().getType() == FileTreeItem.PROJECT) {
 			getItems().add(importJar);
 			getItems().add(properties);
 		} else {
@@ -83,10 +84,10 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 	 */
 	@Override
 	public void show(Node node, double x, double y) {
-		TreeItem<String> selectedItem = treeView.getSelectionModel().getSelectedItem();
+		TreeItem<FileTreeItem> selectedItem = treeView.getSelectionModel().getSelectedItem();
 		
 		if (selectedItem != null) {
-			setContext(selectedItem.getValue());
+			setContext(selectedItem.getValue().getName());
 		}
 		
 		super.show(node, x, y);
@@ -115,11 +116,11 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 	 * main.java.zenit.filesystem.helpers.CodeSnippets CodeSnippets}
 	 */
 	private void newFile(int typeCode) {
-		FileTreeItem<String> parent = (FileTreeItem<String>) 
-				treeView.getSelectionModel().getSelectedItem();
-		File newFile = controller.createFile(parent.getFile(), typeCode);
+		TreeItem<FileTreeItem> parent = treeView.getSelectionModel().getSelectedItem();
+		File newFile = controller.createFile(parent.getValue().getFile(), typeCode);
 		if (newFile != null) {
-			FileTreeItem<String> newItem = new FileTreeItem<String>(newFile, newFile.getName(), FileTreeItem.CLASS);
+			TreeItem<FileTreeItem> newItem = new TreeItem<>(new FileTreeItem(newFile,
+					FileTreeItem.CLASS));
 			parent.getChildren().add(newItem);
 		}
 	}
@@ -130,8 +131,8 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 	 */
 	@Override
 	public void handle(ActionEvent actionEvent) {
-		FileTreeItem<String> selectedItem = (FileTreeItem<String>) treeView.getSelectionModel().getSelectedItem();
-		File selectedFile = selectedItem.getFile();
+		TreeItem<FileTreeItem> selectedItem = treeView.getSelectionModel().getSelectedItem();
+		File selectedFile = selectedItem.getValue().getFile();
 		
 		if (actionEvent.getSource().equals(createClass)) {
 			newFile(CodeSnippets.CLASS);
@@ -140,9 +141,9 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 		} else if (actionEvent.getSource().equals(renameItem)) {
 			File newFile = controller.renameFile(selectedFile);
 			if (newFile != null) {
-				selectedItem.setFile(newFile);
-				selectedItem.setValue(newFile.getName());
-				FileTree.changeFileForNodes(selectedItem, selectedItem.getFile());
+				selectedItem.getValue().setFile(newFile);
+				selectedItem.getValue().setName(newFile.getName());
+				FileTree.changeFileForNodes(selectedItem, selectedItem.getValue().getFile());
 			}
 		} else if (actionEvent.getSource().equals(deleteItem)) {
 			controller.deleteFile(selectedFile);
@@ -150,13 +151,14 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 		} else if (actionEvent.getSource().equals(createPackage)) {
 			File packageFile = controller.newPackage(selectedFile);
 			if (packageFile != null) {
-				FileTreeItem<String> packageNode = new FileTreeItem<String>(packageFile, packageFile.getName(), FileTreeItem.PACKAGE);
+				TreeItem<FileTreeItem> packageNode = new TreeItem<>(new FileTreeItem(packageFile,
+						FileTreeItem.PACKAGE));
 				selectedItem.getChildren().add(packageNode);
 			}
 		} else if (actionEvent.getSource().equals(importJar)) {
 			ProjectFile projectFile = new ProjectFile(selectedFile.getPath());
 			controller.chooseAndImportLibraries(projectFile);
-		} else if (actionEvent.getSource().equals(properties) && selectedItem.getType() == FileTreeItem.PROJECT) {
+		} else if (actionEvent.getSource().equals(properties) && selectedItem.getValue().getType() == FileTreeItem.PROJECT) {
 			ProjectFile projectFile = new ProjectFile(selectedFile.getPath());
 			controller.showProjectProperties(projectFile);
 		}

@@ -322,7 +322,7 @@ public class FileTab extends Tab {
 		
 		return wrapper.response;
 	}
-	
+
 	private class UpdateDetector implements EventHandler<Event> {
 
 		@Override

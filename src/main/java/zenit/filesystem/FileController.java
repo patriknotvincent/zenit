@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import main.java.zenit.filesystem.helpers.CodeSnippets;
@@ -137,7 +139,7 @@ public class FileController {
 	 * Tries to write {@code content} to {@code file}. Prints error message if content
 	 * can't be written.
 	 * @param file The file to write over.
-	 * @param dsd The content to write to disk
+	 * @param content The content to write to disk
 	 */
 	public boolean writeFile(File file, String content) {
 
@@ -375,5 +377,9 @@ public class FileController {
 		}
 		
 		return false;
+	}
+
+	public void moveFile(File location, File destination) throws IOException {
+		Files.move(location.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
 	}
 }
