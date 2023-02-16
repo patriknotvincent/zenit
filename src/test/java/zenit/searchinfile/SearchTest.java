@@ -1,34 +1,38 @@
 package zenit.searchinfile;
 
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class SearchTest {
 
-    @org.junit.jupiter.api.Test
+
+
+    @Test
     void searchInFile() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void clearZen() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void cleanZen() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void replaceAll() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void replaceOne() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void jumpDown() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void jumpUp() {
     }
 }

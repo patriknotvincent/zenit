@@ -15,8 +15,10 @@ import java.util.regex.Pattern;
 
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.ReadOnlyStyledDocument;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
+import org.fxmisc.richtext.model.StyledDocument;
 import org.fxmisc.wellbehaved.event.Nodes;
 import org.fxmisc.wellbehaved.event.EventPattern;
 import org.fxmisc.wellbehaved.event.InputMap;
@@ -161,5 +163,6 @@ public class ZenCodeArea extends CodeArea {
 	//	font = fontFamily;
 		setStyle("-fx-font-family: " + fontFamily + ";" + 
 				"-fx-font-size: " + size + ";");
-	}	
+	}
+
 }
