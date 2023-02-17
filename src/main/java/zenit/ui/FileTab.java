@@ -2,6 +2,8 @@ package main.java.zenit.ui;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -15,6 +17,8 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 
 import main.java.zenit.filesystem.FileController;
+import main.java.zenit.filesystem.JavaFileHandler;
+import main.java.zenit.filesystem.helpers.FileNameHelpers;
 import main.java.zenit.util.StringUtilities;
 import main.java.zenit.zencodearea.ZenCodeArea;
 
@@ -63,10 +67,10 @@ public class FileTab extends Tab {
 		
 		setContent(anchorPane);
 		setText(initialTitle);
-		
+
 		zenCodeArea.textProperty().addListener((observable, oldText, newText) -> {
 			String initialFileContent = FileController.readFile(initialFile);
-			
+
 			hasChanged = !initialFileContent.equals(newText);
 			updateUI();
 		});
@@ -321,6 +325,43 @@ public class FileTab extends Tab {
 		});
 		
 		return wrapper.response;
+	}
+
+	public String updatePackage() {
+		String content = getFileText();
+		String newContent = content;
+		boolean shouldWrite = true;
+		String newPackage = FileNameHelpers.getPackageNameFromFile(file);
+		Pattern packagePattern = Pattern.compile("package\\s+([a-zA-Z0-9_]+\\.)*[a-zA-Z0-9_]+\\s*;");
+		Matcher packageMatcher = packagePattern.matcher(content);
+
+		//If files contains an old package name
+		if(packageMatcher.find()){
+			int oldPackagePosStart = packageMatcher.start();
+			int oldPackagePosEnd = packageMatcher.end();
+			//If file is now in a package, change package name to new one
+			if(newPackage != null) {
+				newContent =
+						content.substring(0, oldPackagePosStart) + "package " + newPackage + ";\n" + content.substring(oldPackagePosEnd + 1);
+			}else{ //If now in src folder, remove package
+				newContent = content.substring(oldPackagePosEnd);
+			}
+		}else{ //if no package name is found in the file
+			//If file is now in a package, add package name to new one
+			if(newPackage != null) {
+				newContent = "package " + newPackage + ";\n" + content;
+			}else{ //If now in src folder, do nothing
+				shouldWrite = false;
+			}
+		}
+
+		if(shouldWrite){
+			setFileText(newContent);
+			hasChanged = true;
+			updateUI();
+			return newContent;
+		}
+		return null;
 	}
 
 	private class UpdateDetector implements EventHandler<Event> {

@@ -764,6 +764,14 @@ public class MainController extends VBox implements ThemeCustomizable {
 		}
 		return null;
 	}
+
+	public void changePackageForClosedFile(File file){
+		try {
+			fileController.changePackage(file);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public void compileAndRun(File file) {
 		File metadataFile = getMetadataFile(file);
@@ -980,7 +988,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 			FileTab fileTab = (FileTab) tab;
 			File tabFile = fileTab.getFile();
 
-			if (tabFile != null && file.equals(tabFile)) {
+			if (file.equals(tabFile)) {
 				return fileTab;
 			}
 		}
@@ -1343,5 +1351,12 @@ public class MainController extends VBox implements ThemeCustomizable {
 			DialogBoxes.errorDialog("Error", "Couldn't move file", "An error occured while trying to move file");
 		}
 		return null;
+	}
+
+	public void changePackageForOpenFile(FileTab tab) {
+		String newContent = tab.updatePackage();
+		if(newContent != null){
+			saveFile(false, tab.getFile(), newContent);
+		}
 	}
 }

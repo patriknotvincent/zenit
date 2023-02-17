@@ -1,6 +1,5 @@
 package main.java.zenit.ui.tree;
 
-import javafx.application.Platform;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -10,7 +9,6 @@ import main.java.zenit.ui.FileTab;
 import main.java.zenit.ui.MainController;
 
 import java.io.File;
-import java.util.Objects;
 
 public class FileCellFactory implements Callback<TreeView<FileTreeItem>, TreeCell<FileTreeItem>> {
 
@@ -54,11 +52,13 @@ public class FileCellFactory implements Callback<TreeView<FileTreeItem>, TreeCel
     }
 
     private void dragDetected(MouseEvent event, TreeCell<FileTreeItem> treeCell, TreeView<FileTreeItem> treeView) {
-        System.out.println("Drag detected");
         draggedItem = treeCell.getTreeItem();
 
         // root can't be dragged
         if (draggedItem.getParent() == null) return;
+        if(draggedItem.getValue().getType() == FileTreeItem.PROJECT) return;
+        if(draggedItem.getValue().getType() == FileTreeItem.PACKAGE) return;
+        if(draggedItem.getValue().getType() == FileTreeItem.SRC) return;
         Dragboard db = treeCell.startDragAndDrop(TransferMode.MOVE);
 
         ClipboardContent content = new ClipboardContent();
@@ -112,12 +112,15 @@ public class FileCellFactory implements Callback<TreeView<FileTreeItem>, TreeCel
         //Update file path for dragged item and tab if open
         if(destPath != null){
             draggedItem.getValue().setFile(new File(destPath));
-            if(tab != null){
+            //if tab is open
+            if(tab != null && !draggedItem.getValue().getFile().isDirectory()){
                 tab.setFile(draggedItem.getValue().getFile(), false);
+                    controller.changePackageForOpenFile(tab);
+            }else if(!draggedItem.getValue().getFile().isDirectory()){
+                controller.changePackageForClosedFile(draggedItem.getValue().getFile());
             }
             success = true;
         }
-        //TODO: Update package
         droppedOn.setExpanded(true);
 
         treeView.getSelectionModel().select(draggedItem);

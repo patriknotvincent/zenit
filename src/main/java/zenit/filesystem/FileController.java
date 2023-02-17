@@ -1,16 +1,16 @@
 package main.java.zenit.filesystem;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import main.java.zenit.filesystem.helpers.CodeSnippets;
+import main.java.zenit.filesystem.helpers.FileNameHelpers;
 import main.java.zenit.filesystem.metadata.Metadata;
+import main.java.zenit.ui.DialogBoxes;
 
 /**
  * Class for controlling and manipulating the file system of a project.
@@ -381,5 +381,43 @@ public class FileController {
 
 	public void moveFile(File location, File destination) throws IOException {
 		Files.move(location.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+	}
+
+	public void changePackage(File file) throws IOException {
+		if(file.exists()) {
+			String content = JavaFileHandler.readFile(file);
+			String newContent = content;
+			boolean shouldWrite = true;
+			String newPackage = FileNameHelpers.getPackageNameFromFile(file);
+			Pattern packagePattern = Pattern.compile("package\\s+([a-zA-Z0-9_]+\\.)*[a-zA-Z0-9_]+\\s*;");
+			Matcher packageMatcher = packagePattern.matcher(content);
+
+			//If files contains an old package name
+			if(packageMatcher.find()){
+				int oldPackagePosStart = packageMatcher.start();
+				int oldPackagePosEnd = packageMatcher.end();
+				//If file is now in a package, change package name to new one
+				if(newPackage != null) {
+					newContent = content.substring(0, oldPackagePosStart) + "package " + newPackage + ";" + content.substring(oldPackagePosEnd + 1);
+				}else{ //If now in src folder, remove package
+					newContent = content.substring(oldPackagePosEnd + 1);
+				}
+			}else{ //if no package name is found in the file
+				//If file is now in a package, add package name to new one
+				if(newPackage != null) {
+					newContent = "package " + newPackage + ";\n" + content;
+				}else{ //If now in src folder, do nothing
+					shouldWrite = false;
+				}
+			}
+			//If package is found, write new content to file. Also double check that new content is not empty.
+			if (shouldWrite) {
+				try (BufferedWriter br =
+							 new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), FileHandler.textEncoding))) {
+					br.write(newContent);
+					br.flush();
+				}
+			}
+		}
 	}
 }
