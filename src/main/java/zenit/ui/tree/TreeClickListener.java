@@ -1,7 +1,6 @@
 package zenit.ui.tree;
 
 import javafx.event.EventHandler;
-import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -16,7 +15,7 @@ import zenit.ui.MainController;
 public class TreeClickListener implements EventHandler<MouseEvent> {
 	
 	private MainController controller;
-	private TreeView<FileTreeItem> treeView;
+	private TreeView<String> treeView;
 	
 	/**
 	 * Creates a new Listener for a specific TreeView instance that calls methods in
@@ -24,7 +23,7 @@ public class TreeClickListener implements EventHandler<MouseEvent> {
 	 * @param controller The MainController instance where methods will be called from
 	 * @param treeView The TreeView instance where data will be collected from
 	 */
-	public TreeClickListener(MainController controller, TreeView<FileTreeItem> treeView) {
+	public TreeClickListener(MainController controller, TreeView<String> treeView) {
 		this.controller = controller;
 		this.treeView = treeView;
 	}
@@ -35,14 +34,15 @@ public class TreeClickListener implements EventHandler<MouseEvent> {
 	 */
 	@Override
 	public void handle(MouseEvent mouseEvent) {
-		TreeItem<FileTreeItem> selectedItem = treeView.getSelectionModel().getSelectedItem();
+		FileTreeItem<String> selectedItem = (FileTreeItem<String>) 
+				treeView.getSelectionModel().getSelectedItem();
 
-		if (selectedItem != null && !selectedItem.getValue().getFile().isDirectory() &&
+		if (selectedItem != null && !selectedItem.getFile().isDirectory() && 
 				mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.getClickCount() == 2) {
-			controller.openFile(selectedItem.getValue().getFile());
+			controller.openFile(selectedItem.getFile());
 		}
 		if (selectedItem != null) {
-			controller.updateStatusLeft(selectedItem.getValue().getFile().getPath());
+			controller.updateStatusLeft(selectedItem.getFile().getPath());
 		}
 	}
 

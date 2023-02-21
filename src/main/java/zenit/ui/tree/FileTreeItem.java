@@ -1,8 +1,8 @@
 package zenit.ui.tree;
 
 import java.io.File;
-import java.io.Serializable;
 
+import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -10,11 +10,10 @@ import javafx.scene.image.ImageView;
  * Extension of the TreeItem class with the ability to save a corresponding File-object
  * in the instance.
  * @author Alexander Libot
-
+ *
+ * @param <T>
  */
-public class FileTreeItem implements Serializable {
-
-	private String name;
+public class FileTreeItem<T> extends TreeItem<T> {
 	private File file;
 	private int type;
 	
@@ -28,24 +27,21 @@ public class FileTreeItem implements Serializable {
 	public static final int INCOMPATIBLE = 107;
 
 
-    private transient ImageView icon;
+    private ImageView icon;
     
 	
 	/**
 	 * @param file Corresponding file
+	 * @param name
 	 */
-	public FileTreeItem(File file, int type) {
-		this.name = file.getName();
+	public FileTreeItem(File file, T name, int type) {
+		super(name);
 		this.file = file;
 		this.type = type;
 		
 		setIcon();
 	}
-
-	public ImageView getIcon() {
-		return icon;
-	}
-
+	
 	public void setIcon() {
 		String url = null;
 		switch(type) {
@@ -63,6 +59,7 @@ public class FileTreeItem implements Serializable {
 			icon.setFitHeight(16);
 			icon.setFitWidth(16);
 			icon.setSmooth(true);
+			this.setGraphic(icon);
 		}
 	}
 	
@@ -98,13 +95,5 @@ public class FileTreeItem implements Serializable {
 		}
 		
 		return stringType;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 }
