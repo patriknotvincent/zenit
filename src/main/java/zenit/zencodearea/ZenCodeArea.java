@@ -1,13 +1,13 @@
 package main.java.zenit.zencodearea;
 
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.concurrent.Task;
 
 import java.time.Duration;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Collections;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.Paragraph;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.fxmisc.wellbehaved.event.Nodes;
@@ -27,6 +28,8 @@ public class ZenCodeArea extends CodeArea {
 	private ExecutorService executor;
 //	private int fontSize;
 //	private String font;
+
+	private HashMap<Character, ArrayList<LetterNode>> startLetters;
 
 	private static final String[] KEYWORDS = new String[] {
 		"abstract", "assert", "boolean", "break", "byte",
@@ -84,9 +87,26 @@ public class ZenCodeArea extends CodeArea {
 		}).subscribe(this::applyHighlighting);
 		computeHighlightingAsync();
 
+		getParagraphs().addListener(new CodeChangeListener<Paragraph>(this));
+
 //		fontSize = textSize;
 //		this.font = font;
 		setStyle("-fx-font-size: " + textSize +";-fx-font-family: " + font);
+
+		VariableTimer vt = new VariableTimer(this);
+		addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+			if(event.getCode() != KeyCode.ENTER
+			&& event.getCode() != KeyCode.LEFT
+			&& event.getCode() != KeyCode.RIGHT
+			&& event.getCode() != KeyCode.UP
+			&& event.getCode() != KeyCode.DOWN
+			&& event.getCode() != KeyCode.SHIFT
+			&& event.getCode() != KeyCode.CONTROL
+			&& event.getCode() != KeyCode.ALT
+			&& event.getCode() != KeyCode.TAB) {
+				vt.reset();
+			}
+		});
 	}
 	
 	public void update() {
@@ -163,5 +183,11 @@ public class ZenCodeArea extends CodeArea {
 	//	font = fontFamily;
 		setStyle("-fx-font-family: " + fontFamily + ";" + 
 				"-fx-font-size: " + size + ";");
-	}	
+	}
+	public HashMap<Character, ArrayList<LetterNode>> getStartLetters() {
+		return startLetters;
+	}
+
+	public <T extends Event> void addEventFilter(int keyReleased, EventHandler<T> eventHandler) {
+	}
 }

@@ -24,7 +24,7 @@ public class FileTree {
 	 * @param file The file corresponding to the node, might be unnecessary due to changes
 	 * in FileTreeItem-structure.
 	 */
-	public static void createNodes(TreeItem<FileTreeItem> parent, File file) {
+	public static void createNodes(TreeItem<FileTreeItem> parent, File file, ArrayList<String> classFiles) {
 		int type = 0;
 		if (file.listFiles() == null) {
 			return;
@@ -43,7 +43,7 @@ public class FileTree {
 					items.add(item);
 
 					if (value.isDirectory()) {
-						createNodes(item, value);
+						createNodes(item, value, classFiles);
 					}
 				}
 			}
@@ -53,6 +53,9 @@ public class FileTree {
 		
 		for (var item : items) {
 			parent.getChildren().add(item);
+			if(item.getValue().getName().endsWith(".java") && !classFiles.contains(item.getValue().getName().substring(0, item.getValue().getName().length() - 5))){
+				classFiles.add(item.getValue().getName().substring(0, item.getValue().getName().length() - 5));
+			}
 		}
 	}
 	
@@ -64,7 +67,7 @@ public class FileTree {
 	 * @param file The file corresponding to the node, might be unnecessary due to changes
 	 * in FileTreeItem-structure
 	 */
-	public static void createParentNode(TreeItem<FileTreeItem> parent, File file) {
+	public static void createParentNode(TreeItem<FileTreeItem> parent, File file, ArrayList<String> classFiles) {
 		if (parent == null || file == null) {
 			return;
 		}
@@ -90,7 +93,7 @@ public class FileTree {
 		});
 		
 		if (file.isDirectory()) {
-			createNodes(item, file);
+			createNodes(item, file, classFiles);
 		}
 	}
 	

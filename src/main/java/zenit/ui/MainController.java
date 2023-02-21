@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 
 import java.util.LinkedList;
@@ -30,6 +31,7 @@ import main.java.zenit.filesystem.FileController; // Aggregation
 import main.java.zenit.filesystem.ProjectFile;
 import main.java.zenit.filesystem.RunnableClass;
 import main.java.zenit.filesystem.WorkspaceHandler;
+import main.java.zenit.filesystem.helpers.CodeSnippets;
 import main.java.zenit.filesystem.metadata.Metadata;
 import main.java.zenit.javacodecompiler.DebugError;
 import main.java.zenit.javacodecompiler.DebugErrorBuffer;
@@ -70,6 +72,8 @@ public class MainController extends VBox implements ThemeCustomizable {
 	private Process process;
 	
 	private Tuple<File, String> deletedFile = new Tuple<>();
+
+	private ArrayList<String> existingClasses;
 
 	@FXML
 	private AnchorPane consolePane;
@@ -151,6 +155,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		this.zenCodeAreasFontFamily = "Menlo";
 		this.activeZenCodeAreas = new LinkedList<ZenCodeArea>();
 		this.customThemeCSS = new File("/customtheme/mainCustomTheme.css");
+		this.existingClasses = new ArrayList<>();
 
 		try {
 			loader = new FXMLLoader(getClass().getResource("/zenit/ui/Main.fxml"));
@@ -301,7 +306,8 @@ public class MainController extends VBox implements ThemeCustomizable {
 				FileTreeItem.WORKSPACE));
 		File workspace = fileController.getWorkspace();
 		if (workspace != null) {
-			FileTree.createNodes(rootItem, workspace);
+			FileTree.createNodes(rootItem, workspace, existingClasses);
+			existingClasses.forEach(System.out::println);
 		}
 		treeView.setRoot(rootItem);
 		treeView.setShowRoot(false);
@@ -333,6 +339,12 @@ public class MainController extends VBox implements ThemeCustomizable {
 			file = new File(filepath);
 
 			file = fileController.createFile(file, typeCode);
+
+			if(file != null && typeCode == CodeSnippets.CLASS){
+				existingClasses.add(file.getName().substring(0, file.getName().length() - 5));
+			}
+
+			existingClasses.forEach(System.out::println);
 
 			openFile(file);
 		}
@@ -401,7 +413,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 		if (didWrite) {
 			tab.update(file);
-			FileTree.createParentNode(treeView.getRoot(), file);
+			FileTree.createParentNode(treeView.getRoot(), file, existingClasses);
 			
 			if (backgroundCompile) {
 				backgroundCompiling(file);
@@ -431,7 +443,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		if (didWrite) {
 			TreeItem<FileTreeItem> root = FileTree.getTreeItemFromFile(treeView.getRoot(), file.getParentFile());
 			System.out.println(root);
-			FileTree.createParentNode(root, file);
+			FileTree.createParentNode(root, file, existingClasses);
 			treeView.refresh();
 			treeView.layout();
 			
@@ -645,6 +657,22 @@ public class MainController extends VBox implements ThemeCustomizable {
 		deletedFile.set(file, FileController.readFile(file));
 		
 		fileController.deleteFile(file);
+
+		AtomicReference<String> nameToDelete = new AtomicReference<>();
+
+		if(file.getName().endsWith(".java")) {
+			existingClasses.forEach(name -> {
+				if(name.equals(file.getName().substring(0, file.getName().lastIndexOf('.')))) {
+					nameToDelete.set(name);
+				}
+			});
+		}
+
+		if(nameToDelete.get() != null) {
+			existingClasses.remove(nameToDelete.get());
+		}
+
+		existingClasses.forEach(System.out::println);
 		
 		var tabs = tabPane.getTabs();
 		
@@ -703,7 +731,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		if (projectName != null) {
 			File newProject = fileController.createProject(projectName);
 			if (newProject != null) {
-				FileTree.createParentNode(treeView.getRoot(), newProject);
+				FileTree.createParentNode(treeView.getRoot(), newProject, existingClasses);
 			}
 		}
 	}
@@ -1012,7 +1040,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		if (source != null) {
 			try {
 				File target = fileController.importProject(source);
-				FileTree.createParentNode(treeView.getRoot(), target);
+				FileTree.createParentNode(treeView.getRoot(), target, existingClasses);
 				DialogBoxes.informationDialog("Import complete", "Project is imported to workspace");
 			} catch (IOException ex) {
 				DialogBoxes.errorDialog("Import failed", "Couldn't import project", ex.getMessage());
