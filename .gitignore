@@ -3,7 +3,7 @@ bin/*
 *.class
 
 #Log files
-*.log
+.log
 
 #Workspace file
 res/workspace/workspace.dat
@@ -14,7 +14,7 @@ res/JDK/JDK.dat
 
 ### macOS ###
 # General
-.DS_Store
+.DSStore
 .AppleDouble
 .LSOverride
 
@@ -28,7 +28,7 @@ res/JDK/JDK.dat
 
 
 # Thumbnails
-._*
+.
 
 # Files that might appear in the root of a volume
 .DocumentRevisions-V100
