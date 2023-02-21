@@ -61,12 +61,8 @@ public class ZenCodeArea extends CodeArea {
 		+ "|(?<STRING>" + STRING_PATTERN + ")"
 		+ "|(?<COMMENT>" + COMMENT_PATTERN + ")"
 	);
-
-	public ZenCodeArea() {
-		this(14, "Times new Roman");
-	}
 	
-	public ZenCodeArea(int textSize, String font) {
+	public ZenCodeArea(int textSize, String font, List<String> existingClasses) {
 		setParagraphGraphicFactory(LineNumberFactory.get(this));
 
 		multiPlainChanges().successionEnds(
@@ -93,7 +89,7 @@ public class ZenCodeArea extends CodeArea {
 //		this.font = font;
 		setStyle("-fx-font-size: " + textSize +";-fx-font-family: " + font);
 
-		VariableTimer vt = new VariableTimer(this);
+		VariableTimer vt = new VariableTimer(this, existingClasses);
 		addEventFilter(KeyEvent.KEY_RELEASED, event -> {
 			if(event.getCode() != KeyCode.ENTER
 			&& event.getCode() != KeyCode.LEFT

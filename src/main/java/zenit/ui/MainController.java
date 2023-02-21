@@ -289,7 +289,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	}
 
 	public ZenCodeArea createNewZenCodeArea() {
-		ZenCodeArea zenCodeArea = new ZenCodeArea(zenCodeAreasTextSize, zenCodeAreasFontFamily);
+		ZenCodeArea zenCodeArea = new ZenCodeArea(zenCodeAreasTextSize, zenCodeAreasFontFamily, existingClasses);
 		activeZenCodeAreas.add(zenCodeArea);
 		return zenCodeArea;
 	}
