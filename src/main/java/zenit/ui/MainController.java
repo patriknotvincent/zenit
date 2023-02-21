@@ -2,6 +2,8 @@ package zenit.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -22,6 +24,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -44,6 +47,7 @@ import zenit.javacodecompiler.ProcessBuffer;
 import zenit.settingspanel.SettingsPanelController;
 import zenit.settingspanel.ThemeCustomizable; // Implements
 import zenit.searchinfile.Search;
+import zenit.ui.tree.FileCellFactory;
 import zenit.ui.tree.FileTree;
 import zenit.ui.tree.FileTreeItem;
 import zenit.ui.tree.TreeClickListener;
@@ -135,7 +139,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	private TabPane tabPane;
 
 	@FXML
-	private TreeView<String> treeView;
+	private TreeView<FileTreeItem> treeView;
 
 	@FXML
 	private Button btnRun;
@@ -164,11 +168,11 @@ public class MainController extends VBox implements ThemeCustomizable {
 		this.stage = s;
 		this.zenCodeAreasTextSize = 12;
 		this.zenCodeAreasFontFamily = "Menlo";
-		this.activeZenCodeAreas = new LinkedList<>();
-		this.customThemeCSS = new File("customtheme/mainCustomTheme.css");
+		this.activeZenCodeAreas = new LinkedList<ZenCodeArea>();
+		this.customThemeCSS = new File("/customtheme/mainCustomTheme.css");
 
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/zenit/ui/Main.fxml"));
+			loader = new FXMLLoader(getClass().getResource("/zenit/ui/Main.fxml"));
 			
 			File workspace = null;
 
@@ -198,8 +202,6 @@ public class MainController extends VBox implements ThemeCustomizable {
 			scene.getStylesheets().add(getClass().getResource("/zenit/ui/keywords.css").toExternalForm());
 			stage.setScene(scene);
 			stage.setTitle("Zenit - " + workspace.getPath());
-
-			initialize();
 			
 			stage.show();
 			KeyboardShortcuts.setupMain(scene, this);
@@ -223,17 +225,17 @@ public class MainController extends VBox implements ThemeCustomizable {
 	public void setFileController(FileController fileController) {
 		this.fileController = fileController;
 	}
-	
-	public FileTreeItem<String> getSelectedFileTreeItem() {
-		return (FileTreeItem<String>) treeView.getSelectionModel().getSelectedItem();
+
+	public TreeItem<FileTreeItem> getSelectedTreeItem() {
+		return treeView.getSelectionModel().getSelectedItem();
 	}
 	
 	public void deleteFileFromTreeView() {
-		var selectedItem = getSelectedFileTreeItem();
+		var selectedItem = getSelectedTreeItem();
 		
 		if (selectedItem != null) {
-			deleteFile(selectedItem.getFile());
-			selectedItem.getParent().getChildren().remove(selectedItem);
+			deleteFile(selectedItem.getValue().getFile());
+			getSelectedTreeItem().getParent().getChildren().remove(selectedItem);
 		}
 	}
 
@@ -313,9 +315,9 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 * a TreeContextMenu for displaying when right clicking nodes in the tree and an
 	 * event handler for clicking nodes in the tree.
 	 */
-	private void initTree() {
-		FileTreeItem<String> rootItem = new FileTreeItem<String>(fileController.getWorkspace(), "workspace",
-				FileTreeItem.WORKSPACE);
+	public void initTree() {
+		TreeItem<FileTreeItem> rootItem = new TreeItem<>(new FileTreeItem(fileController.getWorkspace(),
+				FileTreeItem.WORKSPACE));
 		File workspace = fileController.getWorkspace();
 		if (workspace != null) {
 			FileTree.createNodes(rootItem, workspace);
@@ -326,12 +328,9 @@ public class MainController extends VBox implements ThemeCustomizable {
 		TreeClickListener tcl = new TreeClickListener(this, treeView);
 		treeView.setContextMenu(tcm);
 		treeView.setOnMouseClicked(tcl);
-		
-		rootItem.getChildren().sort((o1,o2)->{
-			FileTreeItem<String> t1 = (FileTreeItem<String>) o1;
-			FileTreeItem<String> t2 = (FileTreeItem<String>) o2;
-			return (t1.getValue().compareTo(t2.getValue()));
-		});
+		treeView.setCellFactory(new FileCellFactory(this));
+
+		rootItem.getChildren().sort(Comparator.comparing(o -> o.getValue().getName()));
 	}
 
 	/**
@@ -421,7 +420,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 		if (didWrite) {
 			tab.update(file);
-			FileTree.createParentNode((FileTreeItem<String>) treeView.getRoot(), file);
+			FileTree.createParentNode(treeView.getRoot(), file);
 			
 			if (backgroundCompile) {
 				backgroundCompiling(file);
@@ -449,7 +448,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		boolean didWrite = fileController.writeFile(file, text);
 		
 		if (didWrite) {
-			FileTreeItem<String> root = FileTree.getTreeItemFromFile((FileTreeItem<String>) treeView.getRoot(), file.getParentFile());
+			TreeItem<FileTreeItem> root = FileTree.getTreeItemFromFile(treeView.getRoot(), file.getParentFile());
 			System.out.println(root);
 			FileTree.createParentNode(root, file);
 			treeView.refresh();
@@ -706,7 +705,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		
 		if (deletedFile.fst() != null && deletedFile.fst().exists()) {
 			deleteFile(deletedFile.fst());
-			FileTree.removeFromFile((FileTreeItem<String>) treeView.getRoot(), deletedFile.fst());
+			FileTree.removeFromFile(treeView.getRoot(), deletedFile.fst());
 		}
 	}
 
@@ -723,7 +722,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		if (projectName != null) {
 			File newProject = fileController.createProject(projectName);
 			if (newProject != null) {
-				FileTree.createParentNode((FileTreeItem<String>) treeView.getRoot(), newProject);
+				FileTree.createParentNode(treeView.getRoot(), newProject);
 			}
 		}
 	}
@@ -784,7 +783,15 @@ public class MainController extends VBox implements ThemeCustomizable {
 		}
 		return null;
 	}
-	
+
+	public void changePackageForClosedFile(File file){
+		try {
+			fileController.changePackage(file);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void compileAndRun(File file) {
 		File metadataFile = getMetadataFile(file);
 		ConsoleArea consoleArea;
@@ -993,14 +1000,14 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 * @param file The File to search for.
 	 * @return The FileTab instance that holds the File, or null if no tab does.
 	 */
-	private FileTab getTabFromFile(File file) {
+	public FileTab getTabFromFile(File file) {
 		var tabs = tabPane.getTabs();
 
 		for (Tab tab : tabs) {
 			FileTab fileTab = (FileTab) tab;
 			File tabFile = fileTab.getFile();
 
-			if (tabFile != null && file.equals(tabFile)) {
+			if (file.equals(tabFile)) {
 				return fileTab;
 			}
 		}
@@ -1024,7 +1031,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		if (source != null) {
 			try {
 				File target = fileController.importProject(source);
-				FileTree.createParentNode((FileTreeItem<String>) treeView.getRoot(), target);
+				FileTree.createParentNode(treeView.getRoot(), target);
 				DialogBoxes.informationDialog("Import complete", "Project is imported to workspace");
 			} catch (IOException ex) {
 				DialogBoxes.errorDialog("Import failed", "Couldn't import project", ex.getMessage());
@@ -1352,7 +1359,23 @@ public class MainController extends VBox implements ThemeCustomizable {
 		
 		
 	}
-	
-	
-	
+
+
+	public String moveFile(File location, File destination) {
+		String destPath = destination.getPath() + FileSystems.getDefault().getSeparator() + location.getName();
+		try {
+		fileController.moveFile(location, new File(destPath));
+		return destPath;
+		} catch (IOException e) {
+			DialogBoxes.errorDialog("Error", "Couldn't move file", "An error occured while trying to move file");
+		}
+		return null;
+	}
+
+	public void changePackageForOpenFile(FileTab tab) {
+		String newContent = tab.updatePackage();
+		if(newContent != null){
+			saveFile(false, tab.getFile(), newContent);
+		}
+	}
 }
