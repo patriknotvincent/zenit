@@ -10,6 +10,8 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit5.ApplicationTest;
 import zenit.ui.TestUI;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -62,6 +64,6 @@ public abstract class ZenithTestBase extends ApplicationTest {
      * @return An object (or node) associated with .fxml files found in the project.
      */
     public <T extends Node> T find(final String query) {
-        return (T) lookup(query).queryAll().iterator().next();
+        return lookup(query).query();
     }
 }
