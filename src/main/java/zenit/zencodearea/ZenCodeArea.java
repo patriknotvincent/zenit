@@ -27,12 +27,14 @@ import org.fxmisc.wellbehaved.event.EventPattern;
 import org.fxmisc.wellbehaved.event.InputMap;
 
 
-public class ZenCodeArea extends CodeArea {
+public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 	private ExecutorService executor;
 //	private int fontSize;
 //	private String font;
 
 	private Completion completion;
+
+	private VariableTimer variableTimer;
 
 	private static final String[] KEYWORDS = new String[] {
 		"abstract", "assert", "boolean", "break", "byte",
@@ -94,7 +96,7 @@ public class ZenCodeArea extends CodeArea {
 		setStyle("-fx-font-size: " + textSize +";-fx-font-family: " + font);
 
 		CodeCompletionContextMenu ccm = new CodeCompletionContextMenu(this);
-		VariableTimer vt = new VariableTimer(this, existingClasses, completion);
+		variableTimer = new VariableTimer(this, completion, existingClasses);
 
 		addEventFilter(KeyEvent.KEY_RELEASED, event -> {
 			if(event.getCode() != KeyCode.ENTER
@@ -106,7 +108,7 @@ public class ZenCodeArea extends CodeArea {
 			&& event.getCode() != KeyCode.CONTROL
 			&& event.getCode() != KeyCode.ALT
 			&& event.getCode() != KeyCode.TAB) {
-				vt.reset();
+				variableTimer.reset();
 			}
 		});
 	}
@@ -185,5 +187,10 @@ public class ZenCodeArea extends CodeArea {
 	//	font = fontFamily;
 		setStyle("-fx-font-family: " + fontFamily + ";" + 
 				"-fx-font-size: " + size + ";");
+	}
+
+	@Override
+	public void onExistingClassesChanged(List<String> existingClasses) {
+		variableTimer.updateRegex(existingClasses);
 	}
 }

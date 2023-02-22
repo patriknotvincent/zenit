@@ -43,6 +43,7 @@ import main.java.zenit.searchinfile.Search;
 import main.java.zenit.ui.tree.*;
 import main.java.zenit.util.Tuple;
 import main.java.zenit.ui.projectinfo.ProjectMetadataController;
+import main.java.zenit.zencodearea.ExistingClassesListener;
 import main.java.zenit.zencodearea.ZenCodeArea;
 
 /**
@@ -74,6 +75,8 @@ public class MainController extends VBox implements ThemeCustomizable {
 	private Tuple<File, String> deletedFile = new Tuple<>();
 
 	private ArrayList<String> existingClasses;
+
+	private ArrayList<ExistingClassesListener> existingClassesListeners;
 
 	@FXML
 	private AnchorPane consolePane;
@@ -156,6 +159,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		this.activeZenCodeAreas = new LinkedList<ZenCodeArea>();
 		this.customThemeCSS = new File("/customtheme/mainCustomTheme.css");
 		this.existingClasses = new ArrayList<>();
+		this.existingClassesListeners = new ArrayList<>();
 
 		try {
 			loader = new FXMLLoader(getClass().getResource("/zenit/ui/Main.fxml"));
@@ -291,6 +295,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	public ZenCodeArea createNewZenCodeArea() {
 		ZenCodeArea zenCodeArea = new ZenCodeArea(zenCodeAreasTextSize, zenCodeAreasFontFamily, existingClasses);
 		activeZenCodeAreas.add(zenCodeArea);
+		existingClassesListeners.add(zenCodeArea);
 		return zenCodeArea;
 	}
 
@@ -308,6 +313,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		if (workspace != null) {
 			FileTree.createNodes(rootItem, workspace, existingClasses);
 			existingClasses.forEach(System.out::println);
+			existingClassesListeners.forEach(listener -> listener.onExistingClassesChanged(existingClasses));
 		}
 		treeView.setRoot(rootItem);
 		treeView.setShowRoot(false);
@@ -345,6 +351,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 			}
 
 			existingClasses.forEach(System.out::println);
+			existingClassesListeners.forEach(listener -> listener.onExistingClassesChanged(existingClasses));
 
 			openFile(file);
 		}
@@ -673,6 +680,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		}
 
 		existingClasses.forEach(System.out::println);
+		existingClassesListeners.forEach(listener -> listener.onExistingClassesChanged(existingClasses));
 		
 		var tabs = tabPane.getTabs();
 		
