@@ -17,7 +17,6 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javafx.stage.WindowEvent;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.model.Paragraph;
@@ -26,7 +25,6 @@ import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.fxmisc.wellbehaved.event.Nodes;
 import org.fxmisc.wellbehaved.event.EventPattern;
 import org.fxmisc.wellbehaved.event.InputMap;
-import zenit.zencodearea.CodeCompletionContextMenu;
 
 
 public class ZenCodeArea extends CodeArea {
@@ -34,7 +32,7 @@ public class ZenCodeArea extends CodeArea {
 //	private int fontSize;
 //	private String font;
 
-	private HashMap<Character, ArrayList<LetterNode>> startLetters;
+	private Completion completion;
 
 	private static final String[] KEYWORDS = new String[] {
 		"abstract", "assert", "boolean", "break", "byte",
@@ -68,6 +66,7 @@ public class ZenCodeArea extends CodeArea {
 	);
 	
 	public ZenCodeArea(int textSize, String font, List<String> existingClasses) {
+		completion = new Completion();
 		setParagraphGraphicFactory(LineNumberFactory.get(this));
 
 		multiPlainChanges().successionEnds(
@@ -94,8 +93,9 @@ public class ZenCodeArea extends CodeArea {
 //		this.font = font;
 		setStyle("-fx-font-size: " + textSize +";-fx-font-family: " + font);
 
-		VariableTimer vt = new VariableTimer(this, existingClasses);
 		CodeCompletionContextMenu ccm = new CodeCompletionContextMenu(this);
+		VariableTimer vt = new VariableTimer(this, existingClasses, completion);
+
 		addEventFilter(KeyEvent.KEY_RELEASED, event -> {
 			if(event.getCode() != KeyCode.ENTER
 			&& event.getCode() != KeyCode.LEFT
@@ -185,11 +185,5 @@ public class ZenCodeArea extends CodeArea {
 	//	font = fontFamily;
 		setStyle("-fx-font-family: " + fontFamily + ";" + 
 				"-fx-font-size: " + size + ";");
-	}
-	public HashMap<Character, ArrayList<LetterNode>> getStartLetters() {
-		return startLetters;
-	}
-
-	public <T extends Event> void addEventFilter(int keyReleased, EventHandler<T> eventHandler) {
 	}
 }

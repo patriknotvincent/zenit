@@ -1,4 +1,4 @@
-package zenit.zencodearea;
+package main.java.zenit.zencodearea;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -11,4 +11,6 @@ import main.java.zenit.zencodearea.ZenCodeArea;
 
 public class CodeCompletionContextMenu extends ContextMenu {
 
+    public CodeCompletionContextMenu(ZenCodeArea zenCodeArea) {
+    }
 }
