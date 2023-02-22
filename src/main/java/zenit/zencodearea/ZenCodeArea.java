@@ -1,7 +1,11 @@
 package main.java.zenit.zencodearea;
 
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.concurrent.Task;
@@ -13,6 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javafx.stage.WindowEvent;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.model.Paragraph;
@@ -21,7 +26,7 @@ import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.fxmisc.wellbehaved.event.Nodes;
 import org.fxmisc.wellbehaved.event.EventPattern;
 import org.fxmisc.wellbehaved.event.InputMap;
-
+import zenit.zencodearea.CodeCompletionContextMenu;
 
 
 public class ZenCodeArea extends CodeArea {
@@ -90,6 +95,7 @@ public class ZenCodeArea extends CodeArea {
 		setStyle("-fx-font-size: " + textSize +";-fx-font-family: " + font);
 
 		VariableTimer vt = new VariableTimer(this, existingClasses);
+		CodeCompletionContextMenu ccm = new CodeCompletionContextMenu(this);
 		addEventFilter(KeyEvent.KEY_RELEASED, event -> {
 			if(event.getCode() != KeyCode.ENTER
 			&& event.getCode() != KeyCode.LEFT

@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 public class VariableTimerTask extends TimerTask {
     private final List<String> existingClasses;
     private ZenCodeArea zenCodeArea;
-    private ArrayList<String> foundVariables;
+    private ArrayList<String> foundVariables = new ArrayList<>();
     public VariableTimerTask(ZenCodeArea zenCodeArea, List<String> existingClasses) {
         this.zenCodeArea = zenCodeArea;
         this.existingClasses = existingClasses;
