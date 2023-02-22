@@ -14,13 +14,15 @@ class FileTreeTest extends ZenithTestBase {
     private final String FILE = "File";
     private final String NEW = "New...";
     private final String NEW_FILE= "#newFile";
+    private final String NEW_TAB = "#newTab";
+    private final String SIDE_BAR_MENU_NEW = "#sideBarMenuNew";
 
     @Test
     void createNodes() {
 
-        moveTo("#menuBar");
-        moveTo("File");
-        moveTo("New...");
+        clickOn("File");
+        clickOn(SIDE_BAR_MENU_NEW);
+        moveTo(NEW_TAB);
         clickOn(NEW_FILE);
 
         /*

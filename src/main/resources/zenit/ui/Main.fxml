@@ -28,7 +28,7 @@
 			<menus>
 				<Menu mnemonicParsing="false" text="File">
 					<items>
-                  <Menu mnemonicParsing="false" text="New...">
+                  <Menu fx:id="sideBarMenuNew" mnemonicParsing="false" text="New...">
                      <items>
       						<MenuItem fx:id="newTab" onAction="#newTab" text="New tab">
                            <accelerator>
