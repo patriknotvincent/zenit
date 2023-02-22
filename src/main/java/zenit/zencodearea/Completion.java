@@ -6,21 +6,10 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Completion {
-    private HashMap<Character, ArrayList<LetterNode>> startLetters;
-
-    Scanner scanner;
+    private final HashMap<Character, ArrayList<LetterNode>> startLetters;
 
     public Completion() {
         startLetters = new HashMap<>();
-    }
-
-    private void search() {
-        System.out.println("Enter something to search for: ");
-
-        String input = scanner.nextLine();
-
-        List<String> result = searchFor(input);
-        System.out.println(result);
     }
 
     private List<String> searchFor(String input) {
@@ -160,5 +149,9 @@ public class Completion {
                 siblings.add(new LetterNode(c, true));
             }
         }
+    }
+
+    public void clear() {
+        startLetters.clear();
     }
 }

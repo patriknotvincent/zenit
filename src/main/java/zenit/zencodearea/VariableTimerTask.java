@@ -6,11 +6,11 @@ import java.util.regex.Pattern;
 
 public class VariableTimerTask extends TimerTask {
     private final List<String> existingClasses;
-    private ZenCodeArea zenCodeArea;
+    private final ZenCodeArea zenCodeArea;
 
-    private ArrayList<String> foundVariables;
+    private final ArrayList<String> foundVariables;
 
-    private Completion completion;
+    private final Completion completion;
     public VariableTimerTask(ZenCodeArea zenCodeArea, List<String> existingClasses, Completion completion) {
         this.zenCodeArea = zenCodeArea;
         this.existingClasses = existingClasses;
@@ -20,8 +20,6 @@ public class VariableTimerTask extends TimerTask {
 
     @Override
     public void run() {
-        HashMap<Character, ArrayList<LetterNode>> startLetters = new HashMap<>();
-
         String code = zenCodeArea.getText();
 
         //TODO: lyssna efter ändringar på existingClasses och lyft ut stringbuildern till en fältvariabel istället?
@@ -55,6 +53,7 @@ public class VariableTimerTask extends TimerTask {
             }
         }
 
+        completion.clear();
         completion.addWords(foundVariables);
         System.out.println("In graph now:");
         completion.printOut();

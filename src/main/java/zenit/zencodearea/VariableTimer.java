@@ -5,10 +5,9 @@ import java.util.Timer;
 
 public class VariableTimer {
     private Timer timer;
-    private ZenCodeArea zenCodeArea;
-    private List<String> existingClasses;
-
-    private Completion completion;
+    private final ZenCodeArea zenCodeArea;
+    private final List<String> existingClasses;
+    private final Completion completion;
 
     public VariableTimer(ZenCodeArea zenCodeArea, List<String> existingClasses, Completion completion) {
         this.zenCodeArea = zenCodeArea;
@@ -21,7 +20,8 @@ public class VariableTimer {
         if(zenCodeArea.isFocused()) {
             timer.cancel();
             timer = new Timer();
-            timer.schedule(new main.java.zenit.zencodearea.VariableTimerTask(zenCodeArea, existingClasses, completion), 500);
+            timer.schedule(new VariableTimerTask(zenCodeArea, existingClasses,
+                    completion), 750);
         }
     }
 }
