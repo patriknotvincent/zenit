@@ -22,16 +22,16 @@ public class FileTree {
 	 * @param file The file corresponding to the node, might be unnecessary due to changes
 	 * in FileTreeItem-structure.
 	 */
-	public static void createNodes(FileTreeItem<String> parent, File file) {
+	public static String createNodes(FileTreeItem<String> parent, File file) {
 		int type = 0;
 		if (file.listFiles() == null) {
-			return;
+			return null;
 		}
 		
 		var items = new ArrayList<FileTreeItem<String>>();
 		
 		File[] files = file.listFiles();
-		String itemName;
+		String itemName = "";
 		for (int index = 0; index < files.length; index++) {
 			itemName = files[index].getName();
 			if (!itemName.startsWith(".") && !itemName.equals("bin") && !itemName.endsWith(".class")) { //Doesn't include hidden files
@@ -50,6 +50,7 @@ public class FileTree {
 		for (var item : items) {
 			parent.getChildren().add(item);
 		}
+		return itemName;
 	}
 	
 	/**
@@ -168,7 +169,7 @@ public class FileTree {
 	/**
 	 * Calculates the type of the tree node; workspace, package, class or source-folder.
 	 * @param parent Nodes parent node
-	 * @param itemName Name of the node
+	 * @param file Name of the node
 	 * @return An integer representing the node type.
 	 */
 	private static int calculateType(FileTreeItem<String> parent, File file) {

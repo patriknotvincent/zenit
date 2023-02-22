@@ -66,7 +66,7 @@ class SearchTest extends ZenithTestBase {
         String query = "main";
 
         Node tree = find("treeView");
-        List<Node> = 
+
 
         push(KeyCode.CONTROL, KeyCode.F)
                 .clickOn(FIELD_SEARCH_INPUT)
