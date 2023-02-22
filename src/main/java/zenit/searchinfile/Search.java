@@ -61,6 +61,7 @@ public class Search {
 		line = new ArrayList<>();
 		wordPos = new ArrayList<>();
 		absolutePos = new ArrayList<>();
+
 		
 		numberOfTimes = 0;
 		numberOfLines = -1;
