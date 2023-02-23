@@ -22,7 +22,7 @@ public class VariableTimer {
             timer.cancel();
             timer = new Timer();
             timer.schedule(new VariableTimerTask(zenCodeArea,
-                    completion, regex), 750);
+                    completion, regex), 250);
         }
     }
 
@@ -36,8 +36,7 @@ public class VariableTimer {
 
             }
         }
-
-        sb.append(")([a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_,\\s]*)+\\s*[;=]");
+        sb.append(")([a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*(,\\s*[a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*)*)+\\s*(=\\s*\\S+.*)?;");
 
         regex = sb.toString();
     }

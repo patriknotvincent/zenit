@@ -31,4 +31,8 @@ public class LetterNode {
     public void createChildrenList() {
         children = new ArrayList<>();
     }
+
+    public void setLastLetterOfAWord(boolean lastLetterOfAWord) {
+        this.lastLetterOfAWord = lastLetterOfAWord;
+    }
 }

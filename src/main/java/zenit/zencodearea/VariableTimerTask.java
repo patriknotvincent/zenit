@@ -1,5 +1,7 @@
 package main.java.zenit.zencodearea;
 
+import org.fxmisc.richtext.model.Paragraph;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +35,7 @@ public class VariableTimerTask extends TimerTask {
             String variableName = matcher.group(4);
 
             if(variableName != null) {
-                //System.out.println("Found variable declaration: " + variableType + " " + variableName);
+                System.out.println("Found variable declaration: " + variableType + " " + variableName);
                 if (variableName.contains(",")) {
                     variableName = variableName.replaceAll("\\s", "");
                     String[] variableNames = variableName.split(",");
@@ -45,9 +47,35 @@ public class VariableTimerTask extends TimerTask {
             }
         }
 
+        foundVariables.forEach(System.out::println);
+
         completion.clear();
         completion.addWords(foundVariables);
-        System.out.println("In graph now:");
-        completion.printOut();
+
+        String searchString = findStartOfWord();
+        System.out.println("Search string: " + searchString);
+        if(searchString.length() > 0) {
+            List<String> foundWords = completion.searchFor(searchString);
+            zenCodeArea.updateCompletionMenu(foundWords);
+        }
+    }
+
+    private String findStartOfWord() {
+        StringBuilder sb = new StringBuilder();
+        String currentParagraph = zenCodeArea.getParagraph(zenCodeArea.getCurrentParagraph()).getText();
+        int caretPosition = zenCodeArea.getCaretPosition();
+        int caretPositionInParagraph = caretPosition - zenCodeArea.getAbsolutePosition(zenCodeArea.getCurrentParagraph(), 0);
+        int currentIndex = caretPositionInParagraph - 1;
+        char currentChar = currentParagraph.charAt(currentIndex);
+        while(currentChar != ' ' && currentChar != '(' && currentChar != '{' && currentChar != '['
+            && currentChar != '.' && currentChar != ',' && currentChar != ';' && currentChar != ':'
+            && currentChar != '?' && currentChar != '+' && currentChar != '-' && currentChar != '*'
+            && currentChar != '/' && currentChar != '%' && currentChar != '=' && currentChar != '|'
+            && currentChar != '&' && currentChar != '>' && currentChar != '~' && currentChar != '<') {
+            sb.append(currentChar);
+            currentChar = currentParagraph.charAt(--currentIndex);
+        }
+        sb.reverse();
+        return sb.toString();
     }
 }

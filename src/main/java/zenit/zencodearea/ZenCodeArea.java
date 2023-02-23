@@ -1,11 +1,5 @@
 package main.java.zenit.zencodearea;
 
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.concurrent.Task;
@@ -17,6 +11,8 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javafx.stage.PopupWindow;
+import javafx.stage.Stage;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.model.Paragraph;
@@ -35,6 +31,8 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 	private Completion completion;
 
 	private VariableTimer variableTimer;
+
+	private CompletionWindow completionMenu;
 
 	private static final String[] KEYWORDS = new String[] {
 		"abstract", "assert", "boolean", "break", "byte",
@@ -67,8 +65,10 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 		+ "|(?<COMMENT>" + COMMENT_PATTERN + ")"
 	);
 	
-	public ZenCodeArea(int textSize, String font, List<String> existingClasses) {
+	public ZenCodeArea(int textSize, String font, List<String> existingClasses, Stage stage) {
 		completion = new Completion();
+		completionMenu = new CompletionWindow();
+		completionMenu.show(stage, 0,0);
 		setParagraphGraphicFactory(LineNumberFactory.get(this));
 
 		multiPlainChanges().successionEnds(
@@ -100,14 +100,13 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 
 		addEventFilter(KeyEvent.KEY_RELEASED, event -> {
 			if(event.getCode() != KeyCode.ENTER
-			&& event.getCode() != KeyCode.LEFT
-			&& event.getCode() != KeyCode.RIGHT
-			&& event.getCode() != KeyCode.UP
-			&& event.getCode() != KeyCode.DOWN
 			&& event.getCode() != KeyCode.SHIFT
 			&& event.getCode() != KeyCode.CONTROL
 			&& event.getCode() != KeyCode.ALT
-			&& event.getCode() != KeyCode.TAB) {
+			&& event.getCode() != KeyCode.TAB
+			&& event.getCode() != KeyCode.ESCAPE
+			&& event.getCode() != KeyCode.ALT_GRAPH
+			&& event.getCode() != KeyCode.CAPS){
 				variableTimer.reset();
 			}
 		});
@@ -192,5 +191,9 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 	@Override
 	public void onExistingClassesChanged(List<String> existingClasses) {
 		variableTimer.updateRegex(existingClasses);
+	}
+
+	public void updateCompletionMenu(List<String> foundWords) {
+		completionMenu.updateCompletions(foundWords);
 	}
 }

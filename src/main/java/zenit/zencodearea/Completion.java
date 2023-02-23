@@ -3,7 +3,6 @@ package main.java.zenit.zencodearea;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 public class Completion {
     private final HashMap<Character, ArrayList<LetterNode>> startLetters;
@@ -12,7 +11,7 @@ public class Completion {
         startLetters = new HashMap<>();
     }
 
-    private List<String> searchFor(String input) {
+    public List<String> searchFor(String input) {
         ArrayList<String> foundWords = new ArrayList<>();
 
         List<LetterNode> startList = findTraverseStartList(input);
@@ -132,6 +131,10 @@ public class Completion {
                 if(sibling.getLetter() == chars.get(0)){
                     if(sibling.getChildren() == null){
                         sibling.createChildrenList();
+                    }else{
+                        if(chars.size() == 1){
+                            sibling.setLastLetterOfAWord(true);
+                        }
                     }
                     chars.remove(0);
                     addAllLetters(sibling.getChildren(), chars);
