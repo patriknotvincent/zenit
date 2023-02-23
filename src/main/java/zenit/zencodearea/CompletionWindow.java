@@ -19,11 +19,12 @@ public class CompletionWindow extends Popup {
         getContent().add(content);
     }
 
-    public void updateCompletions(List<String> completions) {
+    public void updateCompletions(List<Completion> completions) {
         Platform.runLater(() -> {
             content.getChildren().clear();
-            for(String completion : completions){
-                Button button = new Button(completion);
+            for(Completion completion : completions){
+                System.out.println(completion.getName() + " (" + completion.getCompletionType() + ")");
+                Button button = new Button(completion.getName() + " (" + completion.getCompletionType().toString() + ")");
                 button.setStyle("-fx-background-color: #444444; -fx-text-fill: #ffffff;");
                 content.getChildren().add(button);
             }

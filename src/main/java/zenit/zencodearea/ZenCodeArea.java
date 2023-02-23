@@ -26,7 +26,7 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 //	private int fontSize;
 //	private String font;
 
-	private Completion completion;
+	private CompletionGraph completionGraph;
 
 	private VariableTimer variableTimer;
 
@@ -64,7 +64,7 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 	);
 	
 	public ZenCodeArea(int textSize, String font, List<String> existingClasses, Stage stage) {
-		completion = new Completion();
+		completionGraph = new CompletionGraph();
 		completionMenu = new CompletionWindow();
 		completionMenu.show(stage, 0,0);
 		setParagraphGraphicFactory(LineNumberFactory.get(this));
@@ -91,7 +91,7 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 //		this.font = font;
 		setStyle("-fx-font-size: " + textSize +";-fx-font-family: " + font);
 
-		variableTimer = new VariableTimer(this, completion, existingClasses);
+		variableTimer = new VariableTimer(this, completionGraph, existingClasses);
 
 		addEventFilter(KeyEvent.KEY_RELEASED, event -> {
 			if(event.getCode() != KeyCode.ENTER
@@ -188,7 +188,7 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 		variableTimer.updateRegex(existingClasses);
 	}
 
-	public void updateCompletionMenu(List<String> foundWords) {
+	public void updateCompletionMenu(List<Completion> foundWords) {
 		completionMenu.updateCompletions(foundWords);
 	}
 }

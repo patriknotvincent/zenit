@@ -6,14 +6,16 @@ import java.util.Timer;
 public class VariableTimer {
     private Timer timer;
     private final ZenCodeArea zenCodeArea;
-    private final Completion completion;
+    private final CompletionGraph completionGraph;
 
-    private String regex;
+    private String variableRegex;
 
-    public VariableTimer(ZenCodeArea zenCodeArea, Completion completion, List<String> existingClasses) {
+    private String methodRegex;
+
+    public VariableTimer(ZenCodeArea zenCodeArea, CompletionGraph completionGraph, List<String> existingClasses) {
         this.zenCodeArea = zenCodeArea;
         timer = new Timer();
-        this.completion = completion;
+        this.completionGraph = completionGraph;
         updateRegex(existingClasses);
     }
 
@@ -22,22 +24,35 @@ public class VariableTimer {
             timer.cancel();
             timer = new Timer();
             timer.schedule(new VariableTimerTask(zenCodeArea,
-                    completion, regex), 250);
+                    completionGraph, variableRegex, methodRegex), 250);
         }
     }
 
     public void updateRegex(List<String> existingClasses) {
-        StringBuilder sb = new StringBuilder("\\s*(final\\s+|static\\s+|abstract\\s+|synchronized\\s+|transient" +
-                "\\s+|strictfp\\s+|native\\s+|private\\s+|public\\s+|protected\\s+|default\\s+)?(final\\s+|static\\s+|abstract\\s+|synchronized\\s+|transient\\s+|strictfp\\s+|native\\s+|private\\s+|public\\s+|protected\\s+|default\\s+)?(int\\s+|double\\s+|float\\s+|short\\s+|long\\s+|boolean\\s+|char\\s+|byte\\s+|String\\s+|Integer\\s+|Double\\s+|Character\\s+|Boolean\\s+");
+        StringBuilder variableBuilder = new StringBuilder("\\s*(final\\s+|static\\s+|abstract\\s+|synchronized\\s+|transient" +
+                "\\s+|strictfp\\s+|native\\s+|private\\s+|public\\s+|protected\\s+|default\\s+)?" +
+                "(final\\s+|static\\s+|abstract\\s+|synchronized\\s+|transient\\s+|strictfp\\s+|native\\s" +
+                "+|private\\s+|public\\s+|protected\\s+|default\\s+)?" +
+                "(int\\s+|double\\s+|float\\s+|short\\s+|long\\s+|boolean\\s+|char\\s+|byte\\s+|String\\s" +
+                "+|Integer\\s+|Double\\s+|Character\\s+|Boolean\\s+");
+
+        StringBuilder methodBuilder = new StringBuilder("\\s*(final\\s+|static\\s+|abstract\\s+|synchronized\\s+|transient" +
+                "\\s+|strictfp\\s+|native\\s+|private\\s+|public\\s+|protected\\s+|default\\s+)?" +
+                "(final\\s+|static\\s+|abstract\\s+|synchronized\\s+|transient\\s+|strictfp\\s+|native\\s" +
+                "+|private\\s+|public\\s+|protected\\s+|default\\s+)?" +
+                "(int\\s+|double\\s+|float\\s+|short\\s+|long\\s+|boolean\\s+|char\\s+|byte\\s+|String\\s" +
+                "+|Integer\\s+|Double\\s+|Character\\s+|Boolean\\s+|void\\s+");
 
         if (existingClasses != null) {
             for(String name : existingClasses) {
-                sb.append("|").append(name).append("\\s+");
-
+                variableBuilder.append("|").append(name).append("\\s+");
+                methodBuilder.append("|").append(name).append("\\s+");
             }
         }
-        sb.append(")([a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*(,\\s*[a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*)*)+\\s*(=\\s*\\S+.*)?;");
+        variableBuilder.append(")([a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*(,\\s*[a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*)*)+\\s*(=\\s*\\S+.*)?;");
+        methodBuilder.append(")([a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*)\\s*\\(.*\\)\\{[\\S\\s]*\\}");
 
-        regex = sb.toString();
+        variableRegex = variableBuilder.toString();
+        methodRegex = methodBuilder.toString();
     }
 }

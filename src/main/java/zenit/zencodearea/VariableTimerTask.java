@@ -1,7 +1,5 @@
 package main.java.zenit.zencodearea;
 
-import org.fxmisc.richtext.model.Paragraph;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,29 +7,48 @@ import java.util.regex.Pattern;
 public class VariableTimerTask extends TimerTask {
     private final ZenCodeArea zenCodeArea;
 
-    private final ArrayList<String> foundVariables;
-    private final Completion completion;
+    private final ArrayList<Completion> foundVariables;
 
-    private final String regex;
+    private final ArrayList<Completion> foundMethods;
+    private final CompletionGraph completionGraph;
 
-    public VariableTimerTask(ZenCodeArea zenCodeArea, Completion completion,
-                             String regex) {
+    private final String variableRegex;
+    private final String methodRegex;
+
+    public VariableTimerTask(ZenCodeArea zenCodeArea, CompletionGraph completionGraph,
+                             String variableRegex, String methodRegex) {
         this.zenCodeArea = zenCodeArea;
-        this.completion = completion;
+        this.completionGraph = completionGraph;
         foundVariables = new ArrayList<>();
-        this.regex = regex;
+        foundMethods = new ArrayList<>();
+        this.variableRegex = variableRegex;
+        this.methodRegex = methodRegex;
     }
 
     @Override
     public void run() {
         String code = zenCodeArea.getText();
 
-        Pattern pattern = Pattern.compile(regex);
+        findVariables(code);
+        findMethods(code);
+
+        completionGraph.clear();
+        completionGraph.addWords(foundVariables);
+        completionGraph.addWords(foundMethods);
+
+        String searchString = findStartOfWord();
+        //System.out.println("Search string: " + searchString);
+        List<Completion> foundWords = completionGraph.searchFor(searchString);
+        zenCodeArea.updateCompletionMenu(foundWords);
+    }
+
+    private void findVariables(String code) {
+        Pattern pattern = Pattern.compile(variableRegex);
 
         Matcher matcher = pattern.matcher(code);
         //System.out.println("Searching");
         while (matcher.find()) {
-            String variableType = matcher.group(3);
+            //String variableType = matcher.group(3);
             String variableName = matcher.group(4);
 
             if(variableName != null) {
@@ -40,32 +57,45 @@ public class VariableTimerTask extends TimerTask {
                     variableName = variableName.replaceAll("\\s", "");
                     String[] variableNames = variableName.split(",");
 
-                    Collections.addAll(foundVariables, variableNames);
+                    for(String s : variableNames) {
+                        Completion c = new Completion(s, CompletionType.VARIABLE);
+                        foundVariables.add(c);
+                    }
                 } else {
-                    foundVariables.add(variableName);
+                    foundVariables.add(new Completion(variableName, CompletionType.VARIABLE));
                 }
             }
         }
+    }
+    private void findMethods(String code) {
+        Pattern pattern = Pattern.compile(methodRegex);
 
-        foundVariables.forEach(System.out::println);
+        Matcher matcher = pattern.matcher(code);
+        //System.out.println("Searching");
+        while (matcher.find()) {
+            //String methodType = matcher.group(3);
+            String methodName = matcher.group(4);
 
-        completion.clear();
-        completion.addWords(foundVariables);
-
-        String searchString = findStartOfWord();
-        //System.out.println("Search string: " + searchString);
-        if(searchString.length() > 0) {
-            List<String> foundWords = completion.searchFor(searchString);
-            zenCodeArea.updateCompletionMenu(foundWords);
+            if(methodName != null) {
+                //System.out.println("Found method declaration: " + methodType + " " + methodName);
+                foundMethods.add(new Completion(methodName, CompletionType.METHOD));
+            }
         }
     }
+
 
     private String findStartOfWord() {
         StringBuilder sb = new StringBuilder();
         String currentParagraph = zenCodeArea.getParagraph(zenCodeArea.getCurrentParagraph()).getText();
+        if(currentParagraph.isEmpty()) {
+            return "";
+        }
         int caretPosition = zenCodeArea.getCaretPosition();
         int caretPositionInParagraph = caretPosition - zenCodeArea.getAbsolutePosition(zenCodeArea.getCurrentParagraph(), 0);
         int currentIndex = caretPositionInParagraph - 1;
+        if(currentIndex < 0) {
+            return "";
+        }
         char currentChar = currentParagraph.charAt(currentIndex);
         while(currentChar != ' ' && currentChar != '(' && currentChar != '{' && currentChar != '['
             && currentChar != '.' && currentChar != ',' && currentChar != ';' && currentChar != ':'
