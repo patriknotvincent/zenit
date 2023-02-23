@@ -11,11 +11,9 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
-import org.fxmisc.richtext.model.Paragraph;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.fxmisc.wellbehaved.event.Nodes;
@@ -89,13 +87,10 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 		}).subscribe(this::applyHighlighting);
 		computeHighlightingAsync();
 
-		getParagraphs().addListener(new CodeChangeListener<Paragraph>(this));
-
 //		fontSize = textSize;
 //		this.font = font;
 		setStyle("-fx-font-size: " + textSize +";-fx-font-family: " + font);
 
-		CodeCompletionContextMenu ccm = new CodeCompletionContextMenu(this);
 		variableTimer = new VariableTimer(this, completion, existingClasses);
 
 		addEventFilter(KeyEvent.KEY_RELEASED, event -> {

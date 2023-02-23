@@ -35,7 +35,7 @@ public class VariableTimerTask extends TimerTask {
             String variableName = matcher.group(4);
 
             if(variableName != null) {
-                System.out.println("Found variable declaration: " + variableType + " " + variableName);
+                //System.out.println("Found variable declaration: " + variableType + " " + variableName);
                 if (variableName.contains(",")) {
                     variableName = variableName.replaceAll("\\s", "");
                     String[] variableNames = variableName.split(",");
@@ -53,7 +53,7 @@ public class VariableTimerTask extends TimerTask {
         completion.addWords(foundVariables);
 
         String searchString = findStartOfWord();
-        System.out.println("Search string: " + searchString);
+        //System.out.println("Search string: " + searchString);
         if(searchString.length() > 0) {
             List<String> foundWords = completion.searchFor(searchString);
             zenCodeArea.updateCompletionMenu(foundWords);
