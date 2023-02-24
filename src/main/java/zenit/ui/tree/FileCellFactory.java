@@ -1,12 +1,12 @@
-package main.java.zenit.ui.tree;
+package zenit.ui.tree;
 
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.*;
 import javafx.util.Callback;
-import main.java.zenit.ui.FileTab;
-import main.java.zenit.ui.MainController;
+import zenit.ui.FileTab;
+import zenit.ui.MainController;
 
 import java.io.File;
 

@@ -1,4 +1,4 @@
-package main.java.zenit.zencodearea;
+package zenit.zencodearea;
 
 public class Completion {
     private String name;

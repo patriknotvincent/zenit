@@ -1,4 +1,4 @@
-package main.java.zenit.zencodearea;
+package zenit.zencodearea;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,7 +85,7 @@ public class CompletionGraph {
     }
 
     private void traverseLetterNode(LetterNode n, List<Character> chars,
-                                                List<List<LetterNode>> startPoints) {
+                                    List<List<LetterNode>> startPoints) {
         if(chars.isEmpty()){
             if(n.getChildren() == null){
                 return;

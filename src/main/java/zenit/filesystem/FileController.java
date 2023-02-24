@@ -1,15 +1,15 @@
 package zenit.filesystem;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
-
 import zenit.filesystem.helpers.CodeSnippets;
-
+import zenit.filesystem.helpers.FileNameHelpers;
 import zenit.filesystem.metadata.Metadata;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class for controlling and manipulating the file system of a project.
@@ -39,7 +39,7 @@ public class FileController {
 	
 	/**
 	 * Creates a new .java file from the File-objects using 
-	 * {@link JavaFileHandler #createFile(int, File, String) ClassHandler}
+	 * {@link JavaFileHandler#createFile(int, File, String) ClassHandler}
 	 * @param file File to be created
 	 * @param content Content of the file, may be null.
 	 * @param typeCode If new file, the type of code snippet to be inserted.
@@ -59,7 +59,7 @@ public class FileController {
 	}
 	
 	/**
-	 * Calls {@link #createFile(int, File, String) createFile} method with null
+	 * Calls {@link #createFile(int, File, String) createFile} method with null 
 	 * content parameter.
 	 * @param file The file to be created
 	 * @param typeCode If new file, the type of code snippet to be inserted.
@@ -154,9 +154,9 @@ public class FileController {
 	}
 	
 	/**
-	 * Renames a file-object and it's file path using {@link zenit.filesystem.JavaFileHandler
+	 * Renames a file-object and it's file path using {@link main.java.zenit.filesystem.JavaFileHandler
 	 * #renameFile(File, String) renameFile} method if {@code file} is a file or
-	 * {@link zenit.filesystem.ProjectHandler#renameFolder(File, String) renameProject}
+	 * {@link main.java.zenit.filesystem.ProjectHandler#renameFolder(File, String) renameProject}
 	 * method if {@code file} is a directory. Prints an error message if file couldn't
 	 * be renamed.
 	 * 
@@ -181,9 +181,9 @@ public class FileController {
 	}
 	
 	/**
-	 * Deletes a file from disk. Using {@link zenit.filesystem.JavaFileHandler
+	 * Deletes a file from disk. Using {@link main.java.zenit.filesystem.JavaFileHandler
 	 * #deleteFile(File) deleteFile} method if {@code file} is a file or
-	 * {@link zenit.filesystem.ProjectHandler#deleteFolder(File) deleteProject}
+	 * {@link main.java.zenit.filesystem.ProjectHandler#deleteFolder(File) deleteProject}
 	 * method if {@code file} is a directory. Prints an error message if file or a children
 	 * file couldn't be deleted.
 	 * @param file File to be deleted.
@@ -226,7 +226,7 @@ public class FileController {
 	//Project methods
 	
 	/**
-	 * Tries to create a new project using {@link zenit.filesystem.ProjectHandler
+	 * Tries to create a new project using {@link main.java.zenit.filesystem.ProjectHandler
 	 * #createNewProject(File) createNewProject} method in the set workspace.
 	 * Prints an error message if project or any of its files couldn't be created.
 	 * @param projectname Name of the new project
@@ -376,5 +376,47 @@ public class FileController {
 		}
 		
 		return false;
+	}
+
+	public void moveFile(File location, File destination) throws IOException {
+		Files.move(location.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+	}
+
+	public void changePackage(File file) throws IOException {
+		if(file.exists()) {
+			String content = JavaFileHandler.readFile(file);
+			String newContent = content;
+			boolean shouldWrite = true;
+			String newPackage = FileNameHelpers.getPackageNameFromFile(file);
+			Pattern packagePattern = Pattern.compile("package\\s+([a-zA-Z0-9_]+\\.)*[a-zA-Z0-9_]+\\s*;");
+			Matcher packageMatcher = packagePattern.matcher(content);
+
+			//If files contains an old package name
+			if(packageMatcher.find()){
+				int oldPackagePosStart = packageMatcher.start();
+				int oldPackagePosEnd = packageMatcher.end();
+				//If file is now in a package, change package name to new one
+				if(newPackage != null) {
+					newContent = content.substring(0, oldPackagePosStart) + "package " + newPackage + ";" + content.substring(oldPackagePosEnd + 1);
+				}else{ //If now in src folder, remove package
+					newContent = content.substring(oldPackagePosEnd + 1);
+				}
+			}else{ //if no package name is found in the file
+				//If file is now in a package, add package name to new one
+				if(newPackage != null) {
+					newContent = "package " + newPackage + ";\n" + content;
+				}else{ //If now in src folder, do nothing
+					shouldWrite = false;
+				}
+			}
+			//If package is found, write new content to file. Also double check that new content is not empty.
+			if (shouldWrite) {
+				try (BufferedWriter br =
+							 new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), FileHandler.textEncoding))) {
+					br.write(newContent);
+					br.flush();
+				}
+			}
+		}
 	}
 }
