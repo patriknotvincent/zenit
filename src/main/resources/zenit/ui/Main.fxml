@@ -22,7 +22,7 @@
 
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<fx:root prefHeight="640.0" prefWidth="900.0" type="VBox" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="640.0" prefWidth="900.0" type="VBox" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="zenit.ui.MainController">
 	<children>
 		<MenuBar fx:id="menuBar" VBox.vgrow="NEVER">
 			<menus>
@@ -155,7 +155,7 @@
 							<content>
 								<AnchorPane fx:id="content" id="Content" minHeight="0.0" minWidth="0.0">
 									<children>
-										<SplitPane id="splitPane" fx:id="splitPane" dividerPositions="0.8" layoutY="0.0" orientation="VERTICAL" prefHeight="527.0" prefWidth="669.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+										<SplitPane id="splitPane" fx:id="splitPane2" dividerPositions="0.8" layoutY="0.0" orientation="VERTICAL" prefHeight="527.0" prefWidth="669.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 											<items>
 												<AnchorPane fx:id="splitPaneItem" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" SplitPane.resizableWithParent="true">
 													<children>
