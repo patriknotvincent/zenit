@@ -12,73 +12,135 @@ public class CompletionGraph {
     }
 
     public List<Completion> searchFor(String input) {
+        if(input.isEmpty()){
+            return new ArrayList<>();
+        }
         ArrayList<Completion> foundWords = new ArrayList<>();
 
-        List<LetterNode> startList = findTraverseStartList(input);
-        if (startList != null && !startList.isEmpty()) {
-            findWords(foundWords, input, startList);
+        List<List<LetterNode>> startLists = findTraverseStartList(input);
+        if(input.length() != 1) {
+            startLists.forEach(list -> {
+                if (list != null && !list.isEmpty()) {
+
+                    StringBuilder base;
+                    base = findBase(list.get(0).getParent(), "");
+                    base.append(input.charAt(0));
+                    base.reverse();
+
+                    findWords(foundWords, list, base.toString());
+                }
+            });
+        }else if(!startLists.isEmpty()) {
+            findWords(foundWords, startLists.get(0), input);
+        }
+
+        //Find opposite case
+        char oppositeCase = Character.isUpperCase(input.charAt(0)) ? Character.toLowerCase(input.charAt(0)) : Character.toUpperCase(input.charAt(0));
+        startLists = findTraverseStartList(oppositeCase + input.substring(1));
+        if(input.length() != 1){
+            startLists.forEach(list -> {
+                if (list != null && !list.isEmpty()) {
+                    StringBuilder base;
+                    base = findBase(list.get(0).getParent(), "");
+                    base.append(oppositeCase);
+                    base.reverse();
+
+                    findWords(foundWords, list, base.toString());
+                }
+            });
+        }else if(!startLists.isEmpty()) {
+            findWords(foundWords, startLists.get(0), String.valueOf(oppositeCase));
         }
 
         return foundWords;
     }
 
-    private List<LetterNode> findTraverseStartList(String input) {
-        if(input.isEmpty()){
-            return new ArrayList<>();
-        }
+    private List<List<LetterNode>> findTraverseStartList(String input) {
+
+        List<List<LetterNode>> startPoints = new ArrayList<>();
         List<LetterNode> letterNodes = startLetters.get(input.charAt(0));
         if(letterNodes == null){
             return new ArrayList<>();
         }
+
         input = input.substring(1);
+
         List<Character> chars = getChars(input);
 
         if(!chars.isEmpty()) {
+            char currentChar = chars.get(0);
             for (LetterNode n : letterNodes) {
-                if (n.getLetter() == chars.get(0)) {
-                    chars.remove(0);
-                    return traverseLetterNode(n, chars);
+                char oppositeCase = Character.isUpperCase(currentChar) ? Character.toLowerCase(currentChar) : Character.toUpperCase(currentChar);
+                if(n.getLetter() != currentChar && n.getLetter() != oppositeCase){
+                    continue;
                 }
+                chars.remove(0);
+                traverseLetterNode(n, chars, startPoints);
+                chars.add(0, currentChar);
             }
-            return new ArrayList<>();
+        }else{
+            startPoints.add(letterNodes);
         }
-        return letterNodes;
+        return startPoints;
     }
 
-    private List<LetterNode> traverseLetterNode(LetterNode n, List<Character> chars){
+    private void traverseLetterNode(LetterNode n, List<Character> chars,
+                                                List<List<LetterNode>> startPoints) {
         if(chars.isEmpty()){
             if(n.getChildren() == null){
-                return new ArrayList<>();
+                return;
             }
-            return n.getChildren();
+            startPoints.add(n.getChildren());
+            return;
         }
         if(n.getChildren() == null){
-            return new ArrayList<>();
+            return;
         }
         for(LetterNode child : n.getChildren()){
-            if(child.getLetter() == chars.get(0)){
-                chars.remove(0);
-                return traverseLetterNode(child, chars);
+            char oppositeCase = Character.isUpperCase(chars.get(0)) ? Character.toLowerCase(chars.get(0)) : Character.toUpperCase(chars.get(0));
+            if(child.getLetter() == chars.get(0) || child.getLetter() == oppositeCase){
+                if(child.getChildren() == null){
+                    startPoints.add(new ArrayList<>());
+                }else{
+                    char c = chars.get(0);
+                    chars.remove(0);
+                    traverseLetterNode(child, chars, startPoints);
+                    chars.add(0, c);
+                }
             }
+
         }
-        return new ArrayList<>();
     }
 
-    private void findWords(ArrayList<Completion> foundWords, String input, List<LetterNode> letterNodes) {
-        for(LetterNode n : letterNodes){
+    private void findWords(ArrayList<Completion> foundWords, List<LetterNode> startPoint, String baseOfWord) {
+        if(startPoint == null){
+            return;
+        }
+
+        for(LetterNode n : startPoint){
             if(n.isLastLetterOfAWord()){
-                foundWords.add(new Completion(input + n.getLetter(), n.getCompletionType()));
+                System.out.println(baseOfWord + n.getLetter());
+                foundWords.add(new Completion(baseOfWord + n.getLetter(), n.getCompletionType()));
             }
             if(n.getChildren() != null){
-                findWords(foundWords, input + n.getLetter(), n.getChildren());
+                findWords(foundWords, n.getChildren(), baseOfWord + n.getLetter());
             }
         }
+    }
+
+    private StringBuilder findBase(LetterNode n, String wordSoFar) {
+        StringBuilder baseBuilder = new StringBuilder(wordSoFar);
+        baseBuilder.append(n.getLetter());
+        if(n.getParent() != null){
+            baseBuilder = findBase(n.getParent(), baseBuilder.toString());
+        }
+        return baseBuilder;
     }
 
     public void printOut() {
         for(char c : startLetters.keySet()){
-            ArrayList<LetterNode> LetterNodes = startLetters.get(c);
-            for(LetterNode n : LetterNodes){
+            ArrayList<LetterNode> letterNodes = startLetters.get(c);
+            for(LetterNode n : letterNodes){
                 printLetterNodes(String.valueOf(c), n);
             }
         }
@@ -87,7 +149,7 @@ public class CompletionGraph {
     private void printLetterNodes(String word, LetterNode n) {
         word += n.getLetter();
         if(n.isLastLetterOfAWord()){
-            System.out.println(word);
+            //System.out.println(word);
         }
         if(n.getChildren() != null) {
             for(LetterNode child : n.getChildren()){
@@ -99,16 +161,15 @@ public class CompletionGraph {
     public void addWords(List<Completion> completions) {
         for(Completion completion : completions){
             List<Character> chars = getChars(completion.getName());
-            ArrayList<LetterNode> firstLetterList;
+            ArrayList<LetterNode> secondLetterList;
             if(startLetters.containsKey(chars.get(0))) {
-                firstLetterList = startLetters.get(chars.get(0));
+                secondLetterList = startLetters.get(chars.get(0));
             } else {
-                firstLetterList = new ArrayList<>();
-                startLetters.put(chars.get(0), firstLetterList);
+                secondLetterList = new ArrayList<>();
+                startLetters.put(chars.get(0), secondLetterList);
             }
             chars.remove(0);
-            System.out.println(completion.getName() + " " + completion.getCompletionType());
-            addAllLetters(firstLetterList, chars, completion.getCompletionType());
+            addAllLetters(secondLetterList, chars, completion.getCompletionType(), null);
         }
     }
 
@@ -121,17 +182,19 @@ public class CompletionGraph {
         return letters;
     }
 
-    private void addAllLetters(List<LetterNode> siblings, List<Character> chars, CompletionType completionType) {
+    private void addAllLetters(List<LetterNode> siblings, List<Character> chars, CompletionType completionType,
+                               LetterNode parent) {
         if(chars.isEmpty()) return;
 
         if(siblings.size() == 0){ //if there are no siblings
             char c = chars.get(0);
             chars.remove(0);
             if(!chars.isEmpty()){ //if there are more letters to add
-                siblings.add(new LetterNode(c, false, null));
-                addAllLetters(siblings.get(0).getChildren(), chars, completionType);
+                LetterNode newNode = new LetterNode(c, false, null, parent);
+                siblings.add(newNode);
+                addAllLetters(siblings.get(0).getChildren(), chars, completionType, newNode);
             }else{
-                siblings.add(new LetterNode(c, true, completionType));
+                siblings.add(new LetterNode(c, true, completionType, parent));
             }
         } else { //if there are siblings
             for(LetterNode sibling : siblings){ //check if the letter exists
@@ -145,7 +208,7 @@ public class CompletionGraph {
                         }
                     }
                     chars.remove(0);
-                    addAllLetters(sibling.getChildren(), chars, completionType);
+                    addAllLetters(sibling.getChildren(), chars, completionType, sibling);
                     return;
                 }
             }
@@ -153,11 +216,11 @@ public class CompletionGraph {
             char c = chars.get(0);
             chars.remove(0);
             if(!chars.isEmpty()) {
-                LetterNode n = new LetterNode(c, false, null);
+                LetterNode n = new LetterNode(c, false, null, parent);
                 siblings.add(n);
-                addAllLetters(n.getChildren(), chars, completionType);
+                addAllLetters(n.getChildren(), chars, completionType, n);
             } else {
-                siblings.add(new LetterNode(c, true, completionType));
+                siblings.add(new LetterNode(c, true, completionType, parent));
             }
         }
     }

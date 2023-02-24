@@ -14,7 +14,7 @@ public class CompletionWindow extends Popup {
     public CompletionWindow() {
         content = new VBox();
         content.setPrefWidth(200);
-        content.setPrefHeight(200);
+        content.setPrefHeight(500);
         content.setStyle("-fx-background-color: #444444;");
         getContent().add(content);
     }
@@ -23,7 +23,6 @@ public class CompletionWindow extends Popup {
         Platform.runLater(() -> {
             content.getChildren().clear();
             for(Completion completion : completions){
-                System.out.println(completion.getName() + " (" + completion.getCompletionType() + ")");
                 Button button = new Button(completion.getName() + " (" + completion.getCompletionType().toString() + ")");
                 button.setStyle("-fx-background-color: #444444; -fx-text-fill: #ffffff;");
                 content.getChildren().add(button);

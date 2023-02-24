@@ -6,17 +6,20 @@ import java.util.List;
 public class LetterNode {
     private ArrayList<LetterNode> children;
 
+    private LetterNode parent;
+
     private final char letter;
 
     private boolean lastLetterOfAWord;
 
     private CompletionType completionType;
 
-    public LetterNode(char letter, boolean lastLetterOfAWord, CompletionType completionType) {
+    public LetterNode(char letter, boolean lastLetterOfAWord, CompletionType completionType, LetterNode parent) {
         this.letter = letter;
         children = lastLetterOfAWord ? null : new ArrayList<>();
         this.lastLetterOfAWord = lastLetterOfAWord;
         this.completionType = completionType;
+        this.parent = parent;
     }
 
     public boolean isLastLetterOfAWord() {
@@ -45,5 +48,9 @@ public class LetterNode {
 
     public void setCompletionType(CompletionType completionType) {
         this.completionType = completionType;
+    }
+
+    public LetterNode getParent() {
+        return parent;
     }
 }

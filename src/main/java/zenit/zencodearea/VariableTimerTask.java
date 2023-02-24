@@ -40,6 +40,7 @@ public class VariableTimerTask extends TimerTask {
         //System.out.println("Search string: " + searchString);
         List<Completion> foundWords = completionGraph.searchFor(searchString);
         zenCodeArea.updateCompletionMenu(foundWords);
+        completionGraph.printOut();
     }
 
     private void findVariables(String code) {
