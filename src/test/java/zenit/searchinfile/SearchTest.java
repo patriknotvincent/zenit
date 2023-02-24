@@ -5,9 +5,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.testfx.api.FxRobot;
 import org.testfx.api.FxRobotException;
-import org.testfx.api.FxToolkit;
 import zenit.ZenithTestBase;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
