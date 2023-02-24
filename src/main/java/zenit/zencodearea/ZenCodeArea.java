@@ -5,14 +5,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.concurrent.Task;
 
 import java.time.Duration;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Collections;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javafx.stage.Stage;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.model.StyleSpans;
@@ -21,10 +20,16 @@ import org.fxmisc.wellbehaved.event.Nodes;
 import org.fxmisc.wellbehaved.event.EventPattern;
 import org.fxmisc.wellbehaved.event.InputMap;
 
-public class ZenCodeArea extends CodeArea {
+public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 	private ExecutorService executor;
 //	private int fontSize;
 //	private String font;
+
+	private CompletionGraph completionGraph;
+
+	private VariableTimer variableTimer;
+
+	private CompletionWindow completionMenu;
 
 	private static final String[] KEYWORDS = new String[] {
 		"abstract", "assert", "boolean", "break", "byte",
@@ -56,12 +61,11 @@ public class ZenCodeArea extends CodeArea {
 		+ "|(?<STRING>" + STRING_PATTERN + ")"
 		+ "|(?<COMMENT>" + COMMENT_PATTERN + ")"
 	);
-
-	public ZenCodeArea() {
-		this(14, "Times new Roman");
-	}
 	
-	public ZenCodeArea(int textSize, String font) {
+	public ZenCodeArea(int textSize, String font, List<String> existingClasses, Stage stage) {
+		completionGraph = new CompletionGraph();
+		completionMenu = new CompletionWindow();
+		completionMenu.show(stage, 0,0);
 		setParagraphGraphicFactory(LineNumberFactory.get(this));
 
 		multiPlainChanges().successionEnds(
@@ -85,6 +89,21 @@ public class ZenCodeArea extends CodeArea {
 //		fontSize = textSize;
 //		this.font = font;
 		setStyle("-fx-font-size: " + textSize +";-fx-font-family: " + font);
+
+		variableTimer = new VariableTimer(this, completionGraph, existingClasses);
+
+		addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+			if(event.getCode() != KeyCode.ENTER
+			&& event.getCode() != KeyCode.SHIFT
+			&& event.getCode() != KeyCode.CONTROL
+			&& event.getCode() != KeyCode.ALT
+			&& event.getCode() != KeyCode.TAB
+			&& event.getCode() != KeyCode.ESCAPE
+			&& event.getCode() != KeyCode.ALT_GRAPH
+			&& event.getCode() != KeyCode.CAPS){
+				variableTimer.reset();
+			}
+		});
 	}
 	
 	public void update() {
@@ -161,5 +180,14 @@ public class ZenCodeArea extends CodeArea {
 	//	font = fontFamily;
 		setStyle("-fx-font-family: " + fontFamily + ";" + 
 				"-fx-font-size: " + size + ";");
-	}	
+	}
+
+	@Override
+	public void onExistingClassesChanged(List<String> existingClasses) {
+		variableTimer.updateRegex(existingClasses);
+	}
+
+	public void updateCompletionMenu(List<Completion> foundWords) {
+		completionMenu.updateCompletions(foundWords);
+	}
 }

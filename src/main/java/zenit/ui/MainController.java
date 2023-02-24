@@ -2,7 +2,10 @@ package zenit.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 
 import java.util.LinkedList;
@@ -14,91 +17,80 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.Label;
-import javafx.scene.control.IndexRange;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import zenit.Zenit;
 import zenit.console.ConsoleArea;
 import zenit.console.ConsoleController;
-import zenit.filesystem.FileController; // Aggregation
+import zenit.filesystem.FileController;
 import zenit.filesystem.ProjectFile;
 import zenit.filesystem.RunnableClass;
 import zenit.filesystem.WorkspaceHandler;
+import zenit.filesystem.helpers.CodeSnippets;
 import zenit.filesystem.metadata.Metadata;
 import zenit.javacodecompiler.DebugError;
 import zenit.javacodecompiler.DebugErrorBuffer;
 import zenit.javacodecompiler.JavaSourceCodeCompiler;
 import zenit.javacodecompiler.ProcessBuffer;
-import zenit.settingspanel.SettingsPanelController;
-import zenit.settingspanel.ThemeCustomizable; // Implements
 import zenit.searchinfile.Search;
-import zenit.ui.tree.FileTree;
-import zenit.ui.tree.FileTreeItem;
-import zenit.ui.tree.TreeClickListener;
-import zenit.ui.tree.TreeContextMenu;
-import zenit.ui.tree.FileTree;
-import zenit.ui.tree.FileTreeItem;
-import zenit.ui.tree.TreeClickListener;
-import zenit.ui.tree.TreeContextMenu;
+import zenit.settingspanel.SettingsPanelController;
+import zenit.settingspanel.ThemeCustomizable;
+import zenit.ui.projectinfo.ProjectMetadataController;
+import zenit.ui.tree.*;
 import zenit.util.Tuple;
-import zenit.ui.FileTab;
-import zenit.ui.projectinfo.ProjectMetadataController;
+import zenit.zencodearea.ExistingClassesListener;
 import zenit.zencodearea.ZenCodeArea;
-import zenit.ui.projectinfo.ProjectMetadataController;
+
 
 /**
  * The controller part of the main GUI.
- * 
+ *
  * @author Pontus Laos, Oskar Molander, Alexander Libot
  *
  */
 public class MainController extends VBox implements ThemeCustomizable {
 	private Stage stage;
-	
+
 	private FileController fileController;
 
 	private ProjectMetadataController pmc;
-	
+
 	private int zenCodeAreasTextSize;
-	
+
 	private String zenCodeAreasFontFamily;
 	private String activeStylesheet;
-	
+
 	private LinkedList<ZenCodeArea> activeZenCodeAreas;
-	
+
 	private File customThemeCSS;
-	
+
 	private boolean isDarkMode = true;
-	
+
 	private Process process;
-	
+
 	private Tuple<File, String> deletedFile = new Tuple<>();
+
+	private ArrayList<String> existingClasses;
+
+	private ArrayList<ExistingClassesListener> existingClassesListeners;
 
 	@FXML
 	private AnchorPane consolePane;
-		
-	@FXML 
+
+	@FXML
 	private SplitPane splitPane;
 
 	@FXML
 	private MenuItem newTab;
-	
-	@FXML 
+
+	@FXML
 	private MenuItem newFile;
-	
-	@FXML 
+
+	@FXML
 	private MenuItem newFolder;
 
 	@FXML
@@ -118,16 +110,16 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 	@FXML
 	private MenuItem JREVersions;
-	
+
 	@FXML
 	private CheckMenuItem cmiDarkMode;
-	
+
 	@FXML
 	private MenuItem undo;
-	
+
 	@FXML
 	private MenuItem redo;
-	
+
 	@FXML
 	private MenuItem delete;
 
@@ -135,7 +127,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	private TabPane tabPane;
 
 	@FXML
-	private TreeView<String> treeView;
+	private TreeView<FileTreeItem> treeView;
 
 	@FXML
 	private Button btnRun;
@@ -151,10 +143,10 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 	@FXML
 	private Label statusBarRightLabel;
-	
+
 	@FXML
 	private FXMLLoader loader;
-	
+
 
 	/**
 	 * Loads a file Main.fxml, sets this MainController as its Controller, and loads
@@ -164,12 +156,14 @@ public class MainController extends VBox implements ThemeCustomizable {
 		this.stage = s;
 		this.zenCodeAreasTextSize = 12;
 		this.zenCodeAreasFontFamily = "Menlo";
-		this.activeZenCodeAreas = new LinkedList<>();
-		this.customThemeCSS = new File("customtheme/mainCustomTheme.css");
+		this.activeZenCodeAreas = new LinkedList<ZenCodeArea>();
+		this.customThemeCSS = new File("/customtheme/mainCustomTheme.css");
+		this.existingClasses = new ArrayList<>();
+		this.existingClassesListeners = new ArrayList<>();
 
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/zenit/ui/Main.fxml"));
-			
+			loader = new FXMLLoader(getClass().getResource("/zenit/ui/Main.fxml"));
+
 			File workspace = null;
 
 			try {
@@ -199,13 +193,11 @@ public class MainController extends VBox implements ThemeCustomizable {
 			stage.setScene(scene);
 			stage.setTitle("Zenit - " + workspace.getPath());
 
-			initialize();
-			
 			stage.show();
 			KeyboardShortcuts.setupMain(scene, this);
 
 			this.activeStylesheet = getClass().getResource("/zenit/ui/mainStyle.css").toExternalForm();
-			
+
 			stage.setOnCloseRequest(event -> quit());
 
 		} catch (Exception e) {
@@ -216,24 +208,24 @@ public class MainController extends VBox implements ThemeCustomizable {
 	public FXMLLoader getFXMLLoader() {
 		return loader;
 	}
-	
+
 	/**
 	 * Setter for FileController instance. Used to access the file system.
 	 */
 	public void setFileController(FileController fileController) {
 		this.fileController = fileController;
 	}
-	
-	public FileTreeItem<String> getSelectedFileTreeItem() {
-		return (FileTreeItem<String>) treeView.getSelectionModel().getSelectedItem();
+
+	public TreeItem<FileTreeItem> getSelectedTreeItem() {
+		return treeView.getSelectionModel().getSelectedItem();
 	}
-	
+
 	public void deleteFileFromTreeView() {
-		var selectedItem = getSelectedFileTreeItem();
-		
+		var selectedItem = getSelectedTreeItem();
+
 		if (selectedItem != null) {
-			deleteFile(selectedItem.getFile());
-			selectedItem.getParent().getChildren().remove(selectedItem);
+			deleteFile(selectedItem.getValue().getFile());
+			getSelectedTreeItem().getParent().getChildren().remove(selectedItem);
 		}
 	}
 
@@ -241,7 +233,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 * Performs initialization steps when the controller is set.
 	 */
 	public void initialize() {
-		
+
 		statusBarLeftLabel.setText("");
 		statusBarRightLabel.setText("");
 
@@ -254,7 +246,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 	/**
 	 * Creates a new SettingsPanel.
-	 * 
+	 *
 	 * @author Sigge Labor
 	 */
 	public void openSettingsPanel() {
@@ -263,7 +255,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 	/**
 	 * Sets the zenCodeAreasTextSize to a new value.
-	 * 
+	 *
 	 * @author Sigge Labor
 	 */
 	public synchronized void setFontSize(int newFontSize) {
@@ -273,7 +265,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 	/**
 	 * Sets the zenCodeAreasFontFamily to a new value.
-	 * 
+	 *
 	 * @author Sigge Labor.
 	 */
 	public synchronized void setFontFamily(String newFontFamily) {
@@ -284,7 +276,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	/**
 	 * Updates the appearance (text size and font family) of all active
 	 * ZenCodeAreas.
-	 * 
+	 *
 	 * @author Sigge Labor.
 	 */
 	public void updateZenCodeAreasAppearance() {
@@ -301,8 +293,10 @@ public class MainController extends VBox implements ThemeCustomizable {
 	}
 
 	public ZenCodeArea createNewZenCodeArea() {
-		ZenCodeArea zenCodeArea = new ZenCodeArea(zenCodeAreasTextSize, zenCodeAreasFontFamily);
+		ZenCodeArea zenCodeArea = new ZenCodeArea(zenCodeAreasTextSize, zenCodeAreasFontFamily, existingClasses,
+				stage);
 		activeZenCodeAreas.add(zenCodeArea);
+		existingClassesListeners.add(zenCodeArea);
 		return zenCodeArea;
 	}
 
@@ -313,12 +307,14 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 * a TreeContextMenu for displaying when right clicking nodes in the tree and an
 	 * event handler for clicking nodes in the tree.
 	 */
-	private void initTree() {
-		FileTreeItem<String> rootItem = new FileTreeItem<String>(fileController.getWorkspace(), "workspace",
-				FileTreeItem.WORKSPACE);
+	public void initTree() {
+		TreeItem<FileTreeItem> rootItem = new TreeItem<>(new FileTreeItem(fileController.getWorkspace(),
+				FileTreeItem.WORKSPACE));
 		File workspace = fileController.getWorkspace();
 		if (workspace != null) {
-			FileTree.createNodes(rootItem, workspace);
+			FileTree.createNodes(rootItem, workspace, existingClasses);
+			existingClasses.forEach(System.out::println);
+			existingClassesListeners.forEach(listener -> listener.onExistingClassesChanged(existingClasses));
 		}
 		treeView.setRoot(rootItem);
 		treeView.setShowRoot(false);
@@ -326,21 +322,18 @@ public class MainController extends VBox implements ThemeCustomizable {
 		TreeClickListener tcl = new TreeClickListener(this, treeView);
 		treeView.setContextMenu(tcm);
 		treeView.setOnMouseClicked(tcl);
-		
-		rootItem.getChildren().sort((o1,o2)->{
-			FileTreeItem<String> t1 = (FileTreeItem<String>) o1;
-			FileTreeItem<String> t2 = (FileTreeItem<String>) o2;
-			return (t1.getValue().compareTo(t2.getValue()));
-		});
+		treeView.setCellFactory(new FileCellFactory(this));
+
+		rootItem.getChildren().sort(Comparator.comparing(o -> o.getValue().getName()));
 	}
 
 	/**
 	 * Input name from dialog box and creates a new file in specified parent folder.
-	 * 
+	 *
 	 * @param parent The parent folder of the file to be created.
 	 * @param typeCode The type of code snippet that should be implemented in the
 	 *                 file. Use constants from
-	 *                 {@link zenit.filesystem.helpers.CodeSnippets
+	 *                 {@link main.java.zenit.filesystem.helpers.CodeSnippets
 	 *                 CodeSnippets} class.
 	 * @return The File if created, otherwise null.
 	 */
@@ -353,6 +346,13 @@ public class MainController extends VBox implements ThemeCustomizable {
 			file = new File(filepath);
 
 			file = fileController.createFile(file, typeCode);
+
+			if(file != null && typeCode == CodeSnippets.CLASS){
+				existingClasses.add(file.getName().substring(0, file.getName().length() - 5));
+			}
+
+			existingClasses.forEach(System.out::println);
+			existingClassesListeners.forEach(listener -> listener.onExistingClassesChanged(existingClasses));
 
 			openFile(file);
 		}
@@ -406,11 +406,11 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 */
 	private boolean saveFile(boolean backgroundCompile) {
 		FileTab tab = getSelectedTab();
-		
+
 		if (tab == null) {
 			return false;
 		}
-		
+
 		File file = tab.getFile();
 
 		if (file == null) {
@@ -421,8 +421,8 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 		if (didWrite) {
 			tab.update(file);
-			FileTree.createParentNode((FileTreeItem<String>) treeView.getRoot(), file);
-			
+			FileTree.createParentNode(treeView.getRoot(), file, existingClasses);
+
 			if (backgroundCompile) {
 				backgroundCompiling(file);
 			}
@@ -447,25 +447,25 @@ public class MainController extends VBox implements ThemeCustomizable {
 		}
 
 		boolean didWrite = fileController.writeFile(file, text);
-		
+
 		if (didWrite) {
-			FileTreeItem<String> root = FileTree.getTreeItemFromFile((FileTreeItem<String>) treeView.getRoot(), file.getParentFile());
+			TreeItem<FileTreeItem> root = FileTree.getTreeItemFromFile(treeView.getRoot(), file.getParentFile());
 			System.out.println(root);
-			FileTree.createParentNode(root, file);
+			FileTree.createParentNode(root, file, existingClasses);
 			treeView.refresh();
 			treeView.layout();
-			
+
 			if (backgroundCompile) {
 				backgroundCompiling(file);
 			}
 		}
-		
+
 		return didWrite;
 	}
-	
+
 	/**
 	 * Compiles a file in the background.
-	 * 
+	 *
 	 * @param file
 	 */
 	private void backgroundCompiling(File file) {
@@ -509,14 +509,14 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 	/**
 	 * Adds a new tab to the TabPane.
-	 * 
+	 *
 	 * @param event
 	 */
 	@FXML
 	public void newTab(Event event) {
 		addTab();
 	}
-	
+
 	@FXML
 	public void newFile() {
 		NewFileController nfc = new NewFileController(fileController.getWorkspace(), isDarkMode);
@@ -528,13 +528,13 @@ public class MainController extends VBox implements ThemeCustomizable {
 			openFile(newFile);
 		}
 	}
-	
+
 	@FXML
 	public void newFolder() {
 		new NewFolderController(fileController.getWorkspace(), isDarkMode).start();
 		initTree();
 	}
-	
+
 	@FXML
 	public void quit() {
 		System.exit(0);
@@ -543,7 +543,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	/**
 	 * Opens a file chooser and tries to read the file's name and content to the
 	 * currently selected tab.
-	 * 
+	 *
 	 * @param event
 	 */
 	@FXML
@@ -553,7 +553,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 			File workspace = fileController.getWorkspace();
 			FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files", "*.txt", "*.java");
 			fileChooser.getExtensionFilters().add(extFilter);
-			
+
 			if (workspace != null) {
 				fileChooser.setInitialDirectory(fileController.getWorkspace());
 			}
@@ -572,28 +572,28 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 * Tries to open the content of a file into a new tab using the FileController
 	 * instance. If tab containing file-content is already open, switches to that
 	 * tab.
-	 * 
+	 *
 	 * @param file The file which content to be opened.
 	 */
 	public void openFile(File file) {
 		if (file != null && getTabFromFile(file) == null) {
 
 			if (supportedFileFormat(file)) {
-			
-			FileTab selectedTab = addTab();
-			selectedTab.setFile(file, true);
 
-			selectedTab.setText(file.getName());
+				FileTab selectedTab = addTab();
+				selectedTab.setFile(file, true);
+
+				selectedTab.setText(file.getName());
 			} else {
 				String fileType = file.getName().substring(file.getName().lastIndexOf('.'));
-				DialogBoxes.errorDialog("Not supported", "File type not supported by Zenit", 
+				DialogBoxes.errorDialog("Not supported", "File type not supported by Zenit",
 						"The file type " + fileType + " is not yet supported by this application.");
 			}
 		} else if (file != null && getTabFromFile(file) != null) { // Tab already open
 			tabPane.getSelectionModel().select(getTabFromFile(file));
 		}
 	}
-	
+
 	/**
 	 * Checks if the file format of the file parameter is supported.
 	 * @param file File to check
@@ -601,23 +601,23 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 */
 	private boolean supportedFileFormat(File file) {
 		boolean supported = false;
-		
+
 		String fileName = file.getName();
 		int periodIndex = fileName.lastIndexOf('.');
 		if (periodIndex >= 0) {
 			String fileType = fileName.substring(periodIndex);
-		
-		switch (fileType) {
-		case ".java":
-		case ".txt": supported = true; break;
-		default: 
-		
-		}
-		
+
+			switch (fileType) {
+				case ".java":
+				case ".txt": supported = true; break;
+				default:
+
+			}
+
 		} else if (file.isFile()){
 			supported = true;
 		}
-		
+
 		return supported;
 
 	}
@@ -625,7 +625,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	/**
 	 * Method for renaming a file or folder. Opens a new input dialog for input of
 	 * new name. Renames the tab text if file is in an open tab.
-	 * 
+	 *
 	 * @param file The file to rename.
 	 * @return
 	 */
@@ -652,26 +652,43 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 	/**
 	 * Tries to delete a file or folder.
-	 * 
+	 *
 	 * @param file The file to be deleted.
 	 */
 	public void deleteFile(File file) {
 //		deletedTexts.put(file, FileController.readFile(file));
-//		
+//
 //		fileHistory.add(0, file);
 //		historyIndex++;
 //		System.out.println(historyIndex);
-		
+
 		deletedFile.set(file, FileController.readFile(file));
-		
+
 		fileController.deleteFile(file);
-		
+
+		AtomicReference<String> nameToDelete = new AtomicReference<>();
+
+		if(file.getName().endsWith(".java")) {
+			existingClasses.forEach(name -> {
+				if(name.equals(file.getName().substring(0, file.getName().lastIndexOf('.')))) {
+					nameToDelete.set(name);
+				}
+			});
+		}
+
+		if(nameToDelete.get() != null) {
+			existingClasses.remove(nameToDelete.get());
+		}
+
+		existingClasses.forEach(System.out::println);
+		existingClassesListeners.forEach(listener -> listener.onExistingClassesChanged(existingClasses));
+
 		var tabs = tabPane.getTabs();
-		
+
 		if (tabs != null) {
 			for (var tab : tabs) {
 				var fileTab = (FileTab) tab;
-				
+
 				if (fileTab != null && fileTab.getFile().equals(file)) {
 					Platform.runLater(() -> closeTab(null));
 					return;
@@ -679,7 +696,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Attempts to undo the latest delete invocation.
 	 */
@@ -688,7 +705,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 			System.out.println("not focused");
 			return;
 		}
-		
+
 		if (deletedFile.fst() != null && !deletedFile.fst().exists()) {
 			try {
 				deletedFile.fst().createNewFile();
@@ -697,23 +714,23 @@ public class MainController extends VBox implements ThemeCustomizable {
 			} catch (IOException ex) {}
 		}
 	}
-	
+
 	public void redoDeleteFile() {
 		if (!treeView.isFocused()) {
 			System.out.println("not focused");
 			return;
 		}
-		
+
 		if (deletedFile.fst() != null && deletedFile.fst().exists()) {
 			deleteFile(deletedFile.fst());
-			FileTree.removeFromFile((FileTreeItem<String>) treeView.getRoot(), deletedFile.fst());
+			FileTree.removeFromFile(treeView.getRoot(), deletedFile.fst());
 		}
 	}
 
 	/**
 	 * Opens an input dialog to choose project name and then creates a new project
 	 * with that name in the selected workspace folder
-	 * 
+	 *
 	 * @param event
 	 */
 	@FXML
@@ -723,16 +740,16 @@ public class MainController extends VBox implements ThemeCustomizable {
 		if (projectName != null) {
 			File newProject = fileController.createProject(projectName);
 			if (newProject != null) {
-				FileTree.createParentNode((FileTreeItem<String>) treeView.getRoot(), newProject);
+				FileTree.createParentNode(treeView.getRoot(), newProject, existingClasses);
 			}
 		}
 	}
-	
+
 	@FXML
 	public void undo(Event event) {
 		FileTab selectedTab = getSelectedTab();
 		ZenCodeArea zenCodeArea = selectedTab == null ? null : selectedTab.getZenCodeArea();
-		
+
 		if (treeView.isFocused()) {
 			undoDeleteFile();
 		} else if (zenCodeArea != null && zenCodeArea.isFocused()) {
@@ -741,12 +758,12 @@ public class MainController extends VBox implements ThemeCustomizable {
 			}
 		}
 	}
-	
+
 	@FXML
 	public void redo(Event event) {
 		FileTab selectedTab = getSelectedTab();
 		ZenCodeArea zenCodeArea = selectedTab == null ? null : selectedTab.getZenCodeArea();
-		
+
 		if (treeView.isFocused()) {
 			redoDeleteFile();
 		} else if (zenCodeArea != null && zenCodeArea.isFocused()) {
@@ -755,7 +772,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 			}
 		}
 	}
-	
+
 	@FXML
 	public void delete(Event event) {
 		deleteFileFromTreeView();
@@ -764,7 +781,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	/**
 	 * Opens an input dialog to choose package name and then creates a new package
 	 * with that name in the selected folder (usually src).
-	 * 
+	 *
 	 * @param parent Folder to create package in.
 	 * @return The created package if created, otherwise null.
 	 */
@@ -784,12 +801,20 @@ public class MainController extends VBox implements ThemeCustomizable {
 		}
 		return null;
 	}
-	
+
+	public void changePackageForClosedFile(File file){
+		try {
+			fileController.changePackage(file);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void compileAndRun(File file) {
 		File metadataFile = getMetadataFile(file);
 		ConsoleArea consoleArea;
-		
-	
+
+
 		if(isDarkMode) {
 			consoleArea = new ConsoleArea(file.getName(), null, "-fx-background-color:#444");
 		}
@@ -799,47 +824,47 @@ public class MainController extends VBox implements ThemeCustomizable {
 		consoleArea.setFileName(file.getName());
 		consoleController.newConsole(consoleArea);
 		openConsoleComponent();
-		
+
 		try {
 			ProcessBuffer buffer = new ProcessBuffer();
 			JavaSourceCodeCompiler compiler = new JavaSourceCodeCompiler(file, metadataFile,
 					false, buffer, this);
 			compiler.startCompileAndRun();
 			process = buffer.get();
-			
-			
+
+
 			if (process != null && metadataFile != null) {
 				//If process compiled, add to RunnableClass
 				ProjectFile projectFile = new ProjectFile(metadataFile.getParent());
 				String src = projectFile.getSrc().getPath();
-				String filePath = file.getPath().replaceAll(Matcher.quoteReplacement(src + 
+				String filePath = file.getPath().replaceAll(Matcher.quoteReplacement(src +
 						File.separator), "");
 				RunnableClass rc = new RunnableClass(filePath);
 				Metadata metadata = new Metadata(metadataFile);
 				if (metadata.addRunnableClass(rc)) {
 					metadata.encode();
 				}
-				
-				
+
+
 				consoleArea.setProcess(process);
 				if(consoleArea.getProcess().isAlive()) {
 					consoleArea.setID(consoleArea.getFileName() + " <Running>");
-					
+
 				}
 				else {
 					consoleArea.setID(consoleArea.getFileName()+ " <Terminated>");
 				}
-				
-				
+
+
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			
+
 			// TODO: handle exception
 		}
-	
-	
+
+
 	}
 
 	/**
@@ -853,7 +878,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 			saveFile(false);
 			compileAndRun(file);
 		}
-			
+
 	}
 
 	public void updateStatusLeft(String text) {
@@ -866,7 +891,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 	/**
 	 * Finds the metadata file for the project of a file.
-	 * 
+	 *
 	 * @param file File within project to find metadata file in.
 	 * @return The found metadata file, null if not found.
 	 */
@@ -887,7 +912,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	}
 
 	/**
-	 * Creates a new tab with a {@link zenit.zencodearea.ZenCodeArea
+	 * Creates a new tab with a {@link main.java.zenit.zencodearea.ZenCodeArea
 	 * ZenCodeArea} filling it, adds it to the TabPane, and focuses on it.
 	 *
 	 * @return The new Tab.
@@ -899,7 +924,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 		var selectionModel = tabPane.getSelectionModel();
 		selectionModel.select(tab);
-		
+
 		updateStatusRight("");
 
 		return tab;
@@ -918,18 +943,18 @@ public class MainController extends VBox implements ThemeCustomizable {
 			int response = selectedTab.showConfirmDialog();
 
 			switch (response) {
-			case 1:
-				tabPane.getTabs().remove(selectedTab);
-				break;
-			case 2:
-				saveFile(null);
-				tabPane.getTabs().remove(selectedTab);
-				break;
-			default:
-				if (event != null) {
-					event.consume();
-				}
-				return;
+				case 1:
+					tabPane.getTabs().remove(selectedTab);
+					break;
+				case 2:
+					saveFile(null);
+					tabPane.getTabs().remove(selectedTab);
+					break;
+				default:
+					if (event != null) {
+						event.consume();
+					}
+					return;
 			}
 		} else if (selectedTab.hasChanged()) {
 			boolean didSave = saveFile(null);
@@ -940,7 +965,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		} else {
 			tabPane.getTabs().remove(selectedTab);
 		}
-		
+
 		updateStatusRight("");
 	}
 
@@ -956,7 +981,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		if (workspace != null) {
 			stage.close();
 			boolean success = fileController.changeWorkspace(workspace);
-			if (success) {	
+			if (success) {
 				try {
 //					new TestUI().start(stage);
 					new Zenit().start(stage);
@@ -973,7 +998,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 	/**
 	 * Gets the currently selected tab on the tab pane.
-	 * 
+	 *
 	 * @return The Tab that is currently selected. Null if none was found.
 	 */
 	public FileTab getSelectedTab() {
@@ -989,18 +1014,18 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 	/**
 	 * Gets the FileTab in the TabPane that is associated with the specified File.
-	 * 
+	 *
 	 * @param file The File to search for.
 	 * @return The FileTab instance that holds the File, or null if no tab does.
 	 */
-	private FileTab getTabFromFile(File file) {
+	public FileTab getTabFromFile(File file) {
 		var tabs = tabPane.getTabs();
 
 		for (Tab tab : tabs) {
 			FileTab fileTab = (FileTab) tab;
 			File tabFile = fileTab.getFile();
 
-			if (tabFile != null && file.equals(tabFile)) {
+			if (file.equals(tabFile)) {
 				return fileTab;
 			}
 		}
@@ -1011,7 +1036,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	/**
 	 * Tries to import a folder. Displays a directory chooser and copies the
 	 * selected folder into the current workspace using
-	 * {@link zenit.filesystem.FileController#importProject(File)
+	 * {@link main.java.zenit.filesystem.FileController#importProject(File)
 	 * importProject(File)} Displays an error or information dialog to display the
 	 * result.
 	 */
@@ -1024,7 +1049,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		if (source != null) {
 			try {
 				File target = fileController.importProject(source);
-				FileTree.createParentNode((FileTreeItem<String>) treeView.getRoot(), target);
+				FileTree.createParentNode(treeView.getRoot(), target, existingClasses);
 				DialogBoxes.informationDialog("Import complete", "Project is imported to workspace");
 			} catch (IOException ex) {
 				DialogBoxes.errorDialog("Import failed", "Couldn't import project", ex.getMessage());
@@ -1038,7 +1063,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	public File getCustomThemeCSS() {
 		return this.customThemeCSS;
 	}
-		
+
 	/**
 	 * Opens the search panel if there is a selected tab.
 	 */
@@ -1060,223 +1085,223 @@ public class MainController extends VBox implements ThemeCustomizable {
 		// TODO Auto-generated method stub
 		return activeStylesheet;
 	}
-	
-	/** 
-	 * If there isn't a comment at the start of the line the method comments 
+
+	/**
+	 * If there isn't a comment at the start of the line the method comments
 	 * and if there is a comment the method removes it.
-	 * 
+	 *
 	 * @author Fredrik Eklundh
 	 */
 	public void commentAndUncomment() {
 
 		ZenCodeArea zenCodeArea = getSelectedTab().getZenCodeArea();
-		
+
 		int caretPos = zenCodeArea.getCaretPosition();
-		
+
 		int caretColumn = zenCodeArea.getCaretColumn();
-		
+
 		int length = zenCodeArea.getLength();
-		
+
 		int whereToReplaceFirstLine = caretPos - caretColumn;
-		
+
 		int rowNumber = zenCodeArea.getCurrentParagraph();
-		
+
 		int paragraphLength = zenCodeArea.getParagraphLength(rowNumber);
-		
+
 		List<Integer> whereToReplaceList = new ArrayList<>();
-		
+
 		IndexRange zen = zenCodeArea.getSelection();
-		
+
 		int endOfSelection = zen.getEnd();
-		
+
 		int startOfSelection = zen.getStart();
-		
+
 		boolean topDown = true;
-		
+
 		int n = 1;
-		
+
 		int whereToReplace = whereToReplaceFirstLine;
-		
+
 		whereToReplaceList.add(whereToReplaceFirstLine);
-		
-		//If the selection starts at least one row above the end of the selection 
+
+		//If the selection starts at least one row above the end of the selection
 		if (caretPos == endOfSelection && whereToReplaceFirstLine > startOfSelection) {
 			topDown = true;
 			do {
-				
+
 				whereToReplace = whereToReplace - 1 - zenCodeArea.getParagraphLength(rowNumber - n);
 				n++;
 				whereToReplaceList.add(whereToReplace);
-				
+
 			}while (whereToReplace > startOfSelection);
 		}
-		
-		//If the selection starts at least one row below the end of the selection 
+
+		//If the selection starts at least one row below the end of the selection
 		if (caretPos == startOfSelection && whereToReplace + paragraphLength < endOfSelection) {
 			topDown = false;
 			do {
-				
+
 				whereToReplace = whereToReplace + 1 + zenCodeArea.getParagraphLength(rowNumber + n - 1);
 				n++;
 				whereToReplaceList.add(whereToReplace);
-				
+
 			}while (whereToReplace + zenCodeArea.getParagraphLength(rowNumber + n - 1) < endOfSelection);
 
 		}
 
 		boolean[] addComment = new boolean[whereToReplaceList.size()];
-		
+
 		//Comment or uncomment from the top and down then moves the caret to the "new" right position
 		if (topDown == true) {
-			
+
 			int stepsToMove = 0;
-			
+
 			for (int i = 0; i < n; i++) {
 				whereToReplace = whereToReplaceList.get(i);
-				
+
 				if (caretPos > length - 3) {
 					zenCodeArea.insertText(caretPos, "	  ");
 				}
-				
+
 				if (zenCodeArea.getText(whereToReplace, whereToReplace + 3).equals("// ")) {
 
 					if (zenCodeArea.getText(whereToReplace, whereToReplace + 4).equals("// *")) {
 						zenCodeArea.deleteText(whereToReplace, whereToReplace + 2);
 						stepsToMove = stepsToMove - 2;
 						addComment[i] = false;
-						
+
 					}else {
 						zenCodeArea.replaceText(whereToReplace, whereToReplace + 2, "  ");
 						addComment[i] = false;
 					}
-					
+
 				}else if (zenCodeArea.getText(whereToReplace, whereToReplace + 3).equals("// ") == false) {
-					
+
 					if (zenCodeArea.getText(whereToReplace, whereToReplace + 2).equals("//")) {
 						zenCodeArea.deleteText(whereToReplace, whereToReplace + 2);
 						addComment[i] = false;
-						
+
 						if (whereToReplace == caretPos) {
-							
+
 						}else if (whereToReplace + 1 == caretPos) {
 							stepsToMove--;
-							
+
 						}else {
 							stepsToMove = stepsToMove - 2;
 						}
-					
+
 					}else if(zenCodeArea.getText(whereToReplace, whereToReplace + 4).equals("    ")) {
 						zenCodeArea.replaceText(whereToReplace, whereToReplace + 2, "//");
 						addComment[i] = false;
-						
+
 					}else {
 						zenCodeArea.insertText(whereToReplace, "//");
 						stepsToMove = stepsToMove + 2;
 						addComment[i] = true;
-					}		
-				}	
+					}
+				}
 			}
-			
+
 			if(whereToReplaceList.size() < 2) {
 				zenCodeArea.moveTo(caretPos + stepsToMove);
-				
+
 			}else if (addComment[0] && addComment[n - 1]) {
 				zenCodeArea.selectRange(startOfSelection + 2, endOfSelection + stepsToMove);
 
 			}else if (addComment[0] && addComment[n - 1] == false) {
 				zenCodeArea.selectRange(startOfSelection + 2, endOfSelection + stepsToMove);
-				
+
 			}else if (addComment[0] == false && addComment[n - 1]) {
 				zenCodeArea.selectRange(startOfSelection - 2, endOfSelection + stepsToMove + 2);
-				
+
 			}else {
 				zenCodeArea.selectRange(startOfSelection - 2, endOfSelection + stepsToMove);
 			}
-		}	
+		}
 		//Comment or uncomment from below and up
 		if (topDown == false) {
-			
+
 			for (int i = whereToReplaceList.size() - 1; i >= 0; i--) {
 				whereToReplace = whereToReplaceList.get(i);
-				
+
 				if (caretPos > length - 3) {
 					zenCodeArea.insertText(caretPos, "	  ");
 					zenCodeArea.moveTo(caretPos);
 				}
-				
+
 				if (zenCodeArea.getText(whereToReplace, whereToReplace + 3).equals("// ")) {
 
 					if (zenCodeArea.getText(whereToReplace, whereToReplace + 4).equals("// *")) {
 						zenCodeArea.deleteText(whereToReplace, whereToReplace + 2);
 						addComment[i] = false;
-						
+
 					}else {
 						zenCodeArea.replaceText(whereToReplace, whereToReplace + 2, "  ");
 						zenCodeArea.moveTo(caretPos);
 						addComment[i] = false;
 					}
-					
+
 				}else if (zenCodeArea.getText(whereToReplace, whereToReplace + 3).equals("// ") == false) {
-					
+
 					if (zenCodeArea.getText(whereToReplace, whereToReplace + 2).equals("//")) {
 						zenCodeArea.deleteText(whereToReplace, whereToReplace + 2);
 						addComment[i] = false;
-						
+
 						if (whereToReplace == caretPos) {
 							zenCodeArea.moveTo(caretPos);
-							
+
 						}else if (whereToReplace + 1 == caretPos) {
 							zenCodeArea.moveTo(caretPos - 1);
-							
+
 						}else {
 							zenCodeArea.moveTo(caretPos - 2);
 						}
-							
+
 					}else {
 						zenCodeArea.insertText(whereToReplace, "//");
 						zenCodeArea.moveTo(caretPos + 2);
 						addComment[i] = true;
-					}		
-				}	
-
-			if (addComment[0] && addComment[whereToReplaceList.size() - 1]) {
-				zenCodeArea.selectRange(rowNumber + whereToReplaceList.size() - 1,
-				endOfSelection - whereToReplaceList.get(whereToReplaceList.size() - 1) + 2,
-				rowNumber, caretColumn + 2);
-				
-			}else if(addComment[0] && addComment[whereToReplaceList.size() - 1] == false) {
-				zenCodeArea.selectRange(rowNumber + whereToReplaceList.size() - 1,
-				endOfSelection - whereToReplaceList.get(whereToReplaceList.size() - 1) - 2,
-				rowNumber, caretColumn + 2);
-				
-			}else if(addComment[0] == false && addComment[whereToReplaceList.size() - 1]) {
-				zenCodeArea.selectRange(rowNumber + whereToReplaceList.size() - 1,
-				endOfSelection - whereToReplaceList.get(whereToReplaceList.size() - 1) + 2,
-				rowNumber, caretColumn - 2);
-				
-			}else {
-				zenCodeArea.selectRange(rowNumber + whereToReplaceList.size() - 1,
-				endOfSelection - whereToReplaceList.get(whereToReplaceList.size() - 1) - 2,
-				rowNumber, caretColumn - 2);
+					}
 				}
-			}	
+
+				if (addComment[0] && addComment[whereToReplaceList.size() - 1]) {
+					zenCodeArea.selectRange(rowNumber + whereToReplaceList.size() - 1,
+							endOfSelection - whereToReplaceList.get(whereToReplaceList.size() - 1) + 2,
+							rowNumber, caretColumn + 2);
+
+				}else if(addComment[0] && addComment[whereToReplaceList.size() - 1] == false) {
+					zenCodeArea.selectRange(rowNumber + whereToReplaceList.size() - 1,
+							endOfSelection - whereToReplaceList.get(whereToReplaceList.size() - 1) - 2,
+							rowNumber, caretColumn + 2);
+
+				}else if(addComment[0] == false && addComment[whereToReplaceList.size() - 1]) {
+					zenCodeArea.selectRange(rowNumber + whereToReplaceList.size() - 1,
+							endOfSelection - whereToReplaceList.get(whereToReplaceList.size() - 1) + 2,
+							rowNumber, caretColumn - 2);
+
+				}else {
+					zenCodeArea.selectRange(rowNumber + whereToReplaceList.size() - 1,
+							endOfSelection - whereToReplaceList.get(whereToReplaceList.size() - 1) - 2,
+							rowNumber, caretColumn - 2);
+				}
+			}
 		}
 	}
-	
+
 	/**
-	 * Let's user choose .jar and .zip files and adds them to projects lib-folder and creates 
+	 * Let's user choose .jar and .zip files and adds them to projects lib-folder and creates
 	 * build paths. Show dialog box if import failed or not.
 	 * @param projectFile Project to import jar-files to
 	 */
 	public void chooseAndImportLibraries(ProjectFile projectFile) {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Select jar file to import");
-		
+
 		FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Libraries", "*.jar", "*.zip");
 		fileChooser.getExtensionFilters().add(filter);
 
 		List<File> jarFiles = fileChooser.showOpenMultipleDialog(stage);
-		
+
 		if (jarFiles != null) {
 			boolean success = fileController.addInternalLibraries(jarFiles, projectFile);
 			if (success) {
@@ -1286,7 +1311,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Opens up the project settings for specified project
 	 * @param projectFile Project to open settings for
@@ -1295,64 +1320,80 @@ public class MainController extends VBox implements ThemeCustomizable {
 		pmc = new ProjectMetadataController(fileController, projectFile, isDarkMode, this);
 		pmc.start();
 	}
-	
+
 	public void openJREVersions() {
 		JREVersionsController jvc = new JREVersionsController(true);
 		jvc.start();
 	}
-	
+
 	@FXML
 	private void terminate() {
 		if (process != null ) {
 			process.destroy();
-			
+
 		}
 	}
-	
+
 	public boolean isDarkmode() {
 		return isDarkMode;
 	}
-	
+
 	public void setDarkmode(boolean isDarkmode) {
 		this.isDarkMode = isDarkmode;
 	}
-	
-	
-	
-	
+
+
+
+
 	public void closeConsoleComponent() {
-		
+
 		splitPane.setDividerPosition(0, 1.0);
-	    consolePane.setMinHeight(0.0);
+		consolePane.setMinHeight(0.0);
 		consolePane.setVisible(false);
 		consolePane.setDisable(true);
 		splitPane.resize(splitPane.getWidth() + 2, splitPane.getHeight() + 2);
-		
+
 		Node divider = splitPane.lookup(".split-pane-divider");
-	    if(divider!=null){
-	        divider.setStyle("-fx-padding: 0");
-	    }
-		
+		if(divider!=null){
+			divider.setStyle("-fx-padding: 0");
+		}
+
 	}
-	
+
 	public void openConsoleComponent() {
-		
+
 		consolePane.setVisible(true);
 		consolePane.setDisable(false);
 		splitPane.setDividerPosition(0, 0.85);
 		consolePane.setMinHeight(34.0);
-		
+
 		Node divider = splitPane.lookup(".split-pane-divider");
 
 		if(divider != null) {
 			divider.setStyle("-fx-padding: 1");
 		}
 		splitPane.resize(splitPane.getWidth() + 2 , splitPane.getHeight() + 2);
-		
-		
-		
+
+
+
 	}
-	
-	
-	
+
+
+	public String moveFile(File location, File destination) {
+		String destPath = destination.getPath() + FileSystems.getDefault().getSeparator() + location.getName();
+		try {
+			fileController.moveFile(location, new File(destPath));
+			return destPath;
+		} catch (IOException e) {
+			DialogBoxes.errorDialog("Error", "Couldn't move file", "An error occured while trying to move file");
+		}
+		return null;
+	}
+
+	public void changePackageForOpenFile(FileTab tab) {
+		String newContent = tab.updatePackage();
+		if(newContent != null){
+			saveFile(false, tab.getFile(), newContent);
+		}
+	}
 }
