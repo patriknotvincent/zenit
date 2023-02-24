@@ -10,6 +10,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileTreeTest extends ZenithTestBase {
+
     private final String TREE_LIST = "#treeView";
     private final String FILE = "File";
     private final String NEW = "New...";
@@ -19,7 +20,7 @@ class FileTreeTest extends ZenithTestBase {
 
     @Test
     void createNodes() {
-
+        moveTo("#menuBar");
         clickOn("File");
         clickOn(SIDE_BAR_MENU_NEW);
         moveTo(NEW_TAB);
