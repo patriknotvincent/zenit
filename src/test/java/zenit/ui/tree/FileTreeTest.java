@@ -1,15 +1,12 @@
 package zenit.ui.tree;
 
-import javafx.scene.control.TreeView;
+import javafx.scene.control.Label;
+import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
 import org.junit.jupiter.api.Test;
 import org.testfx.util.WaitForAsyncUtils;
 import zenit.ZenithTestBase;
-import zenit.ui.MainController;
-
 import static org.testfx.api.FxAssert.verifyThat;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class FileTreeTest extends ZenithTestBase {
     // Instance variables with TAGS.
@@ -19,15 +16,17 @@ class FileTreeTest extends ZenithTestBase {
     private final String NEW_TAB = "#newTab";
 
     // Instance variables with WITHOUT TAGS.
-    private final String LIST_ITEM = "Test.java";
+    private final String CLASS_NAME = "Test.java";
     private final String FILE_NAME = "File name";
     private final String DIRECTORY = "ZenitTEst";
     private final String SOURCE = "src";
     private final String NEW = "New...";
     private final String NEW_CLASS = "New class";
-    private final String NEW_FILE_NAME = "Test";
+    private final String NEW_INTERFACE = "New interface";
+    private final String NEW_CLASS_NAME = "Test";
+    private final String NEW_INTERFACE_NAME = "ITest";
     private final String CREATE = "OK";
-    private final String FILE_TO_DELETE = "Delete \"" + LIST_ITEM + "\"";
+    private final String FILE_TO_DELETE = "Delete \"" + CLASS_NAME + "\"";
     private final String SIDE_BAR_MENU_NEW = "#sideBarMenuNew";
 
     /**
@@ -35,7 +34,7 @@ class FileTreeTest extends ZenithTestBase {
      * components that are built without FXML files which means we have no tags to make the test generic.
      */
     @Test
-    void createNodes() {
+    void createClass() {
         doubleClickOn(DIRECTORY);
         rightClickOn(SOURCE);
         moveTo(NEW);
@@ -45,10 +44,30 @@ class FileTreeTest extends ZenithTestBase {
         for (int i = 0; i < FILE_NAME.length(); i++) {
             push(KeyCode.BACK_SPACE);
         }
-        write(NEW_FILE_NAME);
+        write(NEW_CLASS_NAME);
         clickOn(CREATE);
+        verifyThat(CLASS_NAME, (Label label) ->{
+            String test = label.getText();
+            test.contains(CLASS_NAME);
+        });
+        doubleClickOn(DIRECTORY);
     }
-
+    @Test
+    void createInterface(){
+        doubleClickOn(DIRECTORY);
+        rightClickOn(SOURCE);
+        moveTo(NEW);
+        moveTo(NEW_CLASS);
+        moveTo(NEW_INTERFACE);
+        clickOn(NEW_INTERFACE);
+        clickOn(FILE_NAME);
+        for (int i = 0; i < FILE_NAME.length(); i++) {
+            push(KeyCode.BACK_SPACE);
+        }
+        write(NEW_INTERFACE_NAME);
+        clickOn(CREATE);
+        doubleClickOn(DIRECTORY);
+    }
     @Test
     void createParentNode() {
     }
@@ -74,28 +93,38 @@ class FileTreeTest extends ZenithTestBase {
     }
 
     /**
-     * This method will open a list item specified in the instance variable.
+     * This method will open a Class file specified in the instance variable.
      * TODO investigate why this doensn't work when entire test suite is run.
      */
     @Test
-    void getTreeItemFromFile() {
+    void openClassFile() {
         WaitForAsyncUtils.waitForFxEvents();
         doubleClickOn(DIRECTORY);
         doubleClickOn(SOURCE);
-        moveTo(LIST_ITEM);
-        doubleClickOn(LIST_ITEM);
+        moveTo(CLASS_NAME);
+        doubleClickOn(CLASS_NAME);
+        doubleClickOn(DIRECTORY);
+
     }
 
     /**
-     * This method will remove a file from the directory.
+     * This method will remove a Class file from the directory.
      */
     @Test
-    void removeFromFile() {
+    void removeClassFile() {
         System.out.printf(FILE_TO_DELETE);
         doubleClickOn(DIRECTORY);
+        sleepMe();
         doubleClickOn(SOURCE);
-        moveTo(LIST_ITEM);
-        rightClickOn(LIST_ITEM);
+        sleepMe();
+        moveTo(CLASS_NAME);
+        sleepMe();
+        rightClickOn(CLASS_NAME);
+        sleepMe();
         clickOn(FILE_TO_DELETE);
+    }
+
+    void sleepMe(){
+        sleep(1000);
     }
 }

@@ -51,7 +51,7 @@
                      </accelerator></MenuItem>
 						<Menu disable="true" mnemonicParsing="false" text="Open Recent" visible="false" />
 						<SeparatorMenuItem mnemonicParsing="false" />
-						<MenuItem onAction="#closeTab" text="Close">
+						<MenuItem fx:id="#close" onAction="#closeTab" text="Close">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator></MenuItem>
