@@ -5,7 +5,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testfx.api.FxRobot;
 import org.testfx.api.FxRobotException;
+import org.testfx.api.FxToolkit;
 import zenit.ZenithTestBase;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -30,9 +32,11 @@ class SearchTest extends ZenithTestBase {
     private final String JAVA_TEST_FILE = "SearchTest.java";
     private final String TEXT_TEST_FILE = "SearchTest.txt";
 
+    /* <--------------------------------------------------------------------------->*/
+
     @BeforeEach
     void clearTextEditor() {
-        // TODO The editor needs to clear before each test
+        // TODO The editor needs to reset before each test
     }
 
     @Test
@@ -320,6 +324,7 @@ class SearchTest extends ZenithTestBase {
     void testReplaceManyWithOneJava() {
         char query = ';';
         String replace = " BATMAIN";
+        String replaceQuery = "BATMAIN";
         doubleClickOn(JAVA_TEST_FILE);
         push(KeyCode.CONTROL, KeyCode.F);
         clickOn(FIELD_SEARCH_INPUT);
@@ -327,12 +332,15 @@ class SearchTest extends ZenithTestBase {
         clickOn(FIELD_REPLACE_INPUT);
         write(replace);
         clickOn(BUTTON_REPLACE_ALL);
+        clickOn(FIELD_REPLACE_INPUT);
+        push(KeyCode.CONTROL, KeyCode.BACK_SPACE);
         clickOn(FIELD_SEARCH_INPUT);
         push(KeyCode.CONTROL, KeyCode.BACK_SPACE);
-        write(replace);
+        write(replaceQuery);
         moveTo(TEXT_EDITOR_AREA);
         verifyThat(LABEL_SEARCH_OCCURRENCES, (Label label) -> {
             String foo = label.getText();
+            //TODO
             return foo.contains("1/5");
         });
     }
@@ -341,27 +349,31 @@ class SearchTest extends ZenithTestBase {
     void testReplaceManyWithOneText() {
         char query = ';';
         String replace = " BATMAIN";
-        doubleClickOn(JAVA_TEST_FILE);
+        String replaceQuery = "BATMAIN";
+        doubleClickOn(TEXT_TEST_FILE);
         push(KeyCode.CONTROL, KeyCode.F);
         clickOn(FIELD_SEARCH_INPUT);
         write(query);
         clickOn(FIELD_REPLACE_INPUT);
         write(replace);
         clickOn(BUTTON_REPLACE_ALL);
+        clickOn(FIELD_REPLACE_INPUT);
+        push(KeyCode.CONTROL, KeyCode.BACK_SPACE);
         clickOn(FIELD_SEARCH_INPUT);
         push(KeyCode.CONTROL, KeyCode.BACK_SPACE);
-        write(replace);
+        write(replaceQuery);
         moveTo(TEXT_EDITOR_AREA);
         verifyThat(LABEL_SEARCH_OCCURRENCES, (Label label) -> {
             String foo = label.getText();
+            //TODO
             return foo.contains("1/5");
         });
     }
 
-
     /**
      * Unit tests for replacing one word, checking each index in a multi-word search.
      */
+
     @Test
     void testReplaceFirstWithOneJava() {
         char query = ';';
@@ -481,6 +493,10 @@ class SearchTest extends ZenithTestBase {
             return foo.contains("1/1");
         });
     }
+
+    /**
+     * Same tests, but with a text-file instead.
+     */
 
     @Test
     void testReplaceFirstWithOneText() {
@@ -602,6 +618,10 @@ class SearchTest extends ZenithTestBase {
         });
     }
 
+    /**
+     * Tests for testing state-transitions for the search window
+     */
+
     @Test()
     void testDestroyWindowWithEscapeKey() {
         assertThrows(FxRobotException.class, () -> {
@@ -653,22 +673,19 @@ class SearchTest extends ZenithTestBase {
         });
     }
 
-    /*
-    @Test
-    void clearZen() {
+    @Test()
+    void testErroneousWindowStateTransition() {
+        doubleClickOn(TEXT_TEST_FILE);
+        push(KeyCode.CONTROL, KeyCode.F);
+        clickOn(FIELD_SEARCH_INPUT);
+        write("Hello!");
+        clickOn(BUTTON_ESCAPE);
+        push(KeyCode.CONTROL, KeyCode.F);
+        clickOn(LABEL_SEARCH_OCCURRENCES);
+        push(KeyCode.CONTROL, KeyCode.F);
+        verifyThat(FIELD_SEARCH_INPUT, (TextField field) -> {
+            String foo = field.getText();
+            return foo.isEmpty();
+        });
     }
-
-    @Test
-    void cleanZen() {
-    }
-
-    @Test
-    void replaceAll() {
-    }
-
-    @Test
-    void searchWindowLabelsTest() {
-
-    }
-    */
 }
