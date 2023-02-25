@@ -51,7 +51,7 @@
                      </accelerator></MenuItem>
 						<Menu disable="true" mnemonicParsing="false" text="Open Recent" visible="false" />
 						<SeparatorMenuItem mnemonicParsing="false" />
-						<MenuItem fx:id="#close" onAction="#closeTab" text="Close">
+						<MenuItem onAction="#closeTab" text="Close">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator></MenuItem>
@@ -162,11 +162,10 @@
 														<TabPane fx:id="tabPane" accessibleRole="PARENT" prefHeight="549.0" prefWidth="669.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 														<HBox alignment="TOP_RIGHT" fillHeight="false" layoutX="555.0" layoutY="4.0" prefHeight="22.0" prefWidth="112.0" snapToPixel="false" spacing="2.0" AnchorPane.rightAnchor="0.0">
 															<children>
-                                                <Button id="btnRun" fx:id="btnRun" alignment="CENTER" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0">
+                                               				 <Button id="btnRun" fx:id="btnRun" alignment="CENTER" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0">
 																	<padding>
 																		<Insets top="1.0" />
 																	</padding>
-
 																	<graphic>
 																		<FontIcon fx:id="iconRun" iconLiteral="fa-play-circle" iconColor="green" iconSize="24"/>
 																	</graphic>

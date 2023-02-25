@@ -11,9 +11,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 public class FileFinder {
 
-    String absolutePath = "";
+    static String absolutePath = "";
 
-    public String findFile(String fileName) throws IOException {
+    public static String findFile(String fileName) throws IOException {
         String os = System.getProperty("os.name");
         Path root;
         if (os.startsWith("Windows")) {
@@ -43,6 +43,39 @@ public class FileFinder {
             }
         });
         return absolutePath;
+    }
+
+    public static boolean assertFileExists(String fileName) throws IOException {
+        String os = System.getProperty("os.name");
+        Path root;
+        if (os.startsWith("Windows")) {
+            root = Paths.get("C:\\Users\\");
+        } else if (os.startsWith("Mac")) {
+            root = Paths.get("/");
+        } else {
+            root = null;
+        }
+
+        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                if (file.getFileName().toString().equals(fileName)) {
+                    System.out.println("File found: " + file.toAbsolutePath());
+                    absolutePath = String.valueOf(file.toAbsolutePath());
+                    return FileVisitResult.TERMINATE;
+                }
+                return FileVisitResult.CONTINUE;
+            }
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException ex) {
+                if (ex instanceof AccessDeniedException) {
+                    return FileVisitResult.SKIP_SUBTREE; // skip directories that can't be accessed
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        System.out.println(absolutePath);
+        return absolutePath.length() > 0;
     }
 
 }

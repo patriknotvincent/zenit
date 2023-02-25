@@ -30,6 +30,7 @@ public abstract class ZenithTestBase extends ApplicationTest {
      */
     @BeforeAll
     public static void setUp() throws Exception {
+        //System.setProperty("testfx.headless", "true");
         ApplicationTest.launch(TestUI.class);
     }
 
@@ -64,6 +65,8 @@ public abstract class ZenithTestBase extends ApplicationTest {
      * @return An object (or node) associated with .fxml files found in the project.
      */
     public <T extends Node> T find(final String query) {
-        return lookup(query).query();
+        T controller = lookup(query).query();
+        if(controller == null) throw new NullPointerException("Controller with ID: " + query + " could not be found");
+        return controller;
     }
 }

@@ -9,14 +9,18 @@ import zenit.ZenithTestBase;
 import static org.testfx.api.FxAssert.verifyThat;
 
 class FileTreeTest extends ZenithTestBase {
-    // Instance variables with TAGS.
+
+    /* <------------------------- TAGGED ELEMENTS IN FXML -------------------------> */
+
     private final String TREE_LIST = "#treeView";
     private final String FILE = "File";
     private final String NEW_FILE = "#newFile";
     private final String NEW_TAB = "#newTab";
 
-    // Instance variables with WITHOUT TAGS.
+    /* <------------------------ UNTAGGED ELEMENTS IN FXML ------------------------> */
+
     private final String CLASS_NAME = "Test.java";
+    private final String LIST_ITEM = "Test.java";
     private final String FILE_NAME = "File name";
     private final String DIRECTORY = "ZenitTEst";
     private final String SOURCE = "src";
@@ -28,6 +32,8 @@ class FileTreeTest extends ZenithTestBase {
     private final String CREATE = "OK";
     private final String FILE_TO_DELETE = "Delete \"" + CLASS_NAME + "\"";
     private final String SIDE_BAR_MENU_NEW = "#sideBarMenuNew";
+
+    /* <---------------------------------------------------------------------------> */
 
     /**
      * This test creates a new class in the project directory, badly... The reason for this is that there are GUI-
@@ -46,11 +52,10 @@ class FileTreeTest extends ZenithTestBase {
         }
         write(NEW_CLASS_NAME);
         clickOn(CREATE);
-        verifyThat(CLASS_NAME, (Label label) ->{
+        verifyThat(CLASS_NAME, (Label label) -> {
             String test = label.getText();
-            test.contains(CLASS_NAME);
+            return test.contains(CLASS_NAME);
         });
-        doubleClickOn(DIRECTORY);
     }
     @Test
     void createInterface(){

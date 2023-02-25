@@ -13,29 +13,30 @@ import static org.testfx.api.FxAssert.verifyThat;
 
 class SearchTest extends ZenithTestBase {
 
-    /* <------------------------- TAGGED ELEMENTS IN FXML ------------------------->*/
+    /* <------------------------- TAGGED ELEMENTS IN FXML -------------------------> */
 
-    private final String FIELD_SEARCH_INPUT = "#textFieldInputWord";
-    private final String FIELD_REPLACE_INPUT = "#textFieldReplacementWord";
-    private final String BUTTON_SCROLL_UP = "#btnUp";
-    private final String BUTTON_SCROLL_DOWN = "#btnDown";
-    private final String BUTTON_ESCAPE = "#btnEsc";
-    private final String BUTTON_REPLACE_SELECTED = "#btnReplaceOne";
-    private final String BUTTON_REPLACE_ALL = "#btnReplaceAll";
-    private final String LABEL_SEARCH_OCCURRENCES = "#lblOccurrences";
-    private final String TEXT_EDITOR_AREA = "#editorArea";
+    private final String FIELD_SEARCH_INPUT              = "#textFieldInputWord";
+    private final String FIELD_REPLACE_INPUT             = "#textFieldReplacementWord";
+    private final String BUTTON_SCROLL_UP                = "#btnUp";
+    private final String BUTTON_SCROLL_DOWN              = "#btnDown";
+    private final String BUTTON_ESCAPE                   = "#btnEsc";
+    private final String BUTTON_REPLACE_SELECTED         = "#btnReplaceOne";
+    private final String BUTTON_REPLACE_ALL              = "#btnReplaceAll";
+    private final String LABEL_SEARCH_OCCURRENCES        = "#lblOccurrences";
+    private final String TEXT_EDITOR_AREA                = "#editorArea";
 
-    /* <------------------------ UNTAGGED ELEMENTS IN FXML ------------------------>*/
+    /* <------------------------ UNTAGGED ELEMENTS IN FXML ------------------------> */
 
     private final String JAVA_TEST_FILE = "SearchTest.java";
     private final String TEXT_TEST_FILE = "SearchTest.txt";
 
-    /* <--------------------------------------------------------------------------->*/
+    /* <---------------------------------------------------------------------------> */
 
+    /*
     @BeforeEach
     void clearTextEditor() {
         // TODO The editor needs to reset before each test
-    }
+    }*/
 
     @Test
     void searchInJavaFile() {
