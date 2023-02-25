@@ -67,6 +67,15 @@ public class FileFinder {
                 return FileVisitResult.CONTINUE;
             }
             @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                if (Files.isReadable(dir) && dir.getFileName().toString().equals(fileName)) {
+                    System.out.println("Directory found: " + dir.toAbsolutePath());
+                    absolutePath = String.valueOf(dir.toAbsolutePath());
+                    return FileVisitResult.TERMINATE;
+                }
+                return FileVisitResult.CONTINUE;
+            }
+            @Override
             public FileVisitResult visitFileFailed(Path file, IOException ex) {
                 if (ex instanceof AccessDeniedException) {
                     return FileVisitResult.SKIP_SUBTREE; // skip directories that can't be accessed

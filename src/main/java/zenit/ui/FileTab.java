@@ -65,8 +65,8 @@ public class FileTab extends Tab {
 		setText(initialTitle);
 		
 		zenCodeArea.textProperty().addListener((observable, oldText, newText) -> {
-			String initialFileContent = FileController.readFile(initialFile);
-			
+			String initialFileContent = null;
+			initialFileContent = FileController.readFile(initialFile);
 			hasChanged = !initialFileContent.equals(newText);
 			updateUI();
 		});

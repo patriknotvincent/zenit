@@ -34,23 +34,35 @@ class CreateTest extends ZenithTestBase {
     private final String SUB_MENU_FILE_NEW_NEW_FILE     = "New file";
     private final String SUB_MENU_FILE_NEW_NEW_FOLDER   = "New folder";
     private final String SUB_MENU_FILE_NEW_NEW_PROJECT  = "New Project";
-
-    private final String CREATION_MENU_JAVA_SELECTOR    = ".java";
-    private final String CREATION_MENU_TXT_SELECTOR     = ".txt";
-
-    private final String FILE_NAME = "File name";
-    private final String DIRECTORY = "ZenitTEst";
-    private final String SOURCE = "src";
-    private final String NEW_CLASS = "New class";
-    private final String NEW_INTERFACE = "New interface";
-    private final String NEW_CLASS_NAME = "Test";
-    private final String NEW_INTERFACE_NAME = "ITest";
-    private final String SIDE_BAR_MENU_NEW = "#sideBarMenuNew";
+    private final String SUB_MENU_FILE_NEW_NEW_PACKAGE  = "New folder";
 
     /* <---------------------------------------------------------------------------> */
 
     private final String TEST_FILE_NAME = "CreateTest";
+    private final String TEST_PACKAGE_NAME = "TestPackage";
     private String BOUNDARY_TEST_FILE_NAME;
+
+    /**
+     * Some of the below test-methods actually create files on the host computer. This method erases the created file
+     * @param fileName Name of the file to be deleted.
+     */
+    private void deleteTestFile(String fileName) {
+        try {
+            rightClickOn(fileName);
+            clickOn("Delete \"" + fileName + "\"");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    void deleteTestPackage() {
+        try {
+            rightClickOn(TEST_PACKAGE_NAME);
+            clickOn("Delete \"" + TEST_PACKAGE_NAME + "\"");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     void getWorkspace() {
@@ -66,6 +78,7 @@ class CreateTest extends ZenithTestBase {
         write(TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
         assertTrue(FileFinder.assertFileExists(TEST_FILE_NAME + ".java"));
+        deleteTestFile(TEST_FILE_NAME + ".java");
     }
 
     @Test
@@ -80,6 +93,7 @@ class CreateTest extends ZenithTestBase {
         type(KeyCode.ENTER);
         clickOn(CREATION_MENU_CONFIRM);
         assertTrue(FileFinder.assertFileExists(TEST_FILE_NAME + ".txt"));
+        deleteTestFile(TEST_FILE_NAME + ".txt");
     }
 
     /**
@@ -104,7 +118,7 @@ class CreateTest extends ZenithTestBase {
         assertFalse(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
     }
     /**
-     * Test for exactly 256 characters.
+     * Test for exactly 256 characters, should return false.
      * @throws IOException from FileFinder.walkFileTree()
      */
     @Test
@@ -120,6 +134,7 @@ class CreateTest extends ZenithTestBase {
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
         assertTrue(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        deleteTestFile(BOUNDARY_TEST_FILE_NAME + ".java");
     }
 
     /**
@@ -140,6 +155,7 @@ class CreateTest extends ZenithTestBase {
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
         assertTrue(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        deleteTestFile(BOUNDARY_TEST_FILE_NAME + ".java");
     }
 
     /**
@@ -355,15 +371,31 @@ class CreateTest extends ZenithTestBase {
     /**
      * Tests for illegal characters on file-creation on Mac OS X.
      *
-     * Test for //TODO
+     * Test for colon (:), the only illegal character in Mac OS X file-names //TODO Är det? Och testet behövs skrivas.
      * @throws IOException from FileFinder.walkFileTree()
      */
 
+    void testIllegalCharactersMacOsX() {
+        // Something something like above methods but the test should only pass on Mac OS X computers
+    }
 
-
+    /**
+     * Tests for creating packages with or without illegal characters
+     *
+     * Test for creating a package with valid input
+     * @throws IOException from FileFinder.walkFileTree()
+     */
 
     @Test
-    void createPackage() {
+    void createPackage() throws IOException {
+        clickOn(MENU_FILE);
+        clickOn(SUB_MENU_FILE_NEW);
+        moveTo(SUB_MENU_FILE_NEW_NEW_TAB);
+        clickOn(SUB_MENU_FILE_NEW_NEW_PACKAGE);
+        write(TEST_PACKAGE_NAME);
+        clickOn("Create");
+        assertTrue(FileFinder.assertFileExists(TEST_PACKAGE_NAME));
+        deleteTestPackage();
     }
 
     @Test

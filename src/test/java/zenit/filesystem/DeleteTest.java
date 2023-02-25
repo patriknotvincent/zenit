@@ -42,6 +42,10 @@ public class DeleteTest extends ZenithTestBase {
 
     /* <---------------------------------------------------------------------------> */
 
+    void revertDeletion() {
+
+    }
+
     void deleteTestFileJava() {
 
     }
@@ -49,5 +53,11 @@ public class DeleteTest extends ZenithTestBase {
     void deleteTestFileText() {
 
     }
+
+    void deletePackage() {
+
+    }
+
+
 
 }

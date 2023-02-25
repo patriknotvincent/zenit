@@ -26,9 +26,7 @@ public class FileTreeItem<T> extends TreeItem<T> {
 	public static final int FILE = 106;
 	public static final int INCOMPATIBLE = 107;
 
-
     private ImageView icon;
-    
 	
 	/**
 	 * @param file Corresponding file
