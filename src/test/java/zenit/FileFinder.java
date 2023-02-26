@@ -51,7 +51,7 @@ public class FileFinder {
         if (os.startsWith("Windows")) {
             root = Paths.get("C:\\Users\\");
         } else if (os.startsWith("Mac")) {
-            root = Paths.get("/");
+            root = Paths.get("/Users/");
         } else {
             root = null;
         }

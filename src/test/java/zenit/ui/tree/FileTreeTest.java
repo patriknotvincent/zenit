@@ -1,12 +1,16 @@
 package zenit.ui.tree;
-
-import javafx.scene.control.Label;
-import javafx.scene.control.TreeItem;
+import javafx.scene.control.TabPane;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import org.junit.jupiter.api.Test;
-import org.testfx.util.WaitForAsyncUtils;
+import org.testfx.api.FxRobotException;
+import zenit.FileFinder;
 import zenit.ZenithTestBase;
-import static org.testfx.api.FxAssert.verifyThat;
+import zenit.ui.FileTab;
+
+import java.io.IOException;
+import static junit.framework.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FileTreeTest extends ZenithTestBase {
 
@@ -18,29 +22,36 @@ class FileTreeTest extends ZenithTestBase {
     private final String NEW_TAB = "#newTab";
 
     /* <------------------------ UNTAGGED ELEMENTS IN FXML ------------------------> */
+    private final String PERSISTENT_CLASS_FILE = "JavaTest.java";
+    private final String PERSISTENT_PACKAGE_NAME = "JTest";
 
     private final String CLASS_NAME = "Test.java";
-    private final String LIST_ITEM = "Test.java";
+    private final String INTERFACE_NAME = "ITest.java";
     private final String FILE_NAME = "File name";
+    private final String PACKAGE_NAME = "Package name";
     private final String DIRECTORY = "ZenitTEst";
     private final String SOURCE = "src";
     private final String NEW = "New...";
     private final String NEW_CLASS = "New class";
     private final String NEW_INTERFACE = "New interface";
+    private final String  NEW_PACKAGE = "New package";
     private final String NEW_CLASS_NAME = "Test";
     private final String NEW_INTERFACE_NAME = "ITest";
+    private final String NEW_PACKAGE_NAME = "PTest";
     private final String CREATE = "OK";
-    private final String FILE_TO_DELETE = "Delete \"" + CLASS_NAME + "\"";
+    private final String CLASS_TO_DELETE = "Delete \"" + CLASS_NAME + "\"";
+    private final String INTERFACE_TO_DELETE = "Delete \"" + INTERFACE_NAME + "\"";
+    private final String PACKAGE_TO_DELETE = "Delete \"" + NEW_PACKAGE_NAME + "\"";
     private final String SIDE_BAR_MENU_NEW = "#sideBarMenuNew";
 
     /* <---------------------------------------------------------------------------> */
 
     /**
-     * This test creates a new class in the project directory, badly... The reason for this is that there are GUI-
-     * components that are built without FXML files which means we have no tags to make the test generic.
+     * This test creates a new class in the project directory.
+     * TODO Need a way to verify that the GUI-component was created by clicking on it.
      */
     @Test
-    void createClass() {
+    void createClass() throws IOException {
         doubleClickOn(DIRECTORY);
         rightClickOn(SOURCE);
         moveTo(NEW);
@@ -52,13 +63,15 @@ class FileTreeTest extends ZenithTestBase {
         }
         write(NEW_CLASS_NAME);
         clickOn(CREATE);
-        verifyThat(CLASS_NAME, (Label label) -> {
-            String test = label.getText();
-            return test.contains(CLASS_NAME);
-        });
+        doubleClickOn(SOURCE);
+        doubleClickOn(DIRECTORY);
     }
+    /**
+     * This test creates a new Interface in the project directory.
+     * TODO Need a way to verify that the GUI-component was created by clicking on it.
+     */
     @Test
-    void createInterface(){
+    void createInterface() throws IOException {
         doubleClickOn(DIRECTORY);
         rightClickOn(SOURCE);
         moveTo(NEW);
@@ -73,12 +86,36 @@ class FileTreeTest extends ZenithTestBase {
         clickOn(CREATE);
         doubleClickOn(DIRECTORY);
     }
+    /**
+     * This test creates a new Package in the project directory.
+     * TODO Need a way to verify that the GUI-component was created by clicking on it.
+     */
     @Test
-    void createParentNode() {
+    void createPackage(){
+        doubleClickOn(DIRECTORY);
+        rightClickOn(SOURCE);
+        moveTo(NEW);
+        moveTo(NEW_CLASS);
+        moveTo(NEW_PACKAGE);
+        clickOn(NEW_PACKAGE);
+        doubleClickOn(PACKAGE_NAME);
+        for (int i = 0; i < PACKAGE_NAME.length(); i++) {
+            push(KeyCode.BACK_SPACE);
+        }
+        write(NEW_PACKAGE_NAME);
+        clickOn(CREATE);
+        doubleClickOn(DIRECTORY);
     }
 
+    /**
+     * Test for moving a file from one directory to another.
+     * TODO Currently drag and drop isn't working and test can be verifed completely.
+     */
     @Test
     void changeFileForNodes() {
+        doubleClickOn(DIRECTORY);
+        doubleClickOn(SOURCE);
+        drag(PERSISTENT_CLASS_FILE).moveTo(PERSISTENT_PACKAGE_NAME).drop();
     }
 
     /**
@@ -99,37 +136,55 @@ class FileTreeTest extends ZenithTestBase {
 
     /**
      * This method will open a Class file specified in the instance variable.
-     * TODO investigate why this doensn't work when entire test suite is run.
      */
     @Test
     void openClassFile() {
-        WaitForAsyncUtils.waitForFxEvents();
         doubleClickOn(DIRECTORY);
         doubleClickOn(SOURCE);
-        moveTo(CLASS_NAME);
-        doubleClickOn(CLASS_NAME);
+        moveTo(PERSISTENT_CLASS_FILE);
+        doubleClickOn(PERSISTENT_CLASS_FILE);
         doubleClickOn(DIRECTORY);
-
     }
-
     /**
-     * This method will remove a Class file from the directory.
+     * This method will remove a Class file from the directory and verifies that it was removed.
      */
     @Test
-    void removeClassFile() {
-        System.out.printf(FILE_TO_DELETE);
+    void removeClassFile() throws IOException {
         doubleClickOn(DIRECTORY);
-        sleepMe();
         doubleClickOn(SOURCE);
-        sleepMe();
         moveTo(CLASS_NAME);
-        sleepMe();
         rightClickOn(CLASS_NAME);
-        sleepMe();
-        clickOn(FILE_TO_DELETE);
+        clickOn(CLASS_TO_DELETE);
+        assertThrows(FxRobotException.class, () ->{
+            clickOn(CLASS_NAME);
+        });
     }
-
-    void sleepMe(){
-        sleep(1000);
+    /**
+     * This method will remove a Interface file from the directory and verifies that it was removed.
+     */
+    @Test
+    void removeInterfaceFile() throws IOException {
+        doubleClickOn(DIRECTORY);
+        doubleClickOn(SOURCE);
+        moveTo(INTERFACE_NAME);
+        rightClickOn(INTERFACE_NAME);
+        clickOn(INTERFACE_TO_DELETE);
+        assertThrows(FxRobotException.class, () -> {
+            clickOn(INTERFACE_NAME);
+        });
+    }
+    /**
+     * This method will remove a Package from the directory and verifies that it was removed.
+     */
+    @Test
+    void removePackage() throws IOException{
+        doubleClickOn(DIRECTORY);
+        doubleClickOn(SOURCE);
+        moveTo(NEW_PACKAGE_NAME);
+        rightClickOn(NEW_PACKAGE_NAME);
+        clickOn(PACKAGE_TO_DELETE);
+        assertThrows(FxRobotException.class, () -> {
+            clickOn(NEW_PACKAGE_NAME);
+        });
     }
 }
