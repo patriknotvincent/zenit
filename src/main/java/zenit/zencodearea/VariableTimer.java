@@ -3,6 +3,9 @@ package zenit.zencodearea;
 import java.util.List;
 import java.util.Timer;
 
+/**
+ * Timer for updating variable and method completion suggestions.
+ */
 public class VariableTimer {
     private Timer timer;
     private final ZenCodeArea zenCodeArea;
@@ -28,6 +31,10 @@ public class VariableTimer {
         }
     }
 
+    /**
+     * Updates the regex for finding variables and methods.
+     * @param existingClasses List of existing classes in the project.
+     */
     public void updateRegex(List<String> existingClasses) {
         StringBuilder variableBuilder = new StringBuilder("\\s*(final\\s+|static\\s+|abstract\\s+|synchronized\\s+|transient" +
                 "\\s+|strictfp\\s+|native\\s+|private\\s+|public\\s+|protected\\s+|default\\s+)?" +

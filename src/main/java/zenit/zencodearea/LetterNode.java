@@ -3,6 +3,9 @@ package zenit.zencodearea;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a node in the graph of completions.
+ */
 public class LetterNode {
     private ArrayList<LetterNode> children;
 

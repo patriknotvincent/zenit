@@ -1,5 +1,8 @@
 package zenit.zencodearea;
 
+/**
+ * Completions can be methods or variables.
+ */
 public enum CompletionType {
     METHOD,
     VARIABLE;

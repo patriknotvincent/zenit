@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Represents a graph of all variables and methods in an open tab to efficiently add and find
+ * them. Uses a HashMap to store the first letter of each variable/method name and a list of
+ * LetterNodes to store the rest of the name. The LetterNodes are connected to each other
+ * in a linked list structure.
+ */
 public class CompletionGraph {
     private final HashMap<Character, ArrayList<LetterNode>> startLetters;
 
@@ -11,51 +17,60 @@ public class CompletionGraph {
         startLetters = new HashMap<>();
     }
 
+    /**
+     * Searches for an input string in the graph.
+     * @param input what the user has written so far. See VariableTimerTask for how input is defined.
+     * @return a list of all found completions.
+     */
     public List<Completion> searchFor(String input) {
         if(input.isEmpty()){
             return new ArrayList<>();
         }
         ArrayList<Completion> foundWords = new ArrayList<>();
 
-        List<List<LetterNode>> startLists = findTraverseStartList(input);
-        if(input.length() != 1) {
-            startLists.forEach(list -> {
-                if (list != null && !list.isEmpty()) {
+        List<List<LetterNode>> startLists = findStartLists(input);
+        findWords(input, foundWords, startLists, input.charAt(0));
 
-                    StringBuilder base;
-                    base = findBase(list.get(0).getParent(), "");
-                    base.append(input.charAt(0));
-                    base.reverse();
-
-                    findWords(foundWords, list, base.toString());
-                }
-            });
-        }else if(!startLists.isEmpty()) {
-            findWords(foundWords, startLists.get(0), input);
-        }
-
-        //Find opposite case
+        //Find opposite case to allow for case-insensitive search. For example, if the user has
+        //written "a" and the graph contains "A", the opposite case of "a" is "A" and vice versa.
         char oppositeCase = Character.isUpperCase(input.charAt(0)) ? Character.toLowerCase(input.charAt(0)) : Character.toUpperCase(input.charAt(0));
-        startLists = findTraverseStartList(oppositeCase + input.substring(1));
-        if(input.length() != 1){
-            startLists.forEach(list -> {
-                if (list != null && !list.isEmpty()) {
-                    StringBuilder base;
-                    base = findBase(list.get(0).getParent(), "");
-                    base.append(oppositeCase);
-                    base.reverse();
-
-                    findWords(foundWords, list, base.toString());
-                }
-            });
-        }else if(!startLists.isEmpty()) {
-            findWords(foundWords, startLists.get(0), String.valueOf(oppositeCase));
-        }
+        startLists = findStartLists(oppositeCase + input.substring(1));
+        findWords(input, foundWords, startLists, oppositeCase);
 
         return foundWords;
     }
 
-    private List<List<LetterNode>> findTraverseStartList(String input) {
+    /**
+     * From the startLists, finds all words and adds them to the foundWords list.
+     * @param input what the user has written of the word so far
+     * @param foundWords the list of found words
+     * @param startLists the list of lists of LetterNodes that the search should start from
+     * @param firstLetter the first letter of the word, case-sensitive
+     */
+    private void findWords(String input, ArrayList<Completion> foundWords, List<List<LetterNode>> startLists,
+                           char firstLetter) {
+        if(input.length() != 1) {
+            startLists.forEach(list -> {
+                if (list != null && !list.isEmpty()) {
+                    StringBuilder base;
+                    base = findBase(list.get(0).getParent(), "");
+                    base.append(firstLetter);
+                    base.reverse();
+
+                    buildWords(foundWords, list, base.toString());
+                }
+            });
+        }else if(!startLists.isEmpty()) {
+            buildWords(foundWords, startLists.get(0), String.valueOf(firstLetter));
+        }
+    }
+
+    /**
+     * Finds lists of LetterNodes from where later searches should start.
+     * @param input what the user has written so far
+     * @return a list of startpoints
+     */
+    private List<List<LetterNode>> findStartLists(String input) {
 
         List<List<LetterNode>> startPoints = new ArrayList<>();
         List<LetterNode> letterNodes = startLetters.get(input.charAt(0));
@@ -84,6 +99,13 @@ public class CompletionGraph {
         return startPoints;
     }
 
+    /**
+     * Recursively traverses the graph to find a point from where the search should start
+     * based on the user input.
+     * @param n the current LetterNode
+     * @param chars the remaining characters of the user input
+     * @param startPoints the list of startpoints
+     */
     private void traverseLetterNode(LetterNode n, List<Character> chars,
                                     List<List<LetterNode>> startPoints) {
         if(chars.isEmpty()){
@@ -112,22 +134,33 @@ public class CompletionGraph {
         }
     }
 
-    private void findWords(ArrayList<Completion> foundWords, List<LetterNode> startPoint, String baseOfWord) {
+    /**
+     * Recursively builds words from the startpoints.
+     * @param foundWords the list of found words
+     * @param startPoint the current startpoint
+     * @param baseOfWord the part of the word that has been built so far
+     */
+    private void buildWords(ArrayList<Completion> foundWords, List<LetterNode> startPoint, String baseOfWord) {
         if(startPoint == null){
             return;
         }
 
         for(LetterNode n : startPoint){
             if(n.isLastLetterOfAWord()){
-                System.out.println(baseOfWord + n.getLetter());
                 foundWords.add(new Completion(baseOfWord + n.getLetter(), n.getCompletionType()));
             }
             if(n.getChildren() != null){
-                findWords(foundWords, n.getChildren(), baseOfWord + n.getLetter());
+                buildWords(foundWords, n.getChildren(), baseOfWord + n.getLetter());
             }
         }
     }
 
+    /**
+     * Finds the base of all words that start from the given LetterNode.
+     * @param n the LetterNode
+     * @param wordSoFar the part of the word that has been built so far
+     * @return the base of the word so far
+     */
     private StringBuilder findBase(LetterNode n, String wordSoFar) {
         StringBuilder baseBuilder = new StringBuilder(wordSoFar);
         baseBuilder.append(n.getLetter());
@@ -137,6 +170,9 @@ public class CompletionGraph {
         return baseBuilder;
     }
 
+    /**
+     * Prints out all words in the graph.
+     */
     public void printOut() {
         for(char c : startLetters.keySet()){
             ArrayList<LetterNode> letterNodes = startLetters.get(c);
@@ -146,10 +182,15 @@ public class CompletionGraph {
         }
     }
 
+    /**
+     * Recursively finds all words in the graph and builds them.
+     * @param word the part of the word that has been built so far
+     * @param n the current LetterNode
+     */
     private void printLetterNodes(String word, LetterNode n) {
         word += n.getLetter();
         if(n.isLastLetterOfAWord()){
-            //System.out.println(word);
+            System.out.println(word);
         }
         if(n.getChildren() != null) {
             for(LetterNode child : n.getChildren()){
@@ -158,6 +199,10 @@ public class CompletionGraph {
         }
     }
 
+    /**
+     * Adds a list of words to the graph.
+     * @param completions the list of words
+     */
     public void addWords(List<Completion> completions) {
         for(Completion completion : completions){
             List<Character> chars = getChars(completion.getName());
@@ -173,8 +218,13 @@ public class CompletionGraph {
         }
     }
 
-    private static List<Character> getChars(String variable) {
-        char[] chars = variable.toCharArray();
+    /**
+     * Creates an array of characters from a string.
+     * @param word the string
+     * @return the array of characters
+     */
+    private static List<Character> getChars(String word) {
+        char[] chars = word.toCharArray();
         List<Character> letters = new ArrayList<>();
         for(char c : chars){
             letters.add(c);
@@ -182,6 +232,13 @@ public class CompletionGraph {
         return letters;
     }
 
+    /**
+     * Recursively adds all letters to the graph.
+     * @param siblings the siblings of the current LetterNode
+     * @param chars the remaining characters of the word
+     * @param completionType the type of completion
+     * @param parent the parent of the current LetterNode
+     */
     private void addAllLetters(List<LetterNode> siblings, List<Character> chars, CompletionType completionType,
                                LetterNode parent) {
         if(chars.isEmpty()) return;
@@ -225,6 +282,9 @@ public class CompletionGraph {
         }
     }
 
+    /**
+     * Clears the graph.
+     */
     public void clear() {
         startLetters.clear();
     }

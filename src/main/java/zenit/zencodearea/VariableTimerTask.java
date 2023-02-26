@@ -4,6 +4,10 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Timer task that searches for variables and methods in the code and
+ * updates the completion menu.
+ */
 public class VariableTimerTask extends TimerTask {
     private final ZenCodeArea zenCodeArea;
 
@@ -37,23 +41,22 @@ public class VariableTimerTask extends TimerTask {
         completionGraph.addWords(foundMethods);
 
         String searchString = findStartOfWord();
-        //System.out.println("Search string: " + searchString);
         List<Completion> foundWords = completionGraph.searchFor(searchString);
         zenCodeArea.updateCompletionMenu(foundWords);
-        completionGraph.printOut();
     }
 
+    /**
+     * Finds all variables in the code.
+     * @param code The code to search in.
+     */
     private void findVariables(String code) {
         Pattern pattern = Pattern.compile(variableRegex);
 
         Matcher matcher = pattern.matcher(code);
-        //System.out.println("Searching");
         while (matcher.find()) {
-            //String variableType = matcher.group(3);
             String variableName = matcher.group(4);
 
             if(variableName != null) {
-                //System.out.println("Found variable declaration: " + variableType + " " + variableName);
                 if (variableName.contains(",")) {
                     variableName = variableName.replaceAll("\\s", "");
                     String[] variableNames = variableName.split(",");
@@ -68,23 +71,28 @@ public class VariableTimerTask extends TimerTask {
             }
         }
     }
+
+    /**
+     * Finds all methods in the code.
+     * @param code The code to search in.
+     */
     private void findMethods(String code) {
         Pattern pattern = Pattern.compile(methodRegex);
 
         Matcher matcher = pattern.matcher(code);
-        //System.out.println("Searching");
         while (matcher.find()) {
-            //String methodType = matcher.group(3);
             String methodName = matcher.group(4);
 
             if(methodName != null) {
-                //System.out.println("Found method declaration: " + methodType + " " + methodName);
                 foundMethods.add(new Completion(methodName, CompletionType.METHOD));
             }
         }
     }
 
-
+    /**
+     * Finds the start of the word that the caret is currently in.
+     * @return The start of the word.
+     */
     private String findStartOfWord() {
         StringBuilder sb = new StringBuilder();
         String currentParagraph = zenCodeArea.getParagraph(zenCodeArea.getCurrentParagraph()).getText();

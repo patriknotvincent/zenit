@@ -10,6 +10,9 @@ import zenit.ui.MainController;
 
 import java.io.File;
 
+/**
+ * Factory for creating cells in the file tree.
+ */
 public class FileCellFactory implements Callback<TreeView<FileTreeItem>, TreeCell<FileTreeItem>> {
 
     private TreeCell<FileTreeItem> dropZone;
@@ -24,6 +27,7 @@ public class FileCellFactory implements Callback<TreeView<FileTreeItem>, TreeCel
     public FileCellFactory(MainController controller) {
         this.controller = controller;
     }
+
     @Override
     public TreeCell<FileTreeItem> call(TreeView<FileTreeItem> treeView) {
         TreeCell<FileTreeItem> cell = new TreeCell<>() {

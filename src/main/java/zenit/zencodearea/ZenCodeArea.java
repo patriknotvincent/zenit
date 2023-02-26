@@ -20,6 +20,9 @@ import org.fxmisc.wellbehaved.event.Nodes;
 import org.fxmisc.wellbehaved.event.EventPattern;
 import org.fxmisc.wellbehaved.event.InputMap;
 
+/**
+ * The actual code area that is used for editing code in the open tabs.
+ */
 public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 	private ExecutorService executor;
 //	private int fontSize;

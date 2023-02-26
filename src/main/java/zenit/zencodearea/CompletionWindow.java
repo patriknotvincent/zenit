@@ -7,6 +7,9 @@ import javafx.stage.Popup;
 
 import java.util.List;
 
+/**
+ * JavaFX Popup window that shows completions.
+ */
 public class CompletionWindow extends Popup {
 
     private VBox content;
