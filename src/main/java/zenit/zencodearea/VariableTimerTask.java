@@ -110,7 +110,8 @@ public class VariableTimerTask extends TimerTask {
             && currentChar != '.' && currentChar != ',' && currentChar != ';' && currentChar != ':'
             && currentChar != '?' && currentChar != '+' && currentChar != '-' && currentChar != '*'
             && currentChar != '/' && currentChar != '%' && currentChar != '=' && currentChar != '|'
-            && currentChar != '&' && currentChar != '>' && currentChar != '~' && currentChar != '<') {
+            && currentChar != '&' && currentChar != '>' && currentChar != '~' && currentChar != '<'
+            && currentIndex > 0) {
             sb.append(currentChar);
             currentChar = currentParagraph.charAt(--currentIndex);
         }
