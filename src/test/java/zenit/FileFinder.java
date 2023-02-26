@@ -45,7 +45,7 @@ public class FileFinder {
         return absolutePath;
     }
 
-    public static boolean assertFileExists(String fileName) throws IOException {
+    public static boolean assertFileOrFolderExists(String fileName) throws IOException {
         String os = System.getProperty("os.name");
         Path root;
         if (os.startsWith("Windows")) {
@@ -62,6 +62,15 @@ public class FileFinder {
                 if (file.getFileName().toString().equals(fileName)) {
                     System.out.println("File found: " + file.toAbsolutePath());
                     absolutePath = String.valueOf(file.toAbsolutePath());
+                    return FileVisitResult.TERMINATE;
+                }
+                return FileVisitResult.CONTINUE;
+            }
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                if (Files.isReadable(dir) && dir.getFileName().toString().equals(fileName)) {
+                    System.out.println("Directory found: " + dir.toAbsolutePath());
+                    absolutePath = String.valueOf(dir.toAbsolutePath());
                     return FileVisitResult.TERMINATE;
                 }
                 return FileVisitResult.CONTINUE;
