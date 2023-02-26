@@ -45,7 +45,7 @@ public class FileFinder {
         return absolutePath;
     }
 
-    public static boolean assertFileExists(String fileName) throws IOException {
+    public static boolean assertFileOrFolderExists(String fileName) throws IOException {
         String os = System.getProperty("os.name");
         Path root;
         if (os.startsWith("Windows")) {

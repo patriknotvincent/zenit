@@ -77,7 +77,7 @@ class CreateTest extends ZenithTestBase {
         clickOn(SUB_MENU_FILE_NEW_NEW_FILE);
         write(TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
-        assertTrue(FileFinder.assertFileExists(TEST_FILE_NAME + ".java"));
+        assertTrue(FileFinder.assertFileOrFolderExists(TEST_FILE_NAME + ".java"));
         deleteTestFile(TEST_FILE_NAME + ".java");
     }
 
@@ -92,7 +92,7 @@ class CreateTest extends ZenithTestBase {
         type(KeyCode.UP);
         type(KeyCode.ENTER);
         clickOn(CREATION_MENU_CONFIRM);
-        assertTrue(FileFinder.assertFileExists(TEST_FILE_NAME + ".txt"));
+        assertTrue(FileFinder.assertFileOrFolderExists(TEST_FILE_NAME + ".txt"));
         deleteTestFile(TEST_FILE_NAME + ".txt");
     }
 
@@ -115,7 +115,7 @@ class CreateTest extends ZenithTestBase {
         Node foo = find(CREATION_MENU_FILE_NAME_FIELD);
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
-        assertFalse(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        assertFalse(FileFinder.assertFileOrFolderExists(BOUNDARY_TEST_FILE_NAME + ".java"));
     }
     /**
      * Test for exactly 256 characters, should return false.
@@ -133,7 +133,7 @@ class CreateTest extends ZenithTestBase {
         Node foo = find(CREATION_MENU_FILE_NAME_FIELD);
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
-        assertTrue(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        assertTrue(FileFinder.assertFileOrFolderExists(BOUNDARY_TEST_FILE_NAME + ".java"));
         deleteTestFile(BOUNDARY_TEST_FILE_NAME + ".java");
     }
 
@@ -154,7 +154,7 @@ class CreateTest extends ZenithTestBase {
         Node foo = find(CREATION_MENU_FILE_NAME_FIELD);
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
-        assertTrue(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        assertTrue(FileFinder.assertFileOrFolderExists(BOUNDARY_TEST_FILE_NAME + ".java"));
         deleteTestFile(BOUNDARY_TEST_FILE_NAME + ".java");
     }
 
@@ -174,7 +174,7 @@ class CreateTest extends ZenithTestBase {
         Node foo = find(CREATION_MENU_FILE_NAME_FIELD);
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
-        assertFalse(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        assertFalse(FileFinder.assertFileOrFolderExists(BOUNDARY_TEST_FILE_NAME + ".java"));
     }
 
     /**
@@ -197,7 +197,7 @@ class CreateTest extends ZenithTestBase {
         Node foo = find(CREATION_MENU_FILE_NAME_FIELD);
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
-        assertFalse(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        assertFalse(FileFinder.assertFileOrFolderExists(BOUNDARY_TEST_FILE_NAME + ".java"));
     }
 
     /**
@@ -218,7 +218,7 @@ class CreateTest extends ZenithTestBase {
         Node foo = find(CREATION_MENU_FILE_NAME_FIELD);
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
-        assertFalse(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        assertFalse(FileFinder.assertFileOrFolderExists(BOUNDARY_TEST_FILE_NAME + ".java"));
     }
 
     /**
@@ -239,7 +239,7 @@ class CreateTest extends ZenithTestBase {
         Node foo = find(CREATION_MENU_FILE_NAME_FIELD);
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
-        assertFalse(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        assertFalse(FileFinder.assertFileOrFolderExists(BOUNDARY_TEST_FILE_NAME + ".java"));
     }
 
     /**
@@ -260,7 +260,7 @@ class CreateTest extends ZenithTestBase {
         Node foo = find(CREATION_MENU_FILE_NAME_FIELD);
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
-        assertFalse(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        assertFalse(FileFinder.assertFileOrFolderExists(BOUNDARY_TEST_FILE_NAME + ".java"));
     }
 
     /**
@@ -281,7 +281,7 @@ class CreateTest extends ZenithTestBase {
         Node foo = find(CREATION_MENU_FILE_NAME_FIELD);
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
-        assertFalse(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        assertFalse(FileFinder.assertFileOrFolderExists(BOUNDARY_TEST_FILE_NAME + ".java"));
     }
 
     /**
@@ -302,7 +302,7 @@ class CreateTest extends ZenithTestBase {
         Node foo = find(CREATION_MENU_FILE_NAME_FIELD);
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
-        assertFalse(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        assertFalse(FileFinder.assertFileOrFolderExists(BOUNDARY_TEST_FILE_NAME + ".java"));
     }
 
     /**
@@ -323,7 +323,7 @@ class CreateTest extends ZenithTestBase {
         Node foo = find(CREATION_MENU_FILE_NAME_FIELD);
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
-        assertFalse(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        assertFalse(FileFinder.assertFileOrFolderExists(BOUNDARY_TEST_FILE_NAME + ".java"));
     }
 
     /**
@@ -344,7 +344,7 @@ class CreateTest extends ZenithTestBase {
         Node foo = find(CREATION_MENU_FILE_NAME_FIELD);
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
-        assertFalse(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        assertFalse(FileFinder.assertFileOrFolderExists(BOUNDARY_TEST_FILE_NAME + ".java"));
     }
 
     /**
@@ -365,7 +365,7 @@ class CreateTest extends ZenithTestBase {
         Node foo = find(CREATION_MENU_FILE_NAME_FIELD);
         ((TextField) foo).setText(BOUNDARY_TEST_FILE_NAME);
         clickOn(CREATION_MENU_CONFIRM);
-        assertFalse(FileFinder.assertFileExists(BOUNDARY_TEST_FILE_NAME + ".java"));
+        assertFalse(FileFinder.assertFileOrFolderExists(BOUNDARY_TEST_FILE_NAME + ".java"));
     }
 
     /**
@@ -394,7 +394,7 @@ class CreateTest extends ZenithTestBase {
         clickOn(SUB_MENU_FILE_NEW_NEW_PACKAGE);
         write(TEST_PACKAGE_NAME);
         clickOn("Create");
-        assertTrue(FileFinder.assertFileExists(TEST_PACKAGE_NAME));
+        assertTrue(FileFinder.assertFileOrFolderExists(TEST_PACKAGE_NAME));
         deleteTestPackage();
     }
 
