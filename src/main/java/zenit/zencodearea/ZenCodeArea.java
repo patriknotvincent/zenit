@@ -1,6 +1,7 @@
 package zenit.zencodearea;
 
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.concurrent.Task;
@@ -12,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -35,6 +37,8 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 
 	private CompletionWindow completionMenu;
 	private Stage stage;
+	private int lastCompletionIndex = 0;
+	private int completionIndex = 0;
 
 	private static final String[] KEYWORDS = new String[] {
 		"abstract", "assert", "boolean", "break", "byte",
@@ -69,7 +73,8 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 	
 	public ZenCodeArea(int textSize, String font, List<String> existingClasses, Stage stage) {
 		completionGraph = new CompletionGraph();
-		completionMenu = new CompletionWindow();
+		completionMenu = new CompletionWindow(this);
+
 		this.stage = stage;
 		setParagraphGraphicFactory(LineNumberFactory.get(this));
 
@@ -105,7 +110,9 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 			&& event.getCode() != KeyCode.TAB
 			&& event.getCode() != KeyCode.ESCAPE
 			&& event.getCode() != KeyCode.ALT_GRAPH
-			&& event.getCode() != KeyCode.CAPS){
+			&& event.getCode() != KeyCode.CAPS
+			&& event.getCode() != KeyCode.UP
+			&& event.getCode() != KeyCode.DOWN){
 				variableTimer.reset();
 			}
 		});
@@ -192,12 +199,16 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 		variableTimer.updateRegex(existingClasses);
 	}
 
-	public void updateCompletionMenu(List<Completion> foundWords) {
+	public void updateCompletionMenu(List<Completion> foundWords, int inputLength) {
 		completionMenu.updateCompletions(foundWords);
+
+
 
 		Platform.runLater(() -> {
 			if(!foundWords.isEmpty()) {
 				completionMenu.show(stage, 0, 0);
+				//TODO: följande metod inte implementerad än men borde kunna användas för att skugga delar av resultaten:
+				completionMenu.shadeWords(inputLength);
 			} else {
 				completionMenu.hide();
 			}

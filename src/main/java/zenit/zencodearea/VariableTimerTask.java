@@ -42,7 +42,7 @@ public class VariableTimerTask extends TimerTask {
 
         String searchString = findStartOfWord();
         List<Completion> foundWords = completionGraph.searchFor(searchString);
-        zenCodeArea.updateCompletionMenu(foundWords);
+        zenCodeArea.updateCompletionMenu(foundWords, searchString.length());
     }
 
     /**
