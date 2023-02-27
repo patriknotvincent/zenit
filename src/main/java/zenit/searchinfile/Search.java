@@ -61,6 +61,7 @@ public class Search {
 		line = new ArrayList<>();
 		wordPos = new ArrayList<>();
 		absolutePos = new ArrayList<>();
+
 		
 		numberOfTimes = 0;
 		numberOfLines = -1;
@@ -133,10 +134,13 @@ public class Search {
 	 *
 	 * @param wordAfter Word to replace with
 	 */	
-	public void replaceAll(String wordAfter) {
+	public ArrayList<Tuple<Integer, Integer>> replaceAll(String wordAfter) {
+		ArrayList<Tuple<Integer, Integer>> tuples = new ArrayList<>();
 		for (int i = absolutePos.size() -1; i >= 0; i--) {
 			zenCodeArea.replaceText(absolutePos.get(i).fst(), absolutePos.get(i).snd(), wordAfter);
+			tuples.add(new Tuple<>(absolutePos.get(i).fst(), absolutePos.get(i).snd()));
 		}
+		return tuples;
 	}
 	
 	/**
@@ -144,8 +148,9 @@ public class Search {
 	 *
 	 * @param wordAfter Word to replace with
 	 */
-	public void replaceOne(String wordAfter) {
+	public Tuple<Integer, Integer> replaceOne(String wordAfter) {
 		zenCodeArea.replaceText(absolutePos.get(i).fst(), absolutePos.get(i).snd(), wordAfter);
+		return new Tuple<>(absolutePos.get(i).fst(), absolutePos.get(i).snd());
 	}
 	
 	/**
