@@ -1,10 +1,11 @@
 package zenit.zencodearea;
 
 import javafx.application.Platform;
-import javafx.scene.control.Button;
+import javafx.scene.control.IndexRange;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
+import zenit.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ public class CompletionWindow extends Popup {
     private ArrayList<CompletionButton> completionButtons = new ArrayList<>();
     private int completionIndex = 0;
     private int inputLength = 0;
+
+    private Tuple<Integer, Integer> absolutePosition;
 
 
     public CompletionWindow(ZenCodeArea zenCodeArea) {
@@ -60,6 +63,8 @@ public class CompletionWindow extends Popup {
                 button.setStyle("-fx-background-color: #444444; -fx-text-fill: #ffffff;");
                 button.setOnAction(event -> {
                     System.out.println(completion.getName());
+                    fillInSuggestion(completion);
+                    this.hide();
                 });
                 content.getChildren().add(button);
 
@@ -72,6 +77,18 @@ public class CompletionWindow extends Popup {
                 System.out.println("completionIndex: " + completionIndex);
             }
         });
+    }
+
+    private void fillInSuggestion(Completion completion) {
+        String completionText = completion.getName();
+
+        int startPos = zenCodeArea.getCaretPosition() - inputLength;
+        int endPos = startPos + inputLength;
+        IndexRange indexRange = new IndexRange(startPos, endPos);
+
+        zenCodeArea.replaceText(indexRange, completionText);
+
+        //zenCodeArea.requestFollowCaret();
     }
 
     public void cycleCompletions(boolean cycleDown) {
@@ -97,7 +114,7 @@ public class CompletionWindow extends Popup {
         }
     }
 
-    public void shadeWords(int inputLength) {
+    public void setInputLength(int inputLength) {
         this.inputLength = inputLength;
     }
 }

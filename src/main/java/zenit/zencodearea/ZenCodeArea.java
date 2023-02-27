@@ -1,7 +1,6 @@
 package zenit.zencodearea;
 
 import javafx.application.Platform;
-import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.concurrent.Task;
@@ -13,7 +12,6 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -208,7 +206,7 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 			if(!foundWords.isEmpty()) {
 				completionMenu.show(stage, 0, 0);
 				//TODO: följande metod inte implementerad än men borde kunna användas för att skugga delar av resultaten:
-				completionMenu.shadeWords(inputLength);
+				completionMenu.setInputLength(inputLength);
 			} else {
 				completionMenu.hide();
 			}
