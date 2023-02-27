@@ -10,8 +10,6 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit5.ApplicationTest;
 import zenit.ui.TestUI;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -52,7 +50,7 @@ public abstract class ZenithTestBase extends ApplicationTest {
      *
      */
     @AfterEach
-    public void afterEachTest() throws TimeoutException {
+    public void cleanStage() throws TimeoutException {
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});
