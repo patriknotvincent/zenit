@@ -119,7 +119,7 @@ public class FileTree {
 	 * Traverses the specified root and returns the first tree item containing the given file.
 	 * @param root The root tree item to begin searching through.
 	 * @param file The file to search for.
-	 * @return The {@link FileTreeItem<String>} that contains {@link file}, null if none was found.
+	 * @return The {@link FileTreeItem<String>} that contains {@link}, null if none was found.
 	 * @author Pontus Laos
 	 */
 	public static FileTreeItem<String> getTreeItemFromFile(FileTreeItem<String> root, File file) {
