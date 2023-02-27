@@ -28,7 +28,7 @@
 			<menus>
 				<Menu mnemonicParsing="false" text="File">
 					<items>
-                  <Menu mnemonicParsing="false" text="New...">
+                  <Menu fx:id="sideBarMenuNew" mnemonicParsing="false" text="New...">
                      <items>
       						<MenuItem fx:id="newTab" onAction="#newTab" text="New tab">
                            <accelerator>
@@ -155,18 +155,17 @@
 							<content>
 								<AnchorPane fx:id="content" id="Content" minHeight="0.0" minWidth="0.0">
 									<children>
-										<SplitPane id="splitPane" fx:id="splitPane" dividerPositions="0.8" layoutY="0.0" orientation="VERTICAL" prefHeight="527.0" prefWidth="669.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+										<SplitPane id="splitPane" fx:id="splitPane2" dividerPositions="0.8" layoutY="0.0" orientation="VERTICAL" prefHeight="527.0" prefWidth="669.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 											<items>
 												<AnchorPane fx:id="splitPaneItem" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" SplitPane.resizableWithParent="true">
 													<children>
 														<TabPane fx:id="tabPane" accessibleRole="PARENT" prefHeight="549.0" prefWidth="669.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 														<HBox alignment="TOP_RIGHT" fillHeight="false" layoutX="555.0" layoutY="4.0" prefHeight="22.0" prefWidth="112.0" snapToPixel="false" spacing="2.0" AnchorPane.rightAnchor="0.0">
 															<children>
-                                                <Button id="btnRun" fx:id="btnRun" alignment="CENTER" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0">
+                                               				 <Button id="btnRun" fx:id="btnRun" alignment="CENTER" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0">
 																	<padding>
 																		<Insets top="1.0" />
 																	</padding>
-
 																	<graphic>
 																		<FontIcon fx:id="iconRun" iconLiteral="fa-play-circle" iconColor="green" iconSize="24"/>
 																	</graphic>
