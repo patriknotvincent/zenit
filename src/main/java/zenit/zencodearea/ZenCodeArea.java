@@ -1,5 +1,6 @@
 package zenit.zencodearea;
 
+import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.concurrent.Task;
@@ -33,6 +34,7 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 	private VariableTimer variableTimer;
 
 	private CompletionWindow completionMenu;
+	private Stage stage;
 
 	private static final String[] KEYWORDS = new String[] {
 		"abstract", "assert", "boolean", "break", "byte",
@@ -68,7 +70,7 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 	public ZenCodeArea(int textSize, String font, List<String> existingClasses, Stage stage) {
 		completionGraph = new CompletionGraph();
 		completionMenu = new CompletionWindow();
-		completionMenu.show(stage, 0,0);
+		this.stage = stage;
 		setParagraphGraphicFactory(LineNumberFactory.get(this));
 
 		multiPlainChanges().successionEnds(
@@ -192,5 +194,13 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 
 	public void updateCompletionMenu(List<Completion> foundWords) {
 		completionMenu.updateCompletions(foundWords);
+
+		Platform.runLater(() -> {
+			if(!foundWords.isEmpty()) {
+				completionMenu.show(stage, 0, 0);
+			} else {
+				completionMenu.hide();
+			}
+		});
 	}
 }
