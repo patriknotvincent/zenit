@@ -10,13 +10,12 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-
 import zenit.filesystem.ProjectFile;
 import zenit.filesystem.helpers.CodeSnippets;
 import zenit.ui.MainController;
 
 /**
- * Class that extends {@link javafx.scene.control.ContextMenu} with static menu items with dynamic
+ * Class that extends {@link ContextMenu} with static menu items with dynamic
  * text. Also contains event handler.
  * @author Alexander Libot
  *
@@ -24,7 +23,7 @@ import zenit.ui.MainController;
 public class TreeContextMenu extends ContextMenu implements EventHandler<ActionEvent>{
 	
 	private MainController controller;
-	private TreeView<String> treeView;
+	private TreeView<FileTreeItem> treeView;
 	
 	private Menu createItem = new Menu("New...");
 	private MenuItem createClass = new MenuItem("New class");
@@ -37,17 +36,18 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 	
 	/**
 	 * Creates a new {@link TreeContextMenu} that can manipulate a specific {@link
-	 * javafx.scene.control.TreeView TreeView} instance and call methods in a specific
+	 * TreeView TreeView} instance and call methods in a specific
 	 * {@link main.java.zenit.ui.MainController MainController}
 	 * @param controller The {@link main.java.zenit.ui.MainController MainController} instance where methods
 	 * will be called
-	 * @param treeView The {@link javafx.scene.control.TreeView TreeView} instance which will
+	 * @param treeView The {@link TreeView TreeView} instance which will
 	 * be manipulated
 	 */
-	public TreeContextMenu(MainController controller, TreeView<String> treeView) {
+	public TreeContextMenu(MainController controller, TreeView<FileTreeItem> treeView) {
 		super();
 		this.controller = controller;
 		this.treeView = treeView;
+
 		initContextMenu();
 	}
 	
@@ -66,8 +66,8 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 		} else {
 			createItem.getItems().remove(createPackage);
 		}
-		FileTreeItem<String> selectedItem = (FileTreeItem<String>) treeView.getSelectionModel().getSelectedItem();
-		if (selectedItem.getType() == FileTreeItem.PROJECT) {
+		TreeItem<FileTreeItem> selectedItem = treeView.getSelectionModel().getSelectedItem();
+		if (selectedItem.getValue().getType() == FileTreeItem.PROJECT) {
 			getItems().add(importJar);
 			getItems().add(properties);
 		} else {
@@ -77,16 +77,16 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 	}
 	
 	/**
-	 * Overrides {@link javafx.scene.control.ContextMenu#show(Node, double, double) show(...)} in
-	 * {@link javafx.scene.control.ContextMenu ContextMenu}. Dynamically updates the menu
+	 * Overrides {@link ContextMenu#show(Node, double, double) show(...)} in
+	 * {@link ContextMenu ContextMenu}. Dynamically updates the menu
 	 * items before showing the context menu.
 	 */
 	@Override
 	public void show(Node node, double x, double y) {
-		TreeItem<String> selectedItem = treeView.getSelectionModel().getSelectedItem();
+		TreeItem<FileTreeItem> selectedItem = treeView.getSelectionModel().getSelectedItem();
 		
 		if (selectedItem != null) {
-			setContext(selectedItem.getValue());
+			setContext(selectedItem.getValue().getName());
 		}
 		
 		super.show(node, x, y);
@@ -115,11 +115,11 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 	 * main.java.zenit.filesystem.helpers.CodeSnippets CodeSnippets}
 	 */
 	private void newFile(int typeCode) {
-		FileTreeItem<String> parent = (FileTreeItem<String>) 
-				treeView.getSelectionModel().getSelectedItem();
-		File newFile = controller.createFile(parent.getFile(), typeCode);
+		TreeItem<FileTreeItem> parent = treeView.getSelectionModel().getSelectedItem();
+		File newFile = controller.createFile(parent.getValue().getFile(), typeCode);
 		if (newFile != null) {
-			FileTreeItem<String> newItem = new FileTreeItem<String>(newFile, newFile.getName(), FileTreeItem.CLASS);
+			TreeItem<FileTreeItem> newItem = new TreeItem<>(new FileTreeItem(newFile,
+					FileTreeItem.CLASS));
 			parent.getChildren().add(newItem);
 		}
 	}
@@ -130,8 +130,8 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 	 */
 	@Override
 	public void handle(ActionEvent actionEvent) {
-		FileTreeItem<String> selectedItem = (FileTreeItem<String>) treeView.getSelectionModel().getSelectedItem();
-		File selectedFile = selectedItem.getFile();
+		TreeItem<FileTreeItem> selectedItem = treeView.getSelectionModel().getSelectedItem();
+		File selectedFile = selectedItem.getValue().getFile();
 		
 		if (actionEvent.getSource().equals(createClass)) {
 			newFile(CodeSnippets.CLASS);
@@ -140,9 +140,9 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 		} else if (actionEvent.getSource().equals(renameItem)) {
 			File newFile = controller.renameFile(selectedFile);
 			if (newFile != null) {
-				selectedItem.setFile(newFile);
-				selectedItem.setValue(newFile.getName());
-				FileTree.changeFileForNodes(selectedItem, selectedItem.getFile());
+				selectedItem.getValue().setFile(newFile);
+				selectedItem.getValue().setName(newFile.getName());
+				FileTree.changeFileForNodes(selectedItem, selectedItem.getValue().getFile());
 			}
 		} else if (actionEvent.getSource().equals(deleteItem)) {
 			controller.deleteFile(selectedFile);
@@ -150,13 +150,14 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 		} else if (actionEvent.getSource().equals(createPackage)) {
 			File packageFile = controller.newPackage(selectedFile);
 			if (packageFile != null) {
-				FileTreeItem<String> packageNode = new FileTreeItem<String>(packageFile, packageFile.getName(), FileTreeItem.PACKAGE);
+				TreeItem<FileTreeItem> packageNode = new TreeItem<>(new FileTreeItem(packageFile,
+						FileTreeItem.PACKAGE));
 				selectedItem.getChildren().add(packageNode);
 			}
 		} else if (actionEvent.getSource().equals(importJar)) {
 			ProjectFile projectFile = new ProjectFile(selectedFile.getPath());
 			controller.chooseAndImportLibraries(projectFile);
-		} else if (actionEvent.getSource().equals(properties) && selectedItem.getType() == FileTreeItem.PROJECT) {
+		} else if (actionEvent.getSource().equals(properties) && selectedItem.getValue().getType() == FileTreeItem.PROJECT) {
 			ProjectFile projectFile = new ProjectFile(selectedFile.getPath());
 			controller.showProjectProperties(projectFile);
 		}
