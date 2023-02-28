@@ -91,3 +91,4 @@ target/classes/zenit/ui/mainStyle.css
 .idea/
 zenit.iml
 /res/JDK/
+/src/main/resources/zenit/searchinfile/src/testfiles/
