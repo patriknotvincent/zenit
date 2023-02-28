@@ -62,7 +62,6 @@ public class CompletionWindow extends Popup {
                 completionButtons.add(button);
                 button.setStyle("-fx-background-color: #444444; -fx-text-fill: #ffffff;");
                 button.setOnAction(event -> {
-                    System.out.println(completion.getName());
                     fillInSuggestion(completion);
                     this.hide();
                 });
@@ -74,7 +73,6 @@ public class CompletionWindow extends Popup {
                 completionIndex = 0;
                 completionButtons.get(completionIndex).setStyle("-fx-background-color: #d2d0d0; -fx-text-fill: #646363;");
                 completionButtons.get(completionIndex).requestFocus();
-                System.out.println("completionIndex: " + completionIndex);
             }
         });
     }
@@ -87,8 +85,6 @@ public class CompletionWindow extends Popup {
         IndexRange indexRange = new IndexRange(startPos, endPos);
 
         zenCodeArea.replaceText(indexRange, completionText);
-
-        //zenCodeArea.requestFollowCaret();
     }
 
     public void cycleCompletions(boolean cycleDown) {
@@ -96,18 +92,13 @@ public class CompletionWindow extends Popup {
             completionButtons.get(completionIndex).setStyle("-fx-background-color: #444444; -fx-text-fill: #ffffff;");
             //Evaluate the result of incrementing completionIndex, if it is equal to the size of the completionButtons list, set it to 0:
             completionIndex = (completionIndex + 1) % completionButtons.size();
-            System.out.println("completionIndex: " + completionIndex);
             CompletionButton completionButton = completionButtons.get(completionIndex);
             completionButton.setStyle("-fx-background-color: #d2d0d0; -fx-text-fill: #646363;");
-
-
-
             completionButton.requestFocus();
         } else {
             completionButtons.get(completionIndex).setStyle("-fx-background-color: #444444; -fx-text-fill: #ffffff;");
             //Evaluate the result of decrementing completionIndex, if it is -1, set it to the last index of the completionButtons list:
             completionIndex = completionIndex - 1 == -1 ? completionButtons.size() - 1 : completionIndex - 1;
-            System.out.println("completionIndex: " + completionIndex);
             CompletionButton completionButton = completionButtons.get(completionIndex);
             completionButton.setStyle("-fx-background-color: #d2d0d0; -fx-text-fill: #646363;");
             completionButton.requestFocus();
