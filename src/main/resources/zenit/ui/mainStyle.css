@@ -38,7 +38,7 @@
 }
 
 #menuBar, #menuBar * {
-	-fx-background-color: #444444;
+	-fx-background-color: #333;
 	-fx-text-fill: #EEEEEE;
 }
 

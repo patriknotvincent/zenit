@@ -7,7 +7,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane id="anchor" prefHeight="203.0" prefWidth="348.0">
+      <Pane id="anchor" prefHeight="203.0" prefWidth="348.0" style="-fx-border-color: #000000; -fx-border-width: 0;">
          <children>
             <TextField fx:id="tfName" layoutX="12.0" layoutY="69.0" onAction="#create" prefHeight="27.0" prefWidth="249.0" promptText="File name" />
             <Button layoutX="272.0" layoutY="115.0" mnemonicParsing="false" onAction="#browse" prefHeight="27.0" prefWidth="68.0" text="Browse" />

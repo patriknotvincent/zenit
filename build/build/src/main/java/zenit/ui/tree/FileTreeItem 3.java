@@ -43,10 +43,10 @@ public class FileTreeItem<T> extends TreeItem<T> {
 	public void setIcon() {
 		String url = null;
 		switch(type) {
-		case PROJECT: url = "/zenit/ui/tree/project.png"; break;
-		case PACKAGE: url = "/zenit/ui/tree/package.png"; break;
-		case CLASS: url = "/zenit/ui/tree/class.png"; break;
-		case SRC: url = "/zenit/ui/tree/src.png"; break;
+		case PROJECT: url = "/zenit/ui/tree/darkmode/folder.png"; break;
+		case PACKAGE: url = "/zenit/ui/tree/darkmode/package.png"; break;
+		case CLASS: url = "/zenit/ui/tree/darkmode/java.png"; break;
+		case SRC: url = "/zenit/ui/tree/darkmode/folder.png"; break;
 		}
 		
 		if (url != null) {

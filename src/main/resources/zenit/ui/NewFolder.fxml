@@ -7,14 +7,14 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane id="anchor" prefHeight="203.0" prefWidth="348.0">
+      <Pane id="anchor" prefHeight="221.0" prefWidth="349.0" style="-fx-border-color: #000000; -fx-border-radius: 0;">
          <children>
-            <TextField fx:id="tfName" layoutX="10.0" layoutY="65.0" prefHeight="27.0" prefWidth="327.0" promptText="New folder name" />
-            <Button layoutX="270.0" layoutY="111.0" mnemonicParsing="false" onAction="#browse" prefHeight="27.0" prefWidth="68.0" text="Browse" />
-            <Button layoutX="196.0" layoutY="165.0" mnemonicParsing="false" onAction="#create" prefHeight="25.0" prefWidth="68.0" text="Create" />
-            <Button layoutX="272.0" layoutY="165.0" mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="68.0" text="Cancel" />
-            <Separator layoutY="152.0" prefHeight="9.0" prefWidth="348.0" />
-            <ListView fx:id="filepath" layoutX="10.0" layoutY="110.0" prefHeight="28.0" prefWidth="252.0" />
+            <TextField fx:id="tfName" layoutX="10.0" layoutY="65.0" prefHeight="27.0" prefWidth="332.0" promptText="New folder name" />
+            <Button layoutX="274.0" layoutY="119.0" mnemonicParsing="false" onAction="#browse" prefHeight="27.0" prefWidth="68.0" text="Browse" />
+            <Button layoutX="198.0" layoutY="182.0" mnemonicParsing="false" onAction="#create" prefHeight="25.0" prefWidth="68.0" text="Create" />
+            <Button layoutX="274.0" layoutY="182.0" mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="68.0" text="Cancel" />
+            <Separator layoutX="-1.0" layoutY="165.0" prefHeight="9.0" prefWidth="348.0" />
+            <ListView fx:id="filepath" layoutX="10.0" layoutY="110.0" prefHeight="45.0" prefWidth="252.0" />
          </children>
       </Pane>
       <AnchorPane id="setup-header" fx:id="header" prefHeight="61.0" prefWidth="348.0">
