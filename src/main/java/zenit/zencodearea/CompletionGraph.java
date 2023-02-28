@@ -122,6 +122,8 @@ public class CompletionGraph {
             char oppositeCase = Character.isUpperCase(chars.get(0)) ? Character.toLowerCase(chars.get(0)) : Character.toUpperCase(chars.get(0));
             if(child.getLetter() == chars.get(0) || child.getLetter() == oppositeCase){
                 if(child.getChildren() == null){
+                    //startPoints.add(n.getChildren()); could be used to show completion even when written all
+                    // letters
                     startPoints.add(new ArrayList<>());
                 }else{
                     char c = chars.get(0);
