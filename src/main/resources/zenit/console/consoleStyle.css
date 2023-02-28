@@ -36,7 +36,7 @@
 
 #rootNode {
 	-fx-border-color:black;
-	-fx-border-width:1px;
+	-fx-border-width:0;
 	-fx-background-color: #333;
 }
 
