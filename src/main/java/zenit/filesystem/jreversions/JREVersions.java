@@ -125,11 +125,11 @@ public class JREVersions {
 	
 	public static File getJVMDirectory() {
 		String OS = Zenit.OS;
-		if (OS.equals("Mac OS X")) {
+		if (OS.contains("Mac OS X")) {
 			return new File("/library/java/javavirtualmachines");
-		} else if (OS.equals("Linux")) {
+		} else if (OS.contains("Linux")) {
 			return new File("/usr/lib/jvm");
-		} else if (OS.equals("Windows")) {
+		} else if (OS.contains("Windows")) {
 			return new File("C:\\Program Files\\Java\\");
 		}
 		
