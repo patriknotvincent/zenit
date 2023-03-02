@@ -1,4 +1,4 @@
-package zenit.zencodearea;
+package zenit.zencodearea.codecompletion;
 
 /**
  * Completions can be methods or variables.

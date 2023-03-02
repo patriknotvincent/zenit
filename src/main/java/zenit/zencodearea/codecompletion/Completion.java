@@ -1,4 +1,4 @@
-package zenit.zencodearea;
+package zenit.zencodearea.codecompletion;
 
 /**
  * Represents variable and method completion suggestion for the ZencodeArea.

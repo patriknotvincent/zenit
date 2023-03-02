@@ -1,4 +1,4 @@
-package zenit.zencodearea;
+package zenit.zencodearea.codecompletion;
 
 import javafx.application.Platform;
 import javafx.scene.control.IndexRange;
@@ -6,6 +6,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import zenit.util.Tuple;
+import zenit.zencodearea.ZenCodeArea;
 
 import java.util.ArrayList;
 import java.util.List;

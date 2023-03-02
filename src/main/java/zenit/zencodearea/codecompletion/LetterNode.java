@@ -1,4 +1,4 @@
-package zenit.zencodearea;
+package zenit.zencodearea.codecompletion;
 
 import java.util.ArrayList;
 import java.util.List;

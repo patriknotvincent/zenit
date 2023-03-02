@@ -42,7 +42,7 @@ import zenit.settingspanel.ThemeCustomizable;
 import zenit.ui.projectinfo.ProjectMetadataController;
 import zenit.ui.tree.*;
 import zenit.util.Tuple;
-import zenit.zencodearea.ExistingClassesListener;
+import zenit.zencodearea.codecompletion.ExistingClassesListener;
 import zenit.zencodearea.ZenCodeArea;
 
 
