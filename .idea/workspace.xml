@@ -37,7 +37,7 @@
     "project.structure.side.proportion": "0.0"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.main.java.zenit.ui.Launcher">
     <configuration name="Launcher" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="zenit.ui.Launcher" />
       <module name="zenit" />
@@ -51,8 +51,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="main.java.zenit.ui.Launcher" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="main.java.zenit.ui.Launcher" />
+      <module name="zenit" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="main.java.zenit.ui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.main.java.zenit.ui.Launcher" />
         <item itemvalue="Application.Launcher" />
       </list>
     </recent_temporary>
