@@ -67,6 +67,7 @@ public class FileController {
 	 * CodeSnippets} constants.
 	 * @return See {@link #createFile(int, File, String) createFile} for return value
 	 */
+	@SuppressWarnings("JavadocReference")
 	public File createFile(File file, int typeCode) {
 		return createFile(file, null, typeCode);
 	}
@@ -78,6 +79,7 @@ public class FileController {
 	 * @param content The content to write to file. Can be null.
 	 * @return See {@link #createFile(int, File, String) createFile} for return value
 	 */
+	@SuppressWarnings("JavadocReference")
 	public File createFile(File file, String content) {
 		return createFile(file, content, CodeSnippets.EMPTY);
 	}
@@ -154,9 +156,9 @@ public class FileController {
 	}
 	
 	/**
-	 * Renames a file-object and it's file path using {@link main.java.zenit.filesystem.JavaFileHandler
+//	 * Renames a file-object and it's file path using {@link zenit.filesystem.JavaFileHandler
 	 * #renameFile(File, String) renameFile} method if {@code file} is a file or
-	 * {@link main.java.zenit.filesystem.ProjectHandler#renameFolder(File, String) renameProject}
+	 * {@link zenit.filesystem.ProjectHandler#renameFolder(File, String) renameProject}
 	 * method if {@code file} is a directory. Prints an error message if file couldn't
 	 * be renamed.
 	 * 
@@ -226,7 +228,7 @@ public class FileController {
 	//Project methods
 	
 	/**
-	 * Tries to create a new project using {@link main.java.zenit.filesystem.ProjectHandler
+	 * Tries to create a new project using {@link zenit.filesystem.ProjectHandler
 	 * #createNewProject(File) createNewProject} method in the set workspace.
 	 * Prints an error message if project or any of its files couldn't be created.
 	 * @param projectname Name of the new project
