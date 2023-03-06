@@ -14,6 +14,11 @@
 			<menus>
 				<Menu mnemonicParsing="false" text="File">
 					<items>
+						<MenuItem fx:id="newProject" mnemonicParsing="false" onAction="#newProject" text="New Project" />
+						<!-- REMOVED DUE TO ERRONEOUS BEHAVIOUR, WHEN CREATING A NEW FILE THROUGH THIS MENUBAR THE FILE
+						ISN'T PUT INTO THE SRC-FOLDER CREATING A BAD USER EXPERIENCE, DUE TO LIMITED TIME THIS IS
+						REMOVED INSTEAD OF FIXED.
+
                   <Menu fx:id="sideBarMenuNew" mnemonicParsing="false" text="New...">
                      <items>
       						<MenuItem fx:id="newTab" onAction="#newTab" text="New Tab">
@@ -28,9 +33,10 @@
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="N" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
                            </accelerator></MenuItem>
-      						<MenuItem fx:id="newProject" mnemonicParsing="false" onAction="#newProject" text="New Project" />
+
                      </items>
                   </Menu>
+                  -->
 						<MenuItem fx:id="openFile" onAction="#openFile" text="Open…">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="O" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
