@@ -27,6 +27,7 @@ import zenit.Zenit;
 import zenit.console.ConsoleArea;
 import zenit.console.ConsoleController;
 import zenit.filesystem.FileController;
+import zenit.filesystem.FolderHandler;
 import zenit.filesystem.ProjectFile;
 import zenit.filesystem.RunnableClass;
 import zenit.filesystem.WorkspaceHandler;
@@ -168,14 +169,23 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 			try {
 				workspace = WorkspaceHandler.readWorkspace();
-			} catch (IOException ex) {
-				DirectoryChooser directoryChooser = new DirectoryChooser();
-				directoryChooser.setTitle("Select new workspace folder");
-				workspace = directoryChooser.showDialog(stage);
-			}
+				FileController fileController = new FileController(workspace);
+				setFileController(fileController);
 
-			FileController fileController = new FileController(workspace);
-			setFileController(fileController);
+			} catch (IOException ex) {
+				//Skapa workspace, behövs Sträng för paketets namn samt workspace.dat i korrekt folder
+				// -> Paketets namn
+				TextInputDialog input = new TextInputDialog();
+				input.setTitle("Enter Workspace name");
+				String nameSpace = input.showAndWait().get();
+				// -> Skapa Workspace.dat
+				String path = "res/workspace/userworkspaces/" + nameSpace;
+				workspace = new File(path);
+				WorkspaceHandler.createWorkspace(workspace);
+				FileController fileController = new FileController(workspace);
+				setFileController(fileController);
+				fileController.createPackage(workspace);
+			}
 
 			if (workspace != null) {
 				// TODO: Log this
