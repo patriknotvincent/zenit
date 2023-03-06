@@ -20,6 +20,7 @@ import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.fxmisc.wellbehaved.event.Nodes;
 import org.fxmisc.wellbehaved.event.EventPattern;
 import org.fxmisc.wellbehaved.event.InputMap;
+import zenit.zencodearea.codecompletion.*;
 
 /**
  * The actual code area that is used for editing code in the open tabs.

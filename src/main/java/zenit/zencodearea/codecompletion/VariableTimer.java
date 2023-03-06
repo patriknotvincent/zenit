@@ -1,4 +1,6 @@
-package zenit.zencodearea;
+package zenit.zencodearea.codecompletion;
+
+import zenit.zencodearea.ZenCodeArea;
 
 import java.util.List;
 import java.util.Timer;
