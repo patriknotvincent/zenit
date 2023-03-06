@@ -64,11 +64,16 @@
                         <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
                      </accelerator>
                   </MenuItem>
+						<!--
+						REMOVED DUE TO ERRONEOUS BEHAVIOUR, IF THERE IS NO FILE OPEN OR IF A ROW ISN'T MARKED IN THE
+						ZENCODE-AREA THEN AN EXCEPTION IS THROWN, TO COMMENT IT'S EASIER TO JUST WRITE // INSTEAD OF
+						PRESSING THIS BUTTON.
                   <MenuItem onAction="#commentAndUncomment" text="Toggle Comment">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="DIGIT7" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator>
                   </MenuItem>
+                  -->
                   <MenuItem onAction="#search" text="Search File">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="F" control="UP" meta="UP" shift="UP" shortcut="DOWN" />

@@ -44,7 +44,11 @@ public final class KeyboardShortcuts {
 //		add(scene, KeyCode.R, KeyCombination.SHORTCUT_DOWN, controller::compileAndRun);
 //		add(scene, KeyCode.F, KeyCombination.SHORTCUT_DOWN, controller::search);
 		add(scene, KeyCode.SPACE, KeyCombination.CONTROL_DOWN, controller::shortcutsTrigger);
-//		add(scene, KeyCode.DIGIT7, KeyCombination.SHORTCUT_DOWN, controller::commentAndUncomment); 
+		/*
+		COMMENTED OUT DUE TO ERRONEOUS BEHAVIOR, WHEN USED IF A FILE ISN'T OPEN OR IF A ROW IN A FILE ISN'T OPENED
+		THIS WILL THROW AN EXCEPTION. SINCE IT'S EASIER TO USE // THIS SHORTCUT IS UNNECESSARY.
+		add(scene, KeyCode.DIGIT7, KeyCombination.SHORTCUT_DOWN, controller::commentAndUncomment);
+		 */
 		
 		scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent ke) {
