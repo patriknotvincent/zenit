@@ -304,7 +304,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 * Initializes the {@link javafx.scene.control.TreeView TreeView}. Creates a
 	 * root node from the workspace-file in the fileController class. Calls
 	 * FileTree-method to add all files in the workspace folder to the tree. Creates
-	 * a TreeContextMenu for displaying when right clicking nodes in the tree and an
+	 * a TreeContextMenu for displaying when right-clicking nodes in the tree and an
 	 * event handler for clicking nodes in the tree.
 	 */
 	public void initTree() {
@@ -333,7 +333,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 * @param parent The parent folder of the file to be created.
 	 * @param typeCode The type of code snippet that should be implemented in the
 	 *                 file. Use constants from
-	 *                 {@link main.java.zenit.filesystem.helpers.CodeSnippets
+	 *                 {@link zenit.filesystem.helpers.CodeSnippets
 	 *                 CodeSnippets} class.
 	 * @return The File if created, otherwise null.
 	 */
@@ -643,6 +643,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 				if (fileTab.getText().equals(file.getName())) {
 					fileTab.setText(newName);
 					fileTab.setFile(newFile, false);
+					treeView.refresh();
 					break;
 				}
 			}
@@ -912,7 +913,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	}
 
 	/**
-	 * Creates a new tab with a {@link main.java.zenit.zencodearea.ZenCodeArea
+	 * Creates a new tab with a {@link zenit.zencodearea.ZenCodeArea
 	 * ZenCodeArea} filling it, adds it to the TabPane, and focuses on it.
 	 *
 	 * @return The new Tab.
@@ -1036,7 +1037,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	/**
 	 * Tries to import a folder. Displays a directory chooser and copies the
 	 * selected folder into the current workspace using
-	 * {@link main.java.zenit.filesystem.FileController#importProject(File)
+	 * {@link zenit.filesystem.FileController#importProject(File)
 	 * importProject(File)} Displays an error or information dialog to display the
 	 * result.
 	 */
