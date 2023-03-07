@@ -117,7 +117,7 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 		});
 
 		addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-			//completionMenu.hide();
+			completionMenu.hide();
 		});
 	}
 	
