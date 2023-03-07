@@ -824,8 +824,6 @@ public class MainController extends VBox implements ThemeCustomizable {
 	public void compileAndRun(File file) {
 		File metadataFile = getMetadataFile(file);
 		ConsoleArea consoleArea;
-
-
 		if(isDarkMode) {
 			consoleArea = new ConsoleArea(file.getName(), null, "-fx-background-color:#444");
 		}
@@ -835,8 +833,10 @@ public class MainController extends VBox implements ThemeCustomizable {
 		consoleArea.setFileName(file.getName());
 		consoleController.newConsole(consoleArea);
 		openConsoleComponent();
-
 		try {
+			// Update the meta-data file BEFORE running
+			Metadata metadata = fileController.updateMetadata(metadataFile);
+
 			ProcessBuffer buffer = new ProcessBuffer();
 			JavaSourceCodeCompiler compiler = new JavaSourceCodeCompiler(file, metadataFile,
 					false, buffer, this);
@@ -851,12 +851,10 @@ public class MainController extends VBox implements ThemeCustomizable {
 				String filePath = file.getPath().replaceAll(Matcher.quoteReplacement(src +
 						File.separator), "");
 				RunnableClass rc = new RunnableClass(filePath);
-				Metadata metadata = new Metadata(metadataFile);
-				if (metadata.addRunnableClass(rc)) {
-					metadata.encode();
+				Metadata metadataAfter = new Metadata(metadataFile);
+				if (metadataAfter.addRunnableClass(rc)) {
+					metadataAfter.encode();
 				}
-
-
 				consoleArea.setProcess(process);
 				if(consoleArea.getProcess().isAlive()) {
 					consoleArea.setID(consoleArea.getFileName() + " <Running>");
@@ -865,8 +863,6 @@ public class MainController extends VBox implements ThemeCustomizable {
 				else {
 					consoleArea.setID(consoleArea.getFileName()+ " <Terminated>");
 				}
-
-
 			}
 
 		} catch (Exception e) {
@@ -874,10 +870,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 			// TODO: handle exception
 		}
-
-
 	}
-
 	/**
 	 * If the file of the current tab is a .java file if will be compiled, into the
 	 * same folder/directory, and the executed with only java standard lib.
@@ -932,12 +925,9 @@ public class MainController extends VBox implements ThemeCustomizable {
 		FileTab tab = new FileTab(createNewZenCodeArea(), this);
 		tab.setOnCloseRequest(event -> closeTab(event));
 		tabPane.getTabs().add(tab);
-
 		var selectionModel = tabPane.getSelectionModel();
 		selectionModel.select(tab);
-
 		updateStatusRight("");
-
 		return tab;
 	}
 
