@@ -42,10 +42,11 @@ public class VariableTimer {
                 "\\s+|strictfp\\s+|native\\s+|private\\s+|public\\s+|protected\\s+|default\\s+)?" +
                 "(final\\s+|static\\s+|abstract\\s+|synchronized\\s+|transient\\s+|strictfp\\s+|native\\s" +
                 "+|private\\s+|public\\s+|protected\\s+|default\\s+)?" +
-                "(int\\s+|double\\s+|float\\s+|short\\s+|long\\s+|boolean\\s+|char\\s+|byte\\s+|String\\s" +
-                "+|Integer\\s+|Double\\s+|Character\\s+|Boolean\\s+");
+                "(int|double|float|short|long|boolean|char|byte|String" +
+                "|Integer|Double|Character|Boolean");
 
-        StringBuilder methodBuilder = new StringBuilder("\\s*(final\\s+|static\\s+|abstract\\s+|synchronized\\s+|transient" +
+        StringBuilder methodBuilder = new StringBuilder("\\s*(final\\s+|static\\s+|abstract\\s+|synchronized" +
+                "\\s+|transient" +
                 "\\s+|strictfp\\s+|native\\s+|private\\s+|public\\s+|protected\\s+|default\\s+)?" +
                 "(final\\s+|static\\s+|abstract\\s+|synchronized\\s+|transient\\s+|strictfp\\s+|native\\s" +
                 "+|private\\s+|public\\s+|protected\\s+|default\\s+)?" +
@@ -54,13 +55,15 @@ public class VariableTimer {
 
         if (existingClasses != null) {
             for(String name : existingClasses) {
-                variableBuilder.append("|").append(name).append("\\s+");
+                variableBuilder.append("|").append(name);
                 methodBuilder.append("|").append(name).append("\\s+");
             }
         }
-        variableBuilder.append(")([a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*(,\\s*[a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*)*)+\\s*(=\\s*\\S+.*)?;");
+        variableBuilder.append(")(\\s*<([a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*)?>)?(\\s*\\[\\s*\\])?\\s+" +
+                "([a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*" +
+                "(\\[\\s*\\])?(,\\s*[a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*)*)" +
+                "+\\s*(=\\s*\\S+.*)?;");
         methodBuilder.append(")([a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*)\\s*\\(.*\\)\\s*\\{[^}]*\\}");
-
         variableRegex = variableBuilder.toString();
         methodRegex = methodBuilder.toString();
     }
