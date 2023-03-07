@@ -100,8 +100,11 @@
                   <Insets />
                </opaqueInsets></Button>
             <Button fx:id="btnSupport" layoutX="8.0" layoutY="320.0" mnemonicParsing="false" onAction="#panelToFront" prefHeight="80.0" prefWidth="150.0" text="Support" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="360.0" />
+
+            <!--
             <Button fx:id="btnCustomCSS" layoutY="80.0" mnemonicParsing="false" onAction="#panelToFront" text="Custom CSS" AnchorPane.bottomAnchor="282.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="80.0" />
             <Button id="pnlCusomTheme" fx:id="btnCustomTheme" layoutY="120.0" mnemonicParsing="false" onAction="#panelToFront" text="Custom Theme" AnchorPane.bottomAnchor="242.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0" />
+            -->
          </children>
       </AnchorPane>
       <AnchorPane id="pnlCustomTheme" fx:id="pnlCustomTheme" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
