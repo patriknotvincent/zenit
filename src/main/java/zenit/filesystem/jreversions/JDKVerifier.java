@@ -18,13 +18,15 @@ public class JDKVerifier {
 		String OS = Zenit.OS;
 		String path = null;
 
-		if (OS.contains("Mac OS X")) {
-			path = JDKPath + File.separator + "Contents" + File.separator +
-					"Home" + File.separator + "bin" + File.separator + tool;
-		} else if (OS.contains("Windows")) {
-			path = JDKPath + File.separator + "bin" + File.separator + tool + ".exe";
-		} else if (OS.contains("Linux")) {
+		if (OS.equals("Mac OS X")) {
+			path = JDKPath + File.separator + "Contents" + File.separator + "Home" + File.separator + "bin" + File.separator + tool;
+			System.out.println(path);
+		} else if (OS.equals("Windows")) {
 			path = JDKPath + File.separator + "bin" + File.separator + tool;
+			System.out.println(path);
+		} else if (OS.equals("Linux")) {
+			path = JDKPath + File.separator + "bin" + File.separator + tool;
+			System.out.println(path);
 		}
 		
 		return path;

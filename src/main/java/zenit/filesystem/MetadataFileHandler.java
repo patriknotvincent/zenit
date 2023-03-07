@@ -51,8 +51,8 @@ public class MetadataFileHandler extends FileHandler {
 	/**
 	 * Updates the metadata-file with the requirements for the latest version
 	 * @param metadataFile The metadata file to update
-	 * @return Updated {@link main.java.zenit.filesystem.Metadata Metadata} object if updated,
-	 * otherwhise {@code null}
+	 * @return Updated {@link zenit.filesystem.metadata.Metadata} object if updated,
+	 * Otherwise {@code null}
 	 */
 	protected static Metadata updateMetadata(File metadataFile) {
 		Metadata metadata = new Metadata(metadataFile);

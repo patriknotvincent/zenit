@@ -101,11 +101,11 @@ public class JREVersions {
 	
 	public static File getJVMDirectory() {
 		String OS = Zenit.OS;
-		if (OS.contains("Mac OS X")) {
+		if (OS.equals("Mac OS X")) {
 			return new File("/library/java/javavirtualmachines");
-		} else if (OS.contains("Linux")) {
+		} else if (OS.equals("Linux")) {
 			return new File("/usr/lib/jvm");
-		} else if (OS.contains("Windows")) {
+		} else if (OS.equals("Windows")) {
 			return new File("C:\\Program Files\\Java\\");
 		}
 		
