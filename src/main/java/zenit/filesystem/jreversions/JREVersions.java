@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import zenit.Zenit;
@@ -16,30 +17,22 @@ import zenit.Zenit;
 public class JREVersions {
 
 	public static void createNew() {
-
 		try {
 			File file = new File("res/JDK/JDK.dat");
-
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-
 			ArrayList<File> JVMsList = new ArrayList<File>();
 			File javaFolder = getJVMDirectory();
-
 			if (javaFolder != null && javaFolder.exists()) {
-
 				File[] JVMs = javaFolder.listFiles();
-				for (File JVM : JVMs) {
-					JVMsList.add(JVM);
-				}
-
+				JVMsList.addAll(Arrays.asList(JVMs));
 				if (JVMsList.size() > 0) {
 					write(JVMsList);
 				}
 			}
-
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -48,39 +41,29 @@ public class JREVersions {
 	}
 
 	public static List<File> read() {
-		
 		ArrayList<File> JDKs = new ArrayList<File>();
 		File file;
-		
-		try (ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(
-				new FileInputStream("res/JDK/JDK.dat")))) {
+		try (ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream("res/JDK/JDK.dat")))) {
 			file = (File) ois.readObject();
-			
 			while (file != null) {
 				JDKs.add(file);
 				file = (File) ois.readObject();
 			}
-			
-		
 		} catch (IOException | ClassNotFoundException e) {
-			
+			e.printStackTrace();
 		}
-		
 		return JDKs;
 	}
 	
 	public static List<String> readString() {
 		List<String> JDKsString = new ArrayList<String>();
 		List<File> JDKs = read();
-
 		if (JDKs.size() > 0) {
 			for (File JDK : JDKs) {
 				JDKsString.add(JDK.getName());
 			}
 		}
-
 		return JDKsString;
-
 	}
 	
 	public static void write(List<File> files) {
@@ -92,34 +75,27 @@ public class JREVersions {
 			}
 			oos.flush();
 		} catch (IOException e) {
-			
+			e.printStackTrace();
 		}
 	}
 	
 	public static boolean append(File file) {
 		boolean success = false;
-		
 		if (JDKVerifier.validJDK(file)) {
 			List<File> files = read();
 			files.add(file);
-			
 			write(files);
-			
 			success = true;
 		}
-		
 		return success;
-
 	}
 	
 	public static boolean remove(File file) {
 		List<File> files = read();
 		boolean success = files.remove(file);
-		
 		if (success) {
 			write(files);
 		}
-		
 		return success;
 	}
 	
@@ -174,6 +150,7 @@ public class JREVersions {
 			return (File) ois.readObject();
 			
 		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
 			return null;
 		}
 		
