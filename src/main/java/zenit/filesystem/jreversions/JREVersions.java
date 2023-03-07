@@ -114,45 +114,35 @@ public class JREVersions {
 	
 	public static String getFullPathFromName(String name) {
 		List<File> JDKs = read();
-		
 		for (File JDK : JDKs) {
 			if (JDK.getName().equals(name)) {
 				return JDK.getPath();
 			}
 		}
-		
 		return null;
 	}
 
 	public static void setDefaultJDKFile(File file) {
 		File defaultJDK = new File("res/JDK/DefaultJDK.dat");
 			
-		try (ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(
-				new FileOutputStream(defaultJDK)))) {
-
+		try (ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(defaultJDK)))) {
 			if (!defaultJDK.exists()) {
 				defaultJDK.createNewFile();
 			}
-			
 			oos.writeObject(file);
 			oos.flush();
-
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
 	public static File getDefaultJDKFile() {
-		
 		File defaultJDK = new File("res/JDK/DefaultJDK.dat");
-		
-		try (ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(
-				new FileInputStream(defaultJDK)))) {
+		try (ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(defaultJDK)))) {
 			return (File) ois.readObject();
-			
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 			return null;
 		}
-		
 	}
 }
