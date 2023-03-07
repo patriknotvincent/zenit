@@ -59,7 +59,7 @@ public class VariableTimer {
             }
         }
         variableBuilder.append(")([a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*(,\\s*[a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*)*)+\\s*(=\\s*\\S+.*)?;");
-        methodBuilder.append(")([a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*)\\s*\\(.*\\)\\s*\\{[\\S\\s]*\\}");
+        methodBuilder.append(")([a-zA-Z_][a-zåäöA-ZÅÄÖ0-9_]*)\\s*\\(.*\\)\\s*\\{[^}]*\\}");
 
         variableRegex = variableBuilder.toString();
         methodRegex = methodBuilder.toString();
