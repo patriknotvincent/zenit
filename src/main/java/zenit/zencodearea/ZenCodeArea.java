@@ -1,6 +1,9 @@
 package zenit.zencodearea;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.concurrent.Task;
@@ -12,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -26,19 +30,14 @@ import zenit.zencodearea.codecompletion.*;
  * The actual code area that is used for editing code in the open tabs.
  */
 public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
-	private ExecutorService executor;
+	private final ExecutorService executor;
 //	private int fontSize;
 //	private String font;
 
-	private CompletionGraph completionGraph;
+	private final VariableTimer variableTimer;
 
-	private VariableTimer variableTimer;
-
-	private CompletionWindow completionMenu;
-	private Stage stage;
-	private int lastCompletionIndex = 0;
-	private int completionIndex = 0;
-
+	private final CompletionWindow completionMenu;
+	private final Stage stage;
 	private static final String[] KEYWORDS = new String[] {
 		"abstract", "assert", "boolean", "break", "byte",
 		"case", "catch", "char", "class", "const",
@@ -71,7 +70,7 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 	);
 	
 	public ZenCodeArea(int textSize, String font, List<String> existingClasses, Stage stage) {
-		completionGraph = new CompletionGraph();
+		CompletionGraph completionGraph = new CompletionGraph();
 		completionMenu = new CompletionWindow(this);
 
 		this.stage = stage;
@@ -102,6 +101,7 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 		variableTimer = new VariableTimer(this, completionGraph, existingClasses);
 
 		addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+
 			if(event.getCode() != KeyCode.ENTER
 			&& event.getCode() != KeyCode.SHIFT
 			&& event.getCode() != KeyCode.CONTROL
@@ -114,6 +114,10 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 			&& event.getCode() != KeyCode.DOWN){
 				variableTimer.reset();
 			}
+		});
+
+		addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+			//completionMenu.hide();
 		});
 	}
 	
@@ -205,7 +209,7 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 
 		Platform.runLater(() -> {
 			if(!foundWords.isEmpty()) {
-				completionMenu.show(stage, 0, 0);
+				completionMenu.show(stage, getCaretBounds().get().getMaxX(), getCaretBounds().get().getMaxY());
 				//TODO: följande metod inte implementerad än men borde kunna användas för att skugga delar av resultaten:
 				completionMenu.setInputLength(inputLength);
 			} else {

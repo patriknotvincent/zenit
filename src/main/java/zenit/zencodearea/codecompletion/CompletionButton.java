@@ -8,5 +8,6 @@ public class CompletionButton extends Button {
     public CompletionButton(Completion completion) {
         super(completion.getName() + " (" + completion.getCompletionType().toString() + ")");
         this.completion = completion;
+        setPrefHeight(20);
     }
 }
