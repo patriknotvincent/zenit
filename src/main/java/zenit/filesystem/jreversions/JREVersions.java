@@ -12,9 +12,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ibm.icu.impl.locale.XCldrStub;
+import com.sun.jna.platform.FileUtils;
 import zenit.Zenit;
 
 public class JREVersions {
+
+
 
 	public static void createNew() {
 		try {
@@ -102,7 +106,7 @@ public class JREVersions {
 	public static File getJVMDirectory() {
 		String OS = Zenit.OS;
 		if (OS.equals("Mac OS X")) {
-			return new File("/library/java/javavirtualmachines");
+			return new File("/library/java/JavaVirtualMachines");
 		} else if (OS.equals("Linux")) {
 			return new File("/usr/lib/jvm");
 		} else if (OS.equals("Windows")) {
