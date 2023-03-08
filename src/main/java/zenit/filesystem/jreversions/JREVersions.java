@@ -54,7 +54,7 @@ public class JREVersions {
 				file = (File) ois.readObject();
 			}
 		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
+
 		}
 		return JDKs;
 	}
@@ -109,7 +109,7 @@ public class JREVersions {
 			return new File("/library/java/JavaVirtualMachines");
 		} else if (OS.equals("Linux")) {
 			return new File("/usr/lib/jvm");
-		} else if (OS.equals("Windows")) {
+		} else if (OS.contains("Windows")) {
 			return new File("C:\\Program Files\\Java\\");
 		}
 		
@@ -145,7 +145,6 @@ public class JREVersions {
 		try (ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(defaultJDK)))) {
 			return (File) ois.readObject();
 		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
 			return null;
 		}
 	}

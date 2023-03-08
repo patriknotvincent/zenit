@@ -161,10 +161,19 @@ public class MainController extends VBox implements ThemeCustomizable {
 		this.customThemeCSS = new File("/customtheme/mainCustomTheme.css");
 		this.existingClasses = new ArrayList<>();
 		this.existingClassesListeners = new ArrayList<>();
-		File file = new File("res/JDK");
-		if (!file.isDirectory()){
-			file.mkdir();
+		File jdkDirectory = new File("res/JDK");
+		if (!jdkDirectory.isDirectory()){
+			jdkDirectory.mkdir();
 		}
+		File defaultJDK = new File("res/JDK/DefaultJDK.dat");
+		if(!defaultJDK.exists()) {
+			try {
+				defaultJDK.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 		try {
 			loader = new FXMLLoader(getClass().getResource("/zenit/ui/Main.fxml"));
 
