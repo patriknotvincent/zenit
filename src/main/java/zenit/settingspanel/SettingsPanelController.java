@@ -104,6 +104,9 @@ public class SettingsPanelController extends AnchorPane implements ThemeCustomiz
 	
 	@FXML
 	private Hyperlink linkOpenInGitHub;
+
+	@FXML
+	private Hyperlink linkOpenUserGuide;
 	
 	@FXML
 	private Hyperlink linkSubmitIssue;
@@ -335,6 +338,9 @@ public class SettingsPanelController extends AnchorPane implements ThemeCustomiz
 		
 		if(e.getSource() == linkOpenInGitHub) {
 			openInBrowser("https://github.com/patriknotvincent/zenit");
+		}
+		if(e.getSource() == linkOpenUserGuide){
+			openInBrowser("https://github.com/patriknotvincent/zenit/blob/bug_fix_supportpage/User%20guide.pdf");
 		}
 		if(e.getSource() == linkDownloadSource) {
 			openInBrowser("https://github.com/patriknotvincent/zenit/archive/develop.zip");
