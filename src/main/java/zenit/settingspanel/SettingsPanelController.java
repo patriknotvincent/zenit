@@ -334,13 +334,10 @@ public class SettingsPanelController extends AnchorPane implements ThemeCustomiz
 	private void openLinkInBrowserEvent(Event e) {	
 		
 		if(e.getSource() == linkOpenInGitHub) {
-			openInBrowser("https://github.com/strazan/zenit");
-		}
-		if(e.getSource() == linkSubmitIssue) {
-			openInBrowser("https://github.com/strazan/zenit/issues/new");
+			openInBrowser("https://github.com/patriknotvincent/zenit");
 		}
 		if(e.getSource() == linkDownloadSource) {
-			openInBrowser("https://github.com/strazan/zenit/archive/develop.zip");
+			openInBrowser("https://github.com/patriknotvincent/zenit/archive/develop.zip");
 		}	
 	}
 	
