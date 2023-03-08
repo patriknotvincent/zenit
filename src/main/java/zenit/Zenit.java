@@ -28,7 +28,7 @@ public class Zenit extends Application {
 		SetupController sc;
 		if (!workspace.exists() || !JDK.exists() || !defaultJDK.exists()) {
 			sc = new SetupController();
-			sc.start();
+			sc.start(stage);
 		}
 
 		if (OS.equals("Mac OS X")) {

@@ -26,6 +26,7 @@ import zenit.Zenit;
 import zenit.filesystem.WorkspaceHandler;
 import zenit.filesystem.jreversions.JREVersions;
 import zenit.ui.DialogBoxes;
+import zenit.ui.MainController;
 
 /**
  * Controller for the setup window of the application.
@@ -46,6 +47,8 @@ public class SetupController extends AnchorPane {
 	private final ToggleGroup tgGroup;
 	
 	private RadioButtonListener rbListener;
+
+	private Stage mainStage;
 	
 	@FXML ListView<String> jdkList;
 	@FXML TextField workspacePath;
@@ -55,7 +58,7 @@ public class SetupController extends AnchorPane {
 	
 	/**
 	 * Creates a new controller for the setup page.
-	 * Start graphics by calling {@link #start()}
+	 * Start graphics by calling {@link #start(Stage)}
 	 */
 	public SetupController() {
 		//Init final variable
@@ -70,7 +73,8 @@ public class SetupController extends AnchorPane {
 	/**
 	 * Initializes and displays the setup window graphics.
 	 */
-	public void start() {
+	public void start(Stage mainStage) {
+		this.mainStage = mainStage;
 		try {
 			//setup scene
 			FXMLLoader loader = new FXMLLoader();
@@ -80,16 +84,16 @@ public class SetupController extends AnchorPane {
 			Scene scene = new Scene(root);
 
 			//set up stage
-			stage = new Stage();
-			stage.setResizable(false);
-			stage.setScene(scene);
-			stage.initStyle(StageStyle.UNDECORATED);
+			this.stage = new Stage();
+			this.stage.setResizable(false);
+			this.stage.setScene(scene);
+			this.stage.initStyle(StageStyle.UNDECORATED);
 			
 			//Init graphical components
 			initialize();
 			
 			//display stage
-			stage.showAndWait();
+			this.stage.showAndWait();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -113,6 +117,11 @@ public class SetupController extends AnchorPane {
 		logo.setImage(new Image(Objects.requireNonNull(getClass().getResource("/zenit/setup/zenit.png"))
 				.toExternalForm()));
 		logo.setFitWidth(55);
+
+		File jdkDirectory = new File("res/JDK");
+		if (!jdkDirectory.isDirectory()){
+			jdkDirectory.mkdir();
+		}
 		
 		//Load OS default JDKs if none are saved
 		if (!JDKDat.exists()) {
@@ -317,6 +326,7 @@ public class SetupController extends AnchorPane {
 		} else {
 			WorkspaceHandler.createWorkspace(workspaceFile);
 			stage.close();
+			new MainController(mainStage);
 		}
 	}
 	

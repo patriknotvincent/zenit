@@ -40,6 +40,7 @@ import zenit.javacodecompiler.ProcessBuffer;
 import zenit.searchinfile.Search;
 import zenit.settingspanel.SettingsPanelController;
 import zenit.settingspanel.ThemeCustomizable;
+import zenit.setup.SetupController;
 import zenit.ui.projectinfo.ProjectMetadataController;
 import zenit.ui.tree.*;
 import zenit.util.Tuple;
@@ -161,23 +162,10 @@ public class MainController extends VBox implements ThemeCustomizable {
 		this.customThemeCSS = new File("/customtheme/mainCustomTheme.css");
 		this.existingClasses = new ArrayList<>();
 		this.existingClassesListeners = new ArrayList<>();
-		File jdkDirectory = new File("res/JDK");
-		if (!jdkDirectory.isDirectory()){
-			jdkDirectory.mkdir();
-		}
-		File defaultJDK = new File("res/JDK/DefaultJDK.dat");
-		if(!defaultJDK.exists()) {
-			try {
-				defaultJDK.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		File workspace = null;
 
 		try {
 			loader = new FXMLLoader(getClass().getResource("/zenit/ui/Main.fxml"));
-
-			File workspace = null;
 
 			try {
 				workspace = WorkspaceHandler.readWorkspace();
@@ -185,18 +173,8 @@ public class MainController extends VBox implements ThemeCustomizable {
 				setFileController(fileController);
 
 			} catch (IOException ex) {
-				//Skapa workspace, behövs Sträng för paketets namn samt workspace.dat i korrekt folder
-				// -> Paketets namn
-				TextInputDialog input = new TextInputDialog();
-				input.setTitle("Enter Workspace name");
-				String nameSpace = input.showAndWait().get();
-				// -> Skapa Workspace.dat
-				String path = "res/workspace/userworkspaces/" + nameSpace;
-				workspace = new File(path);
-				WorkspaceHandler.createWorkspace(workspace);
 				FileController fileController = new FileController(workspace);
 				setFileController(fileController);
-				fileController.createPackage(workspace);
 			}
 
 			if (workspace != null) {

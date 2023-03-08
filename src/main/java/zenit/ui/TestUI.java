@@ -3,6 +3,7 @@ package zenit.ui;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import zenit.setup.SetupController;
 
 /**
  * Class for testing the UI.
@@ -14,7 +15,9 @@ public class TestUI extends Application {
 	
 	@Override
 	public void start(Stage stage) {
-		controller = new MainController(stage);
+		SetupController sc;
+		sc = new SetupController();
+		sc.start(stage);
 	}
 	
 	/**

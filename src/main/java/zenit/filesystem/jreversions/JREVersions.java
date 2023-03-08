@@ -110,7 +110,7 @@ public class JREVersions {
 		} else if (OS.equals("Linux")) {
 			return new File("/usr/lib/jvm");
 		} else if (OS.contains("Windows")) {
-			return new File("C:\\Program Files\\Java\\");
+			return new File("C:/Program Files/Java/");
 		}
 		
 		return null;

@@ -99,7 +99,7 @@ public class CommandBuilder {
 	}
 
 	public String generateCommand() {
-		String command = JDK;
+		String command = "\"" + JDK + "\"";
 		
 		if (VMArguments != null) {
 			command += " " + VMArguments;
