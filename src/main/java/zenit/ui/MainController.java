@@ -652,6 +652,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 			for (Tab tab : tabs) {
 				FileTab fileTab = (FileTab) tab;
 				if (fileTab.getText().equals(file.getName())) {
+					// TODO Change class-name in actual file to match. IE public class In -> public class Out
 					fileTab.setText(newName);
 					fileTab.setFile(newFile, false);
 					treeView.refresh();
@@ -1358,9 +1359,6 @@ public class MainController extends VBox implements ThemeCustomizable {
 		this.isDarkMode = isDarkmode;
 	}
 
-
-
-
 	public void closeConsoleComponent() {
 
 		splitPane.setDividerPosition(0, 1.0);
@@ -1393,7 +1391,6 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 
 	}
-
 
 	public String moveFile(File location, File destination) {
 		String destPath = destination.getPath() + FileSystems.getDefault().getSeparator() + location.getName();
