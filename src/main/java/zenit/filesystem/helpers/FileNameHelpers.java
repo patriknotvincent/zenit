@@ -88,7 +88,6 @@ public class FileNameHelpers {
 		if (Zenit.OS.equals("Mac OS X")){
 			for (int i = 0; i <filepath.length() ; i++) {
 				folders = filepath.split("/");
-
 			}
 			return folders;
 		}
