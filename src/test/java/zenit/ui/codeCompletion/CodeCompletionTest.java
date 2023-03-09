@@ -1,6 +1,7 @@
 package zenit.ui.codeCompletion;
 
 import javafx.animation.PauseTransition;
+import javafx.geometry.VerticalDirection;
 import javafx.scene.input.KeyCode;
 import org.junit.jupiter.api.Test;
 import org.testfx.util.WaitForAsyncUtils;
@@ -59,5 +60,25 @@ public class CodeCompletionTest extends ZenithTestBase {
         WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
         push(KeyCode.ENTER);
         push(KeyCode.ENTER);
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Make sure the file CLASS_FILE exists in the workspace at the top level, not in any folder or package
+     * the sleep is called to make it easier to see what is happening
+     */
+    @Test
+    void cycleSuggestions(){
+        doubleClickOn(ClASS_FILE);
+        write(TESTPHRASE1);
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
+        push(KeyCode.DOWN);
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
+        push(KeyCode.UP);
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
+        scroll(VerticalDirection.DOWN);
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
+        scroll(VerticalDirection.UP);
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
     }
 }

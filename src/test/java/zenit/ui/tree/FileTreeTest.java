@@ -109,7 +109,7 @@ class FileTreeTest extends ZenithTestBase {
 
     /**
      * Test for moving a file from one directory to another.
-     * TODO Currently drag and drop isn't working and test can be verifed completely.
+     * Make sure the Class file to be moved is in src and not in the package
      */
     @Test
     void changeFileForNodes() {
