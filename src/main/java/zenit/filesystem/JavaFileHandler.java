@@ -12,6 +12,7 @@ import java.io.OutputStreamWriter;
 import zenit.exceptions.TypeCodeException;
 import zenit.filesystem.helpers.CodeSnippets;
 import zenit.filesystem.helpers.FileNameHelpers;
+import zenit.ui.DialogBoxes;
 
 /**
  * Methods for creating, reading, writing, renaming and deleting .java files in file system.
@@ -47,7 +48,8 @@ public class JavaFileHandler extends FileHandler {
 			}
 			//Checks if file already exists
 			if (file.exists()) {
-				throw new IOException("File already exists");
+				DialogBoxes.errorDialog("Error: Files", "Couldn't create file", "File name exists in this folder. Choose another name");
+				return null;
 			}
 			//Tries to create file
 			file.createNewFile();
@@ -73,7 +75,8 @@ public class JavaFileHandler extends FileHandler {
 
 			return file;
 		} catch (IOException e) {
-			throw new IOException("Couldn't create new class");
+			DialogBoxes.errorDialog("Error: Files", "Couldn't create file", "File name exists in this folder. Choose another name");
+			return null;
 		}
 	}
 	
@@ -136,6 +139,7 @@ public class JavaFileHandler extends FileHandler {
 		File newFile = new File(newFilepath);
 		
 		if (newFile.exists()) {
+			DialogBoxes.errorDialog("Error: Java File Renaming", "Couldn't rename file", "File name already exists in this folder. Choose another name");
 			throw new IOException("File already exists");
 		}
 

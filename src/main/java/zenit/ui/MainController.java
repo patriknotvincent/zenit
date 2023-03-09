@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 
 import java.util.LinkedList;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import javafx.application.Platform;
 import javafx.event.Event;
@@ -341,7 +343,9 @@ public class MainController extends VBox implements ThemeCustomizable {
 		File file = null;
 		String className = DialogBoxes.inputDialog(null, "New file", "Create new file", "Enter new file name",
 				"File name");
-		if (className != null) {
+
+		//TreeItem<FileTreeItem> index = treeView.getSelectionModel().getSelectedItem();
+		if (fileNameValidated(className) /*&& folderValidated(index, className)*/) {
 			String filepath = parent.getPath() + "/" + className;
 			file = new File(filepath);
 
@@ -627,15 +631,22 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 * new name. Renames the tab text if file is in an open tab.
 	 *
 	 * @param file The file to rename.
-	 * @return
+	 * @return The renamed file
 	 */
 	public File renameFile(File file) {
 		File newFile = null;
 		int prefixPosition = file.getName().lastIndexOf('.');
-
-		String newName = DialogBoxes.inputDialog(null, "New name", "Rename file", "Enter a new name", file.getName(), 0,
-				prefixPosition);
-		if (newName != null) {
+		/*
+		For getting the selected item and checking parents content etc.
+		TreeItem<FileTreeItem> fileItemToChange = treeView.getSelectionModel().getSelectedItem();
+		 */
+		String newName = DialogBoxes.inputDialog(
+				null,
+				"New name",
+				"Rename file",
+				"Enter a new name", file.getName(),
+				0, prefixPosition);
+		if (fileNameValidated(newName)) {
 			newFile = fileController.renameFile(file, newName);
 			var tabs = tabPane.getTabs();
 			for (Tab tab : tabs) {
@@ -648,7 +659,23 @@ public class MainController extends VBox implements ThemeCustomizable {
 				}
 			}
 		}
+		treeView.refresh();
 		return newFile;
+	}
+
+	private boolean fileNameValidated(String fileName) {
+		if(fileName == null) {
+			DialogBoxes.errorDialog("Error: File Validator", "Error in filename", "File name must be longer than 0");
+			return false;
+		}
+		Pattern pattern = Pattern.compile("\\s");
+		Matcher matcher = pattern.matcher(fileName);
+		boolean found = matcher.find();
+		if(found) {
+			DialogBoxes.errorDialog("Error: File Validator", "Error in filename", "File name can't contain white-space");
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -703,10 +730,9 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 */
 	public void undoDeleteFile() {
 		if (!treeView.isFocused()) {
-			System.out.println("not focused");
+			System.out.println("Not focused");
 			return;
 		}
-
 		if (deletedFile.fst() != null && !deletedFile.fst().exists()) {
 			try {
 				deletedFile.fst().createNewFile();
@@ -721,7 +747,6 @@ public class MainController extends VBox implements ThemeCustomizable {
 			System.out.println("not focused");
 			return;
 		}
-
 		if (deletedFile.fst() != null && deletedFile.fst().exists()) {
 			deleteFile(deletedFile.fst());
 			FileTree.removeFromFile(treeView.getRoot(), deletedFile.fst());

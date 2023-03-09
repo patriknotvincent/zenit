@@ -106,11 +106,10 @@ public class FileCellFactory implements Callback<TreeView<FileTreeItem>, TreeCel
         if(!droppedOn.getValue().getFile().isDirectory()){
             return;
         }
-
         // remove from previous location
         droppedItemParent.getChildren().remove(draggedItem);
-
         droppedOn.getChildren().add(draggedItem);
+
         FileTab tab = controller.getTabFromFile(draggedItem.getValue().getFile());
         String destPath = controller.moveFile(draggedItem.getValue().getFile(), droppedOn.getValue().getFile());
         //Update file path for dragged item and tab if open

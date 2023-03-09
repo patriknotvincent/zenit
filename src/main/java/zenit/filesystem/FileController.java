@@ -53,6 +53,7 @@ public class FileController {
 				return JavaFileHandler.createFile(file, content, typeCode);
 			} catch (IOException ex) {
 				System.out.println(ex.getMessage());
+				return null;
 			}
 		}
 		return null;
@@ -125,11 +126,11 @@ public class FileController {
 
 			return builder.toString();
 		} catch (FileNotFoundException ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
 
 			// TODO: give the user feedback that the file could not be found
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
 
 			// TODO: handle IO exception
 		}
@@ -241,8 +242,7 @@ public class FileController {
 				ProjectHandler.createNewProject(file);
 				return file;
 			} catch (IOException ex) {
-				System.err.println("FileController.createProject: IOException: " + 
-						ex.getMessage());
+				System.err.println("FileController.createProject: IOException: " + ex.getMessage());
 			}
 		}
 		return null;

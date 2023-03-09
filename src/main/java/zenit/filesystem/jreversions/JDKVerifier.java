@@ -20,15 +20,11 @@ public class JDKVerifier {
 
 		if (OS.equals("Mac OS X")) {
 			path = JDKPath + File.separator + "Contents" + File.separator + "Home" + File.separator + "bin" + File.separator + tool;
-			System.out.println(path);
 		} else if (OS.contains("Windows")) {
 			path = JDKPath + File.separator + "bin" + File.separator + tool;
-			System.out.println(path);
 		} else if (OS.equals("Linux")) {
 			path = JDKPath + File.separator + "bin" + File.separator + tool;
-			System.out.println(path);
 		}
-		
 		return path;
 	}
 }

@@ -26,19 +26,19 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 	private TreeView<FileTreeItem> treeView;
 	
 	private Menu createItem = new Menu("New...");
-	private MenuItem createClass = new MenuItem("New class");
-	private MenuItem createInterface = new MenuItem("New interface");
-	private MenuItem createPackage = new MenuItem("New package");
+	private MenuItem createClass = new MenuItem("New Class");
+	private MenuItem createInterface = new MenuItem("New Interface");
+	private MenuItem createPackage = new MenuItem("New Package");
 	private MenuItem renameItem = new MenuItem("Rename");
 	private MenuItem deleteItem = new MenuItem("Delete");
-	private MenuItem importJar = new MenuItem("Import jar");
+	private MenuItem importJar = new MenuItem("Import .jar");
 	private MenuItem properties = new MenuItem("Properties");
 	
 	/**
 	 * Creates a new {@link TreeContextMenu} that can manipulate a specific {@link
 	 * TreeView TreeView} instance and call methods in a specific
-	 * {@link main.java.zenit.ui.MainController MainController}
-	 * @param controller The {@link main.java.zenit.ui.MainController MainController} instance where methods
+	 * {@link zenit.ui.MainController MainController}
+	 * @param controller The {@link zenit.ui.MainController MainController} instance where methods
 	 * will be called
 	 * @param treeView The {@link TreeView TreeView} instance which will
 	 * be manipulated
@@ -110,9 +110,9 @@ public class TreeContextMenu extends ContextMenu implements EventHandler<ActionE
 	}
 	
 	/**
-	 * To create a new file, calls {@link main.java.zenit.ui.MainController#createFile(File, int)}
+	 * To create a new file, calls {@link zenit.ui.MainController#createFile(File, int)}
 	 * @param typeCode The type of item to be created. Use constants from {@link 
-	 * main.java.zenit.filesystem.helpers.CodeSnippets CodeSnippets}
+	 * zenit.filesystem.helpers.CodeSnippets CodeSnippets}
 	 */
 	private void newFile(int typeCode) {
 		TreeItem<FileTreeItem> parent = treeView.getSelectionModel().getSelectedItem();
