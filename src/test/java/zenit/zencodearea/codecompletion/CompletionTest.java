@@ -9,14 +9,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CompletionTest extends ZenithTestBase {
-    private final String MENU_FILE                      = "SearchTest.java";
-    private final String CREATION_MENU_CONFIRM          = "#createButton";
-    private final String SUB_MENU_FILE_NEW              = "New...";
-    private final String SUB_MENU_FILE_NEW_NEW_TAB      = "New tab";
-    private final String SUB_MENU_FILE_NEW_NEW_FILE     = "New file";
-    private final String TEST_FILE_NAME = "CreateTest";
     private final String String_Variable_Test = "String testString;";
-
     private final String Create_Metod = "public void testAutoComplete(){";
 
 
