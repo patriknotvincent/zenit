@@ -133,9 +133,10 @@ public class JavaFileHandler extends FileHandler {
 	protected static File renameFile(File oldFile, String newFilename) throws IOException {
 		
 		File tempFile = FileNameHelpers.getFilepathWithoutTopFile(oldFile); //Removes file name
-		
+		System.out.println(tempFile);
 		//Create new file with new name
 		String newFilepath = tempFile.getPath() + "/" + newFilename;
+		System.out.println(newFilepath);
 		File newFile = new File(newFilepath);
 		
 		if (newFile.exists()) {
