@@ -5,6 +5,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.*;
 import javafx.util.Callback;
+
 import zenit.ui.FileTab;
 import zenit.ui.MainController;
 
@@ -51,6 +52,18 @@ public class FileCellFactory implements Callback<TreeView<FileTreeItem>, TreeCel
         cell.setOnDragOver((DragEvent event) -> dragOver(event, cell, treeView));
         cell.setOnDragDropped((DragEvent event) -> drop(event, cell, treeView));
         cell.setOnDragDone((DragEvent event) -> clearDropLocation());
+        cell.setOnMouseClicked((MouseEvent event) -> {
+            if(cell.getTreeItem() != null && event.getButton().equals(MouseButton.PRIMARY)) {
+                controller.updateStatusLeft(cell.getTreeItem().getValue().getFile().getPath());
+
+                if (event.getClickCount() == 2) {
+                    File file = cell.getTreeItem().getValue().getFile();
+                    if (!file.isDirectory()) {
+                        controller.openFile(file);
+                    }
+                }
+            }
+        });
 
         return cell;
     }
@@ -58,18 +71,21 @@ public class FileCellFactory implements Callback<TreeView<FileTreeItem>, TreeCel
     private void dragDetected(MouseEvent event, TreeCell<FileTreeItem> treeCell, TreeView<FileTreeItem> treeView) {
         draggedItem = treeCell.getTreeItem();
 
-        // root can't be dragged
-        if (draggedItem.getParent() == null) return;
-        if(draggedItem.getValue().getType() == FileTreeItem.PROJECT) return;
-        if(draggedItem.getValue().getType() == FileTreeItem.PACKAGE) return;
-        if(draggedItem.getValue().getType() == FileTreeItem.SRC) return;
-        Dragboard db = treeCell.startDragAndDrop(TransferMode.MOVE);
+        if(draggedItem != null) {
 
-        ClipboardContent content = new ClipboardContent();
-        content.put(JAVA_FORMAT, draggedItem.getValue());
-        db.setContent(content);
-        db.setDragView(treeCell.snapshot(null, null));
-        event.consume();
+            // root can't be dragged
+            if (draggedItem.getParent() == null) return;
+            if (draggedItem.getValue().getType() == FileTreeItem.PROJECT) return;
+            if (draggedItem.getValue().getType() == FileTreeItem.PACKAGE) return;
+            if (draggedItem.getValue().getType() == FileTreeItem.SRC) return;
+            Dragboard db = treeCell.startDragAndDrop(TransferMode.MOVE);
+
+            ClipboardContent content = new ClipboardContent();
+            content.put(JAVA_FORMAT, draggedItem.getValue());
+            db.setContent(content);
+            db.setDragView(treeCell.snapshot(null, null));
+            event.consume();
+        }
     }
 
     private void dragOver(DragEvent event, TreeCell<FileTreeItem> treeCell, TreeView<FileTreeItem> treeView) {
@@ -107,10 +123,16 @@ public class FileCellFactory implements Callback<TreeView<FileTreeItem>, TreeCel
             return;
         }
 
+        for(TreeItem<FileTreeItem> child : droppedOn.getChildren()){
+            if(child.getValue().getFile().getName().equals(draggedItem.getValue().getFile().getName())){
+                return;
+            }
+        }
+
         // remove from previous location
         droppedItemParent.getChildren().remove(draggedItem);
-
         droppedOn.getChildren().add(draggedItem);
+
         FileTab tab = controller.getTabFromFile(draggedItem.getValue().getFile());
         String destPath = controller.moveFile(draggedItem.getValue().getFile(), droppedOn.getValue().getFile());
         //Update file path for dragged item and tab if open

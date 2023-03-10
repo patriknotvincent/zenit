@@ -1,11 +1,11 @@
 package zenit.zencodearea.codecompletion;
 
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.control.IndexRange;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
-import zenit.util.Tuple;
 import zenit.zencodearea.ZenCodeArea;
 
 import java.util.ArrayList;
@@ -17,20 +17,18 @@ import java.util.List;
 public class CompletionWindow extends Popup {
 
     private final ZenCodeArea zenCodeArea;
-    private VBox content;
-    private ArrayList<CompletionButton> completionButtons = new ArrayList<>();
+    private final VBox content;
+    private final ArrayList<CompletionButton> completionButtons = new ArrayList<>();
     private int completionIndex = 0;
     private int inputLength = 0;
-
-    private Tuple<Integer, Integer> absolutePosition;
 
 
     public CompletionWindow(ZenCodeArea zenCodeArea) {
         this.zenCodeArea = zenCodeArea;
         content = new VBox();
-        content.setPrefWidth(200);
-        content.setPrefHeight(500);
-        content.setStyle("-fx-background-color: #444444;");
+        content.setPrefHeight(100);
+        content.setAlignment(Pos.CENTER_LEFT);
+        content.setStyle("-fx-background-color: #616060; -fx-border-color: grey; -fx-border-width: 1px;");
         getContent().add(content);
 
         //Adding event filter to enable arrow key navigation through the completion menu:
@@ -61,13 +59,13 @@ public class CompletionWindow extends Popup {
             for(Completion completion : completions){
                 CompletionButton button = new CompletionButton(completion);
                 completionButtons.add(button);
-                button.setStyle("-fx-background-color: #444444; -fx-text-fill: #ffffff;");
+                button.setStyle("-fx-background-color: #333232; -fx-text-fill: #ffffff;");
                 button.setOnAction(event -> {
                     fillInSuggestion(completion);
                     this.hide();
                 });
                 content.getChildren().add(button);
-
+                content.setPrefHeight(20.0 * completionButtons.size() + (completionButtons.size() * 8));
             }
 
             if (!completionButtons.isEmpty()) {
@@ -90,14 +88,14 @@ public class CompletionWindow extends Popup {
 
     public void cycleCompletions(boolean cycleDown) {
         if (cycleDown) {
-            completionButtons.get(completionIndex).setStyle("-fx-background-color: #444444; -fx-text-fill: #ffffff;");
+            completionButtons.get(completionIndex).setStyle("-fx-background-color: #333232; -fx-text-fill: #ffffff;");
             //Evaluate the result of incrementing completionIndex, if it is equal to the size of the completionButtons list, set it to 0:
             completionIndex = (completionIndex + 1) % completionButtons.size();
             CompletionButton completionButton = completionButtons.get(completionIndex);
             completionButton.setStyle("-fx-background-color: #d2d0d0; -fx-text-fill: #646363;");
             completionButton.requestFocus();
         } else {
-            completionButtons.get(completionIndex).setStyle("-fx-background-color: #444444; -fx-text-fill: #ffffff;");
+            completionButtons.get(completionIndex).setStyle("-fx-background-color: #333232; -fx-text-fill: #ffffff;");
             //Evaluate the result of decrementing completionIndex, if it is -1, set it to the last index of the completionButtons list:
             completionIndex = completionIndex - 1 == -1 ? completionButtons.size() - 1 : completionIndex - 1;
             CompletionButton completionButton = completionButtons.get(completionIndex);

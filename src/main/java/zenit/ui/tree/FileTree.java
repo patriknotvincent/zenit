@@ -2,6 +2,7 @@ package zenit.ui.tree;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import javafx.scene.control.TreeItem;
 import zenit.filesystem.ProjectFile;
@@ -16,7 +17,7 @@ public class FileTree {
 	/**
 	 * Initiates all the nodes from a parent folder (excluding parent node itself. 
 	 * Recursively adds all children and with corresponding file.
-	 * Currently excludes bin-folders and hidden files (with '.'-prefix).
+	 * Currently, excludes bin-folders and hidden files (with '.'-prefix).
 	 * For initiation including parent-node, use {@link #createParentNode(TreeItem, File) createParentNode} method
 	 * instead.
 	 * @param parent The parent node to create children nodes to
@@ -119,6 +120,17 @@ public class FileTree {
 				}
 			}
 		}
+	}
+
+	public static boolean fileExistsInFolder(TreeItem<FileTreeItem> item, String fileName) {
+		TreeItem<FileTreeItem> parent = item.getParent();
+		for(TreeItem<FileTreeItem> parentItem : parent.getChildren()) {
+			if(Objects.equals(parentItem.getValue().getName(), fileName + ".java" )
+			|| Objects.equals(parentItem.getValue().getName(), fileName + ".txt")) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**

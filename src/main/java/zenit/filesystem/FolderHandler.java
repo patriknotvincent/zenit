@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import zenit.filesystem.helpers.FileNameHelpers;
+import zenit.ui.DialogBoxes;
 
 /**
  * Methods for creating, renaming and deleting folders.
@@ -23,6 +24,7 @@ public class FolderHandler {
 	protected static void createNewFolder(File file) throws IOException {
 		boolean success = file.mkdirs();
 		if (!success) {
+			DialogBoxes.errorDialog("Error: Folder", "Error in renaming folder", "Folder already exists. Choose another name");
 			throw new IOException ("Couldn't create folder " + file.getName());
 		}
 	}
@@ -38,6 +40,7 @@ public class FolderHandler {
 	protected static File renameFolder(File file, String newFolderName) throws IOException {
 		
 		if (newFolderName.equals("package")) {
+			DialogBoxes.errorDialog("Error: Folder", "Error in renaming folder", "Folders can't be named 'package'");
 			throw new IOException("Can't rename package to: " + newFolderName);
 		}
 		
@@ -49,6 +52,7 @@ public class FolderHandler {
 		
 		//Check if file exists
 		if (newFile.exists()) {
+			DialogBoxes.errorDialog("Error: Folder", "Error in renaming folder", "Folder already exists. Choose another name");
 			throw new IOException("File already exists");
 		}
 		

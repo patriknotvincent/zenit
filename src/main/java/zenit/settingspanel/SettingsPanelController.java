@@ -26,6 +26,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+
 import zenit.console.ConsoleController;
 import zenit.ui.MainController;
 import zenit.zencodearea.ZenCodeArea;
@@ -104,6 +105,9 @@ public class SettingsPanelController extends AnchorPane implements ThemeCustomiz
 	
 	@FXML
 	private Hyperlink linkOpenInGitHub;
+
+	@FXML
+	private Hyperlink linkOpenUserGuide;
 	
 	@FXML
 	private Hyperlink linkSubmitIssue;
@@ -334,13 +338,13 @@ public class SettingsPanelController extends AnchorPane implements ThemeCustomiz
 	private void openLinkInBrowserEvent(Event e) {	
 		
 		if(e.getSource() == linkOpenInGitHub) {
-			openInBrowser("https://github.com/strazan/zenit");
+			openInBrowser("https://github.com/patriknotvincent/zenit");
 		}
-		if(e.getSource() == linkSubmitIssue) {
-			openInBrowser("https://github.com/strazan/zenit/issues/new");
+		if(e.getSource() == linkOpenUserGuide){
+			openInBrowser("https://github.com/patriknotvincent/zenit/blob/bug_fix_supportpage/User%20guide.pdf");
 		}
 		if(e.getSource() == linkDownloadSource) {
-			openInBrowser("https://github.com/strazan/zenit/archive/develop.zip");
+			openInBrowser("https://github.com/patriknotvincent/zenit/archive/develop.zip");
 		}	
 	}
 	

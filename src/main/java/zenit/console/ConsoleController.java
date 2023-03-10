@@ -131,12 +131,12 @@ public class ConsoleController implements Initializable {
 		iconCloseConsoleInstance.setDisable(false);
 		iconCloseTerminalInstance.setVisible(false);
 		iconCloseTerminalInstance.setDisable(true);
-		
+
 			
 		if (consoleAnchorPane != null) {
 				consoleAnchorPane.toFront();
 		}
-		
+
 		if(consoleList.size() == 0) {
 			createEmptyConsolePane();
 		}
@@ -178,10 +178,10 @@ public class ConsoleController implements Initializable {
 		if(terminalList.size() == 0) {
 			newTerminal();
 		}
-		else {
-			terminalAnchorPane.toFront();
-		}
-		
+
+
+		terminalAnchorPane.toFront();
+
 		
 		consoleChoiceBox.setVisible(false);
 		consoleChoiceBox.setDisable(true);
@@ -343,14 +343,12 @@ public class ConsoleController implements Initializable {
 		
 		//Console
 		iconCloseConsoleInstance.setOnMouseClicked(e -> {
-				if(consoleList.size() > 0) {
+				if(consoleList.size() > 1) {
 					rootAnchor.getChildren().remove(activeConsole.getParent());
 					consoleList.remove(activeConsole);
 					consoleChoiceBox.getItems().remove(activeConsole);
 					consoleChoiceBox.getSelectionModel().selectLast();
-				}
-				else if(consoleList.size() == 0) {
-					createEmptyConsolePane();
+					consoleAnchorPane = (AnchorPane) consoleList.get(consoleList.size()-1).getParent();
 				}
 		});
 		
@@ -362,9 +360,8 @@ public class ConsoleController implements Initializable {
 				terminalList.remove(activeTerminal);
 				terminalChoiceBox.getItems().remove(activeTerminal);
 				terminalChoiceBox.getSelectionModel().selectLast();
+				terminalAnchorPane = (AnchorPane) terminalList.get(terminalList.size()-1).getParent();
 			}
-			
-			
 		});
 		
 		

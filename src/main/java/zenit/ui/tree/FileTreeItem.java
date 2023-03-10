@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
  * @author Alexander Libot
 
  */
+@SuppressWarnings("DuplicateBranchesInSwitch")
 public class FileTreeItem implements Serializable {
 
 	private String name;
@@ -49,12 +50,13 @@ public class FileTreeItem implements Serializable {
 	public void setIcon() {
 		String url = null;
 		switch(type) {
-		case PROJECT: case FOLDER: url = "/zenit/ui/tree/darkmode/folder.png"; break;
-		case PACKAGE: url = "/zenit/ui/tree/darkmode/package.png"; break;
-		case CLASS: url = "/zenit/ui/tree/darkmode/java_class.png"; break;
-		case SRC: url = "/zenit/ui/tree/darkmode/java.png"; break;
-		case FILE: url = "/zenit/ui/tree/darkmode/file.png"; break;
-		case INCOMPATIBLE: url = "/zenit/ui/tree/darkmode/incompatible.png"; break;
+		case PROJECT: 		url = "/zenit/ui/tree/darkmode/folder.png"; break;
+		case FOLDER: 		url = "/zenit/ui/tree/darkmode/folder.png"; break;
+		case PACKAGE: 		url = "/zenit/ui/tree/darkmode/package.png"; break;
+		case CLASS: 		url = "/zenit/ui/tree/darkmode/java_class.png"; break;
+		case SRC: 			url = "/zenit/ui/tree/darkmode/java.png"; break;
+		case FILE: 			url = "/zenit/ui/tree/darkmode/file.png"; break;
+		case INCOMPATIBLE: 	url = "/zenit/ui/tree/darkmode/incompatible.png"; break;
 		}
 		
 		if (url != null) {

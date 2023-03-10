@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 
 import java.util.LinkedList;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import javafx.application.Platform;
 import javafx.event.Event;
@@ -23,10 +25,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import zenit.Zenit;
 import zenit.console.ConsoleArea;
 import zenit.console.ConsoleController;
 import zenit.filesystem.FileController;
+import zenit.filesystem.FolderHandler;
 import zenit.filesystem.ProjectFile;
 import zenit.filesystem.RunnableClass;
 import zenit.filesystem.WorkspaceHandler;
@@ -39,6 +43,7 @@ import zenit.javacodecompiler.ProcessBuffer;
 import zenit.searchinfile.Search;
 import zenit.settingspanel.SettingsPanelController;
 import zenit.settingspanel.ThemeCustomizable;
+import zenit.setup.SetupController;
 import zenit.ui.projectinfo.ProjectMetadataController;
 import zenit.ui.tree.*;
 import zenit.util.Tuple;
@@ -160,22 +165,20 @@ public class MainController extends VBox implements ThemeCustomizable {
 		this.customThemeCSS = new File("/customtheme/mainCustomTheme.css");
 		this.existingClasses = new ArrayList<>();
 		this.existingClassesListeners = new ArrayList<>();
+		File workspace = null;
 
 		try {
 			loader = new FXMLLoader(getClass().getResource("/zenit/ui/Main.fxml"));
 
-			File workspace = null;
-
 			try {
 				workspace = WorkspaceHandler.readWorkspace();
-			} catch (IOException ex) {
-				DirectoryChooser directoryChooser = new DirectoryChooser();
-				directoryChooser.setTitle("Select new workspace folder");
-				workspace = directoryChooser.showDialog(stage);
-			}
+				FileController fileController = new FileController(workspace);
+				setFileController(fileController);
 
-			FileController fileController = new FileController(workspace);
-			setFileController(fileController);
+			} catch (IOException ex) {
+				FileController fileController = new FileController(workspace);
+				setFileController(fileController);
+			}
 
 			if (workspace != null) {
 				// TODO: Log this
@@ -304,7 +307,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 * Initializes the {@link javafx.scene.control.TreeView TreeView}. Creates a
 	 * root node from the workspace-file in the fileController class. Calls
 	 * FileTree-method to add all files in the workspace folder to the tree. Creates
-	 * a TreeContextMenu for displaying when right clicking nodes in the tree and an
+	 * a TreeContextMenu for displaying when right-clicking nodes in the tree and an
 	 * event handler for clicking nodes in the tree.
 	 */
 	public void initTree() {
@@ -319,12 +322,12 @@ public class MainController extends VBox implements ThemeCustomizable {
 		treeView.setRoot(rootItem);
 		treeView.setShowRoot(false);
 		TreeContextMenu tcm = new TreeContextMenu(this, treeView);
-		TreeClickListener tcl = new TreeClickListener(this, treeView);
 		treeView.setContextMenu(tcm);
-		treeView.setOnMouseClicked(tcl);
 		treeView.setCellFactory(new FileCellFactory(this));
 
 		rootItem.getChildren().sort(Comparator.comparing(o -> o.getValue().getName()));
+
+		treeView.getSelectionModel().select(rootItem.getChildren().get(0));
 	}
 
 	/**
@@ -333,7 +336,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 * @param parent The parent folder of the file to be created.
 	 * @param typeCode The type of code snippet that should be implemented in the
 	 *                 file. Use constants from
-	 *                 {@link main.java.zenit.filesystem.helpers.CodeSnippets
+	 *                 {@link zenit.filesystem.helpers.CodeSnippets
 	 *                 CodeSnippets} class.
 	 * @return The File if created, otherwise null.
 	 */
@@ -341,7 +344,9 @@ public class MainController extends VBox implements ThemeCustomizable {
 		File file = null;
 		String className = DialogBoxes.inputDialog(null, "New file", "Create new file", "Enter new file name",
 				"File name");
-		if (className != null) {
+
+		//TreeItem<FileTreeItem> index = treeView.getSelectionModel().getSelectedItem();
+		if (fileNameValidated(className) /*&& folderValidated(index, className)*/) {
 			String filepath = parent.getPath() + "/" + className;
 			file = new File(filepath);
 
@@ -626,27 +631,52 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 * new name. Renames the tab text if file is in an open tab.
 	 *
 	 * @param file The file to rename.
-	 * @return
+	 * @return The renamed file
 	 */
 	public File renameFile(File file) {
 		File newFile = null;
 		int prefixPosition = file.getName().lastIndexOf('.');
-
-		String newName = DialogBoxes.inputDialog(null, "New name", "Rename file", "Enter a new name", file.getName(), 0,
-				prefixPosition);
-		if (newName != null) {
+		/*
+		For getting the selected item and checking parents content etc.
+		TreeItem<FileTreeItem> fileItemToChange = treeView.getSelectionModel().getSelectedItem();
+		 */
+		String newName = DialogBoxes.inputDialog(
+				null,
+				"New name",
+				"Rename file",
+				"Enter a new name", file.getName(),
+				0, prefixPosition);
+		if (fileNameValidated(newName)) {
 			newFile = fileController.renameFile(file, newName);
 			var tabs = tabPane.getTabs();
 			for (Tab tab : tabs) {
 				FileTab fileTab = (FileTab) tab;
 				if (fileTab.getText().equals(file.getName())) {
+					// TODO Change class-name in actual file to match. IE public class In -> public class Out
 					fileTab.setText(newName);
 					fileTab.setFile(newFile, false);
+					treeView.refresh();
 					break;
 				}
 			}
 		}
+		treeView.refresh();
 		return newFile;
+	}
+
+	private boolean fileNameValidated(String fileName) {
+		if(fileName == null) {
+			DialogBoxes.errorDialog("Error: File Validator", "Error in filename", "File name must be longer than 0");
+			return false;
+		}
+		Pattern pattern = Pattern.compile("\\s");
+		Matcher matcher = pattern.matcher(fileName);
+		boolean found = matcher.find();
+		if(found) {
+			DialogBoxes.errorDialog("Error: File Validator", "Error in filename", "File name can't contain white-space");
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -701,10 +731,9 @@ public class MainController extends VBox implements ThemeCustomizable {
 	 */
 	public void undoDeleteFile() {
 		if (!treeView.isFocused()) {
-			System.out.println("not focused");
+			System.out.println("Not focused");
 			return;
 		}
-
 		if (deletedFile.fst() != null && !deletedFile.fst().exists()) {
 			try {
 				deletedFile.fst().createNewFile();
@@ -719,7 +748,6 @@ public class MainController extends VBox implements ThemeCustomizable {
 			System.out.println("not focused");
 			return;
 		}
-
 		if (deletedFile.fst() != null && deletedFile.fst().exists()) {
 			deleteFile(deletedFile.fst());
 			FileTree.removeFromFile(treeView.getRoot(), deletedFile.fst());
@@ -812,8 +840,6 @@ public class MainController extends VBox implements ThemeCustomizable {
 	public void compileAndRun(File file) {
 		File metadataFile = getMetadataFile(file);
 		ConsoleArea consoleArea;
-
-
 		if(isDarkMode) {
 			consoleArea = new ConsoleArea(file.getName(), null, "-fx-background-color:#444");
 		}
@@ -823,8 +849,10 @@ public class MainController extends VBox implements ThemeCustomizable {
 		consoleArea.setFileName(file.getName());
 		consoleController.newConsole(consoleArea);
 		openConsoleComponent();
-
 		try {
+			// Update the meta-data file BEFORE running
+			Metadata metadata = fileController.updateMetadata(metadataFile);
+
 			ProcessBuffer buffer = new ProcessBuffer();
 			JavaSourceCodeCompiler compiler = new JavaSourceCodeCompiler(file, metadataFile,
 					false, buffer, this);
@@ -839,12 +867,10 @@ public class MainController extends VBox implements ThemeCustomizable {
 				String filePath = file.getPath().replaceAll(Matcher.quoteReplacement(src +
 						File.separator), "");
 				RunnableClass rc = new RunnableClass(filePath);
-				Metadata metadata = new Metadata(metadataFile);
-				if (metadata.addRunnableClass(rc)) {
-					metadata.encode();
+				Metadata metadataAfter = new Metadata(metadataFile);
+				if (metadataAfter.addRunnableClass(rc)) {
+					metadataAfter.encode();
 				}
-
-
 				consoleArea.setProcess(process);
 				if(consoleArea.getProcess().isAlive()) {
 					consoleArea.setID(consoleArea.getFileName() + " <Running>");
@@ -853,8 +879,6 @@ public class MainController extends VBox implements ThemeCustomizable {
 				else {
 					consoleArea.setID(consoleArea.getFileName()+ " <Terminated>");
 				}
-
-
 			}
 
 		} catch (Exception e) {
@@ -862,10 +886,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 			// TODO: handle exception
 		}
-
-
 	}
-
 	/**
 	 * If the file of the current tab is a .java file if will be compiled, into the
 	 * same folder/directory, and the executed with only java standard lib.
@@ -911,7 +932,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	}
 
 	/**
-	 * Creates a new tab with a {@link main.java.zenit.zencodearea.ZenCodeArea
+	 * Creates a new tab with a {@link zenit.zencodearea.ZenCodeArea
 	 * ZenCodeArea} filling it, adds it to the TabPane, and focuses on it.
 	 *
 	 * @return The new Tab.
@@ -920,12 +941,9 @@ public class MainController extends VBox implements ThemeCustomizable {
 		FileTab tab = new FileTab(createNewZenCodeArea(), this);
 		tab.setOnCloseRequest(event -> closeTab(event));
 		tabPane.getTabs().add(tab);
-
 		var selectionModel = tabPane.getSelectionModel();
 		selectionModel.select(tab);
-
 		updateStatusRight("");
-
 		return tab;
 	}
 
@@ -1035,7 +1053,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 	/**
 	 * Tries to import a folder. Displays a directory chooser and copies the
 	 * selected folder into the current workspace using
-	 * {@link main.java.zenit.filesystem.FileController#importProject(File)
+	 * {@link zenit.filesystem.FileController#importProject(File)
 	 * importProject(File)} Displays an error or information dialog to display the
 	 * result.
 	 */
@@ -1341,9 +1359,6 @@ public class MainController extends VBox implements ThemeCustomizable {
 		this.isDarkMode = isDarkmode;
 	}
 
-
-
-
 	public void closeConsoleComponent() {
 
 		splitPane.setDividerPosition(0, 1.0);
@@ -1376,7 +1391,6 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 
 	}
-
 
 	public String moveFile(File location, File destination) {
 		String destPath = destination.getPath() + FileSystems.getDefault().getSeparator() + location.getName();

@@ -1,5 +1,8 @@
 package zenit.filesystem.helpers;
 
+import zenit.Zenit;
+import zenit.zencodearea.ZenCodeArea;
+
 import java.io.File;
 
 /**
@@ -80,8 +83,14 @@ public class FileNameHelpers {
 	 * @return A string-array of folder names
 	 */
 	public static String[] getFoldersAsStringArray(File file) {
-		String[] folders;
+		String[] folders = new String[0];
 		String filepath = file.getAbsolutePath(); //Get the path in string
+		if (Zenit.OS.equals("Mac OS X")){
+			for (int i = 0; i <filepath.length() ; i++) {
+				folders = filepath.split("/");
+			}
+			return folders;
+		}
 		folders = filepath.split("\\\\"); //Split path into the different folders
 		
 		return folders;

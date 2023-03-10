@@ -95,7 +95,7 @@ public class JREVersionsController extends AnchorPane {
 				updateList();
 			} else {
 				DialogBoxes.errorDialog("JDK doesn't contain java or javac", "", "The selected JDK doesn't"
-						+ "contain the needed java or javac executables");
+						+ " contain the needed java or javac executables");
 			}
 		}
 		

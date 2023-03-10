@@ -39,7 +39,7 @@ public class FileController {
 	
 	/**
 	 * Creates a new .java file from the File-objects using 
-	 * {@link JavaFileHandler#createFile(int, File, String) ClassHandler}
+	 * {@link JavaFileHandler #createFile(int, File, String) ClassHandler}
 	 * @param file File to be created
 	 * @param content Content of the file, may be null.
 	 * @param typeCode If new file, the type of code snippet to be inserted.
@@ -53,13 +53,14 @@ public class FileController {
 				return JavaFileHandler.createFile(file, content, typeCode);
 			} catch (IOException ex) {
 				System.out.println(ex.getMessage());
+				return null;
 			}
 		}
 		return null;
 	}
 	
 	/**
-	 * Calls {@link #createFile(int, File, String) createFile} method with null 
+	 * Calls {#createFile(int, File, String) createFile} method with null
 	 * content parameter.
 	 * @param file The file to be created
 	 * @param typeCode If new file, the type of code snippet to be inserted.
@@ -67,6 +68,7 @@ public class FileController {
 	 * CodeSnippets} constants.
 	 * @return See {@link #createFile(int, File, String) createFile} for return value
 	 */
+	@SuppressWarnings("JavadocReference")
 	public File createFile(File file, int typeCode) {
 		return createFile(file, null, typeCode);
 	}
@@ -78,6 +80,7 @@ public class FileController {
 	 * @param content The content to write to file. Can be null.
 	 * @return See {@link #createFile(int, File, String) createFile} for return value
 	 */
+	@SuppressWarnings("JavadocReference")
 	public File createFile(File file, String content) {
 		return createFile(file, content, CodeSnippets.EMPTY);
 	}
@@ -122,8 +125,14 @@ public class FileController {
 			}
 
 			return builder.toString();
+		} catch (FileNotFoundException ex) {
+			//ex.printStackTrace();
+
+			// TODO: give the user feedback that the file could not be found
 		} catch (IOException ex) {
-			System.out.println(ex.getMessage());
+			//ex.printStackTrace();
+
+			// TODO: handle IO exception
 		}
 		return null;
 	}
@@ -148,7 +157,7 @@ public class FileController {
 	}
 	
 	/**
-	 * Renames a file-object and it's file path using {@link zenit.filesystem.JavaFileHandler
+//	 * Renames a file-object and it's file path using {@link zenit.filesystem.JavaFileHandler
 	 * #renameFile(File, String) renameFile} method if {@code file} is a file or
 	 * {@link zenit.filesystem.ProjectHandler#renameFolder(File, String) renameProject}
 	 * method if {@code file} is a directory. Prints an error message if file couldn't
@@ -233,8 +242,7 @@ public class FileController {
 				ProjectHandler.createNewProject(file);
 				return file;
 			} catch (IOException ex) {
-				System.err.println("FileController.createProject: IOException: " + 
-						ex.getMessage());
+				System.err.println("FileController.createProject: IOException: " + ex.getMessage());
 			}
 		}
 		return null;

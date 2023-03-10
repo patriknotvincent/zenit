@@ -15,7 +15,6 @@ public class runTerminal extends Application {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("/zenit/terminal/Terminal.fxml"));
 			
-			
 			TerminalController controller = new TerminalController();
 			loader.setController(controller);
 			Parent root = loader.load();

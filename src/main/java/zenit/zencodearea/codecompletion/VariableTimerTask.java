@@ -56,7 +56,7 @@ public class VariableTimerTask extends TimerTask {
 
         Matcher matcher = pattern.matcher(code);
         while (matcher.find()) {
-            String variableName = matcher.group(4);
+            String variableName = matcher.group(7);
 
             if(variableName != null) {
                 if (variableName.contains(",")) {
@@ -68,6 +68,9 @@ public class VariableTimerTask extends TimerTask {
                         foundVariables.add(c);
                     }
                 } else {
+                    if(variableName.contains("[")){
+                        variableName = variableName.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "");
+                    }
                     foundVariables.add(new Completion(variableName, CompletionType.VARIABLE));
                 }
             }

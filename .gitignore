@@ -5,6 +5,8 @@ bin/*
 #Log files
 .log
 
+#Default Workspaces catalogue
+res/workspace/userworkspaces
 #Workspace file
 res/workspace/workspace.dat
 
@@ -92,3 +94,4 @@ target/classes/zenit/ui/mainStyle.css
 zenit.iml
 /res/JDK/
 /src/main/resources/zenit/searchinfile/src/testfiles/
+/res/
