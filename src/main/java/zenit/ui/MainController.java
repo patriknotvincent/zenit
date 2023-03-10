@@ -450,7 +450,6 @@ public class MainController extends VBox implements ThemeCustomizable {
 
 		if (didWrite) {
 			TreeItem<FileTreeItem> root = FileTree.getTreeItemFromFile(treeView.getRoot(), file.getParentFile());
-			System.out.println(root);
 			FileTree.createParentNode(root, file, existingClasses);
 			treeView.refresh();
 			treeView.layout();

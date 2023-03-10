@@ -146,7 +146,6 @@ class CreateTest extends ZenithTestBase {
         char[] arrChar = new char[255];
         Arrays.fill(arrChar, 'a');
         BOUNDARY_TEST_FILE_NAME = String.valueOf(arrChar);
-        System.out.println(BOUNDARY_TEST_FILE_NAME);
         clickOn(MENU_FILE);
         clickOn(SUB_MENU_FILE_NEW);
         moveTo(SUB_MENU_FILE_NEW_NEW_TAB);

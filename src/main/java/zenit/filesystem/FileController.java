@@ -122,14 +122,8 @@ public class FileController {
 			}
 
 			return builder.toString();
-		} catch (FileNotFoundException ex) {
-			ex.printStackTrace();
-
-			// TODO: give the user feedback that the file could not be found
 		} catch (IOException ex) {
-			ex.printStackTrace();
-
-			// TODO: handle IO exception
+			System.out.println(ex.getMessage());
 		}
 		return null;
 	}
@@ -154,9 +148,9 @@ public class FileController {
 	}
 	
 	/**
-	 * Renames a file-object and it's file path using {@link main.java.zenit.filesystem.JavaFileHandler
+	 * Renames a file-object and it's file path using {@link zenit.filesystem.JavaFileHandler
 	 * #renameFile(File, String) renameFile} method if {@code file} is a file or
-	 * {@link main.java.zenit.filesystem.ProjectHandler#renameFolder(File, String) renameProject}
+	 * {@link zenit.filesystem.ProjectHandler#renameFolder(File, String) renameProject}
 	 * method if {@code file} is a directory. Prints an error message if file couldn't
 	 * be renamed.
 	 * 
@@ -181,9 +175,9 @@ public class FileController {
 	}
 	
 	/**
-	 * Deletes a file from disk. Using {@link main.java.zenit.filesystem.JavaFileHandler
+	 * Deletes a file from disk. Using {@link zenit.filesystem.JavaFileHandler
 	 * #deleteFile(File) deleteFile} method if {@code file} is a file or
-	 * {@link main.java.zenit.filesystem.ProjectHandler#deleteFolder(File) deleteProject}
+	 * {@link zenit.filesystem.ProjectHandler#deleteFolder(File) deleteProject}
 	 * method if {@code file} is a directory. Prints an error message if file or a children
 	 * file couldn't be deleted.
 	 * @param file File to be deleted.
@@ -226,7 +220,7 @@ public class FileController {
 	//Project methods
 	
 	/**
-	 * Tries to create a new project using {@link main.java.zenit.filesystem.ProjectHandler
+	 * Tries to create a new project using {@link zenit.filesystem.ProjectHandler
 	 * #createNewProject(File) createNewProject} method in the set workspace.
 	 * Prints an error message if project or any of its files couldn't be created.
 	 * @param projectname Name of the new project

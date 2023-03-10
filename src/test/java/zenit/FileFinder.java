@@ -28,7 +28,6 @@ public class FileFinder {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                 if (file.getFileName().toString().equals(fileName)) {
-                    System.out.println("File found: " + file.toAbsolutePath());
                     absolutePath = String.valueOf(file.toAbsolutePath());
                     return FileVisitResult.TERMINATE;
                 }
@@ -60,7 +59,6 @@ public class FileFinder {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                 if (file.getFileName().toString().equals(fileName)) {
-                    System.out.println("File found: " + file.toAbsolutePath());
                     absolutePath = String.valueOf(file.toAbsolutePath());
                     return FileVisitResult.TERMINATE;
                 }
@@ -69,7 +67,6 @@ public class FileFinder {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                 if (Files.isReadable(dir) && dir.getFileName().toString().equals(fileName)) {
-                    System.out.println("Directory found: " + dir.toAbsolutePath());
                     absolutePath = String.valueOf(dir.toAbsolutePath());
                     return FileVisitResult.TERMINATE;
                 }
@@ -83,7 +80,6 @@ public class FileFinder {
                 return FileVisitResult.CONTINUE;
             }
         });
-        System.out.println(absolutePath);
         return absolutePath.length() > 0;
     }
 
