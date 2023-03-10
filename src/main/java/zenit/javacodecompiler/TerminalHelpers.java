@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
- * Contains static helper methods to run shellscripts in terminal
+ * Contains static helper methods to run shell-scripts in terminal
  * @author Alexander Libot
  *
  */
