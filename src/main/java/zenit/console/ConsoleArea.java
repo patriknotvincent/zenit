@@ -1,7 +1,17 @@
 package zenit.console;
 
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import org.fxmisc.richtext.InlineCssTextArea;
 import javafx.application.Platform;
+import org.fxmisc.richtext.model.Paragraph;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * A console area with prints string in two different colors. All error prints in one and all other
@@ -16,6 +26,8 @@ public class ConsoleArea extends InlineCssTextArea {
 	private Process process;
 	private String backgroundColor;
 	private String fileName;
+
+	private BufferedWriter writer;
 	
 	/*
 	 * README
@@ -43,9 +55,27 @@ public class ConsoleArea extends InlineCssTextArea {
 		this.setStyle(backgroundColor);
 		this.setEditable(true);
 		
-		
+		addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+			if(event.getCode() == KeyCode.ENTER){
+				Platform.runLater(() -> {
+
+					String currentLine = readCurrentLine();
+					try {
+						writer.write(currentLine);
+						writer.flush();
+						writer.close();
+					} catch (IOException ex) {
+						throw new RuntimeException(ex);
+					}
+				});
+			}
+		});
 	}
-	
+
+	private String readCurrentLine() {
+		return getParagraph(getCurrentParagraph()).getText();
+	}
+
 	public String getFileName() {
 		return this.fileName;
 	}
@@ -69,6 +99,7 @@ public class ConsoleArea extends InlineCssTextArea {
 	
 	public void setProcess(Process p) {
 		this.process = p;
+		writer = new BufferedWriter(new OutputStreamWriter(getProcess().getOutputStream()));
 	}
 	
 	/**
@@ -85,7 +116,7 @@ public class ConsoleArea extends InlineCssTextArea {
 	public void errPrint(String stringToPrint) {
 		Platform.runLater(new Runnable() {
 		    @Override
-		    public void run() {    	
+		    public void run() {
 		    	try {
 					appendText(stringToPrint);
 					setStyle(getText().length() - stringToPrint.length(), getText().length(), "-fx-fill: red;");
@@ -123,5 +154,9 @@ public class ConsoleArea extends InlineCssTextArea {
 	@Override
 	public String toString() {
 		return this.ID;
+	}
+
+	private class ConsoleThread extends Thread {
+
 	}
 }

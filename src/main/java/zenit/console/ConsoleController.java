@@ -1,10 +1,14 @@
 package zenit.console;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URL;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -379,7 +383,7 @@ public class ConsoleController implements Initializable {
 				if(item.equals(activeConsole)) {
 					if(item != null) {
 						item.getProcess().destroy();
-					}	
+					}
 				}
 			}
 							

@@ -18,12 +18,14 @@ public class TestUI extends Application {
 	@Override
 	public void start(Stage stage) {
 		File file = new File("res/workspace/workspace.dat");
-		if (file.exists()) {
-			controller = new MainController(stage);
-		} else {
+		File jdk = new File("res/jdk/jdk.dat");
+		File defaultJdk = new File("res/jdk/defaultJDK.dat");
+		if (!file.exists() || !jdk.exists() || !defaultJdk.exists()){
 			SetupController sc;
 			sc = new SetupController();
 			sc.start(stage);
+		} else {
+			controller = new MainController(stage);
 		}
 	}
 	
