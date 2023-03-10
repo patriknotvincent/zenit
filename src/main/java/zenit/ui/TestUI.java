@@ -5,6 +5,8 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import zenit.setup.SetupController;
 
+import java.io.File;
+
 /**
  * Class for testing the UI.
  * @author Pontus Laos, Oskar Molander
@@ -15,9 +17,14 @@ public class TestUI extends Application {
 	
 	@Override
 	public void start(Stage stage) {
-		SetupController sc;
-		sc = new SetupController();
-		sc.start(stage);
+		File file = new File("res/workspace/workspace.dat");
+		if (file.exists()) {
+			controller = new MainController(stage);
+		} else {
+			SetupController sc;
+			sc = new SetupController();
+			sc.start(stage);
+		}
 	}
 	
 	/**

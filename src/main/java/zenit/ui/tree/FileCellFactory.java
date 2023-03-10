@@ -5,6 +5,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.*;
 import javafx.util.Callback;
+
 import zenit.ui.FileTab;
 import zenit.ui.MainController;
 
