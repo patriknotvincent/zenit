@@ -29,13 +29,13 @@ class FileTreeTest extends ZenithTestBase {
     private final String INTERFACE_NAME = "ITest.java";
     private final String FILE_NAME = "File name";
     private final String PACKAGE_NAME = "Package name";
-    private final String DIRECTORY = "ZenitTEst";
+    private final String DIRECTORY = "TestProject";
     private final String SOURCE = "src";
     private final String NEW = "New...";
     private final String NEW_CLASS = "New class";
     private final String NEW_INTERFACE = "New interface";
     private final String  NEW_PACKAGE = "New package";
-    private final String NEW_CLASS_NAME = "Test";
+    private final String NEW_CLASS_NAME = "NewTest";
     private final String NEW_INTERFACE_NAME = "ITest";
     private final String NEW_PACKAGE_NAME = "PTest";
     private final String CREATE = "OK";
@@ -48,7 +48,6 @@ class FileTreeTest extends ZenithTestBase {
 
     /**
      * This test creates a new class in the project directory.
-     * TODO Need a way to verify that the GUI-component was created by clicking on it.
      */
     @Test
     void createClass() throws IOException {
@@ -64,11 +63,10 @@ class FileTreeTest extends ZenithTestBase {
         write(NEW_CLASS_NAME);
         clickOn(CREATE);
         doubleClickOn(SOURCE);
-        doubleClickOn(DIRECTORY);
+        clickOn(NEW_CLASS_NAME + ".java");
     }
     /**
      * This test creates a new Interface in the project directory.
-     * TODO Need a way to verify that the GUI-component was created by clicking on it.
      */
     @Test
     void createInterface() throws IOException {
@@ -84,11 +82,10 @@ class FileTreeTest extends ZenithTestBase {
         }
         write(NEW_INTERFACE_NAME);
         clickOn(CREATE);
-        doubleClickOn(DIRECTORY);
+        clickOn(NEW_INTERFACE_NAME + ".java");
     }
     /**
      * This test creates a new Package in the project directory.
-     * TODO Need a way to verify that the GUI-component was created by clicking on it.
      */
     @Test
     void createPackage(){
@@ -104,7 +101,8 @@ class FileTreeTest extends ZenithTestBase {
         }
         write(NEW_PACKAGE_NAME);
         clickOn(CREATE);
-        doubleClickOn(DIRECTORY);
+        doubleClickOn(SOURCE);
+        clickOn(NEW_PACKAGE_NAME);
     }
 
     /**
