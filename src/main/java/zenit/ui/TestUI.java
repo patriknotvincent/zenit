@@ -2,6 +2,7 @@ package zenit.ui;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -15,6 +16,7 @@ public class TestUI extends Application {
 	@Override
 	public void start(Stage stage) {
 		controller = new MainController(stage);
+		stage.getIcons().add(new Image("/zenit/setup/zenit.png"));
 	}
 	
 	/**
