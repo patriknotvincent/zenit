@@ -1,4 +1,4 @@
-package zenit.zencodearea.codecompletion;
+package zenit.ui.codeCompletion;
 
 import javafx.scene.input.KeyCode;
 import org.junit.jupiter.api.Test;
@@ -6,10 +6,7 @@ import org.testfx.util.WaitForAsyncUtils;
 import zenit.ZenithTestBase;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class CompletionTest extends ZenithTestBase {
     private final String String_Variable_Test = "String testString = null;";
