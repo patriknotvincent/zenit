@@ -2,27 +2,30 @@ package zenit.zencodearea.codecompletion;
 
 import javafx.scene.input.KeyCode;
 import org.junit.jupiter.api.Test;
+import org.testfx.util.WaitForAsyncUtils;
 import zenit.ZenithTestBase;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class CompletionTest extends ZenithTestBase {
-    private final String String_Variable_Test = "String testString;";
+    private final String String_Variable_Test = "String testString = null;";
     private final String Create_Metod = "public void testAutoComplete(){";
 
 
     /**
-     *Mac Test
+     * Mac Test
+     * Kräver att det finns en folder vid namn testa
      */
     @Test
     void createJavaFile() throws IOException {
         rightClickOn("testa");
         clickOn("New...");
         clickOn("New class");
-        write("testAutoComplete");
+        write("testAutoComplete1");
         clickOn("OK");
     }
 
@@ -39,50 +42,45 @@ class CompletionTest extends ZenithTestBase {
         write("String[] sArr = new String[3];");
         write("\n");
         write(Create_Metod);
-
-
-        //assertTrue(FileFinder.assertFileOrFolderExists(TEST_FILE_NAME + ".java"));
-
     }
 
     @Test
     void TestingString(){
         write("\n");
         write("tes");
-        //wait
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
         clickOn("testString (v)");
         write(";");
-        write("\n");
-        write("}");
     }
 
     @Test
-    void TestingInt(){
-        clickOn("testString;");
+    void TestingInt() {
         write("\n");
-        write("Numb");
-        //wait
+        write("Num");
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
         clickOn("Number (v)");
         write(";");
-
     }
 
     @Test
     void TestingStringArray(){
-        clickOn("Number;");
         write("\n");
         write("sA");
-        //wait
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
         clickOn("String[] sArr (v)");
         write(";");
     }
 
     @Test
     void TestingSimilarName(){
-        clickOn("int Number;");
+        clickOn("String[] sArr = new String[3];");
+        press(KeyCode.RIGHT);
         write("\n");
         write("int NumberOfTests;");
+        WaitForAsyncUtils.sleep(1, TimeUnit.SECONDS);
         clickOn("NumberOfTests (v)");
+        write(";");
+        write("}");
 
     }
 
