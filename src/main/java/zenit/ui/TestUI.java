@@ -2,6 +2,7 @@ package zenit.ui;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import zenit.setup.SetupController;
 
@@ -17,6 +18,7 @@ public class TestUI extends Application {
 	
 	@Override
 	public void start(Stage stage) {
+		stage.getIcons().add(new Image("/zenit/setup/zenit.png"));
 		File file = new File("res/workspace/workspace.dat");
 		File jdk = new File("res/jdk/jdk.dat");
 		File defaultJdk = new File("res/jdk/defaultJDK.dat");
