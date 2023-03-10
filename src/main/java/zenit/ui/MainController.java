@@ -322,9 +322,7 @@ public class MainController extends VBox implements ThemeCustomizable {
 		treeView.setRoot(rootItem);
 		treeView.setShowRoot(false);
 		TreeContextMenu tcm = new TreeContextMenu(this, treeView);
-		TreeClickListener tcl = new TreeClickListener(this, treeView);
 		treeView.setContextMenu(tcm);
-		treeView.setOnMouseClicked(tcl);
 		treeView.setCellFactory(new FileCellFactory(this));
 
 		rootItem.getChildren().sort(Comparator.comparing(o -> o.getValue().getName()));

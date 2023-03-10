@@ -52,6 +52,18 @@ public class FileCellFactory implements Callback<TreeView<FileTreeItem>, TreeCel
         cell.setOnDragOver((DragEvent event) -> dragOver(event, cell, treeView));
         cell.setOnDragDropped((DragEvent event) -> drop(event, cell, treeView));
         cell.setOnDragDone((DragEvent event) -> clearDropLocation());
+        cell.setOnMouseClicked((MouseEvent event) -> {
+            if(cell.getTreeItem() != null && event.getButton().equals(MouseButton.PRIMARY)) {
+                controller.updateStatusLeft(cell.getTreeItem().getValue().getFile().getPath());
+
+                if (event.getClickCount() == 2) {
+                    File file = cell.getTreeItem().getValue().getFile();
+                    if (!file.isDirectory()) {
+                        controller.openFile(file);
+                    }
+                }
+            }
+        });
 
         return cell;
     }
