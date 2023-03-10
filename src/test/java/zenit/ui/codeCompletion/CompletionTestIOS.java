@@ -8,7 +8,7 @@ import zenit.ZenithTestBase;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-class CompletionTest extends ZenithTestBase {
+class CompletionTestIOS extends ZenithTestBase {
     private final String String_Variable_Test = "String testString = null;";
     private final String Create_Metod = "public void testAutoComplete(){";
 
