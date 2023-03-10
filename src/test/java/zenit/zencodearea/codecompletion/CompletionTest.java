@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import zenit.ZenithTestBase;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,9 +22,10 @@ class CompletionTest extends ZenithTestBase {
         rightClickOn("testa");
         clickOn("New...");
         clickOn("New class");
-        write("testAutoComplete2");
+        write("testAutoComplete");
         clickOn("OK");
     }
+
 
     @Test
     void setUpTest() throws IOException {
@@ -34,7 +36,7 @@ class CompletionTest extends ZenithTestBase {
         write("\n");
         write("int Number = 0;");
         write("\n");
-        write("String[] sArr = = new String[3];;");
+        write("String[] sArr = new String[3];");
         write("\n");
         write(Create_Metod);
 
