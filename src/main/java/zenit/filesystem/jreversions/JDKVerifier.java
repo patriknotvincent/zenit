@@ -8,8 +8,8 @@ public class JDKVerifier {
 	
 	public static boolean validJDK(File JDK) {
 		
-		File java = new File(getExecutablePath(JDK.getPath(), "java"));
-		File javac = new File(getExecutablePath(JDK.getPath(), "javac"));
+		File java = new File(getExecutablePath(JDK.getPath(), "java.exe"));
+		File javac = new File(getExecutablePath(JDK.getPath(), "javac.exe"));
 		
 		return (java != null && javac != null && java.exists() && javac.exists());
 	}
