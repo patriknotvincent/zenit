@@ -328,6 +328,8 @@ public class MainController extends VBox implements ThemeCustomizable {
 		treeView.setCellFactory(new FileCellFactory(this));
 
 		rootItem.getChildren().sort(Comparator.comparing(o -> o.getValue().getName()));
+
+		treeView.getSelectionModel().select(rootItem.getChildren().get(0));
 	}
 
 	/**
