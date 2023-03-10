@@ -65,6 +65,20 @@ class FileTreeTest extends ZenithTestBase {
         doubleClickOn(SOURCE);
         clickOn(NEW_CLASS_NAME + ".java");
     }
+
+    /**
+     * This test tests the settings window for a projekt
+     */
+    @Test
+    void openSettingsWindow(){
+        rightClickOn("TestProjekt");
+        //moveTo("Properties");
+        clickOn("Properties");
+
+
+    }
+
+
     /**
      * This test creates a new Interface in the project directory.
      */
