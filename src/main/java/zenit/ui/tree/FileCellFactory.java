@@ -107,6 +107,13 @@ public class FileCellFactory implements Callback<TreeView<FileTreeItem>, TreeCel
         if(!droppedOn.getValue().getFile().isDirectory()){
             return;
         }
+
+        for(TreeItem<FileTreeItem> child : droppedOn.getChildren()){
+            if(child.getValue().getFile().getName().equals(draggedItem.getValue().getFile().getName())){
+                return;
+            }
+        }
+
         // remove from previous location
         droppedItemParent.getChildren().remove(draggedItem);
         droppedOn.getChildren().add(draggedItem);
