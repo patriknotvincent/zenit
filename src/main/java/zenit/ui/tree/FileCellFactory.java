@@ -71,18 +71,21 @@ public class FileCellFactory implements Callback<TreeView<FileTreeItem>, TreeCel
     private void dragDetected(MouseEvent event, TreeCell<FileTreeItem> treeCell, TreeView<FileTreeItem> treeView) {
         draggedItem = treeCell.getTreeItem();
 
-        // root can't be dragged
-        if (draggedItem.getParent() == null) return;
-        if(draggedItem.getValue().getType() == FileTreeItem.PROJECT) return;
-        if(draggedItem.getValue().getType() == FileTreeItem.PACKAGE) return;
-        if(draggedItem.getValue().getType() == FileTreeItem.SRC) return;
-        Dragboard db = treeCell.startDragAndDrop(TransferMode.MOVE);
+        if(draggedItem != null) {
 
-        ClipboardContent content = new ClipboardContent();
-        content.put(JAVA_FORMAT, draggedItem.getValue());
-        db.setContent(content);
-        db.setDragView(treeCell.snapshot(null, null));
-        event.consume();
+            // root can't be dragged
+            if (draggedItem.getParent() == null) return;
+            if (draggedItem.getValue().getType() == FileTreeItem.PROJECT) return;
+            if (draggedItem.getValue().getType() == FileTreeItem.PACKAGE) return;
+            if (draggedItem.getValue().getType() == FileTreeItem.SRC) return;
+            Dragboard db = treeCell.startDragAndDrop(TransferMode.MOVE);
+
+            ClipboardContent content = new ClipboardContent();
+            content.put(JAVA_FORMAT, draggedItem.getValue());
+            db.setContent(content);
+            db.setDragView(treeCell.snapshot(null, null));
+            event.consume();
+        }
     }
 
     private void dragOver(DragEvent event, TreeCell<FileTreeItem> treeCell, TreeView<FileTreeItem> treeView) {
