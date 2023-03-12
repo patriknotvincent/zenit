@@ -10,4 +10,8 @@ public class CompletionButton extends Button {
         this.completion = completion;
         setPrefHeight(20);
     }
+
+    public Completion getCompletion() {
+        return completion;
+    }
 }

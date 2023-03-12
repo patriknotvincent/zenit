@@ -100,6 +100,10 @@ public class ZenCodeArea extends CodeArea implements ExistingClassesListener {
 
 		variableTimer = new VariableTimer(this, completionGraph, existingClasses);
 
+		for(int i = 0; i < 5000; i++){
+			System.out.println("int test" + i + ";");
+		}
+
 		addEventFilter(KeyEvent.KEY_RELEASED, event -> {
 
 			if(event.getCode() != KeyCode.ENTER

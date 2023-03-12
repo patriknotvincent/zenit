@@ -46,6 +46,10 @@ public class CompletionWindow extends Popup {
                 case DOWN:
                     cycleCompletions(true);
                     break;
+                case TAB:
+                    fillInSuggestion(completionButtons.get(completionIndex).getCompletion());
+                    this.hide();
+                    break;
                 default:
                     break;
             }
