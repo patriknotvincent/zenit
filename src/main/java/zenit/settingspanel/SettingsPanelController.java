@@ -341,7 +341,7 @@ public class SettingsPanelController extends AnchorPane implements ThemeCustomiz
 			openInBrowser("https://github.com/patriknotvincent/zenit");
 		}
 		if(e.getSource() == linkOpenUserGuide){
-			openInBrowser("https://github.com/patriknotvincent/zenit/blob/bug_fix_supportpage/User%20guide.pdf");
+			openInBrowser("https://github.com/patriknotvincent/zenit/blob/develop/User%20guide.pdf");
 		}
 		if(e.getSource() == linkDownloadSource) {
 			openInBrowser("https://github.com/patriknotvincent/zenit/archive/develop.zip");
