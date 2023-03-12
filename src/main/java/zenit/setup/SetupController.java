@@ -118,6 +118,11 @@ public class SetupController extends AnchorPane {
 				.toExternalForm()));
 		logo.setFitWidth(55);
 
+		File resDirectory = new File("res");
+		if (!resDirectory.isDirectory()){
+			resDirectory.mkdir();
+		}
+
 		File jdkDirectory = new File("res/JDK");
 		if (!jdkDirectory.isDirectory()){
 			jdkDirectory.mkdir();
