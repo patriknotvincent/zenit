@@ -4,5 +4,4 @@ To run the program:
 - Open the project in IntelliJ IDEA (theoretically any IDE should work, but we recommend IntelliJ IDEA).
 - Find the "Launcher"-class in the "ui"-package and run it.
 
-For more information on how to use the program, please refer to the user guide: [a relative link](User%20guide.
-pdf).
+For more information on how to use the program, please refer to the [User Guide](https://github.com/patriknotvincent/zenit/blob/develop/User%20guide.pdf).
